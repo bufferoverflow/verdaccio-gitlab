@@ -1,6 +1,8 @@
 # Verdaccio-GitLab
 
-Use GitLab as authentication provider for verdaccio.
+Use [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-ce)
+as authentication provider for the private npm registry
+[verdaccio](https://www.verdaccio.org), the sinopia fork.
 
 The main goal and difference to other sinopia/verdaccio plugins is:
 
