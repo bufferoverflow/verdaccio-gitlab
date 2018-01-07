@@ -22,6 +22,10 @@
     "type": "git",
     "url": "https://github.com/bufferoverflow/verdaccio-gitlab.git"
   },
+  "homepage": "https://github.com/bufferoverflow/verdaccio-gitlab",
+  "bugs": {
+    "url" : "https://github.com/bufferoverflow/verdaccio-gitlab/issues"
+  },
   "dependencies": {
     "node-gitlab-api": "^2.1.1",
     "verdaccio": "^2.7.2"

@@ -2,5 +2,7 @@ language: node_js
 sudo: false
 node_js:
   - '6'
-sudo: false
-script: npm install && npm run lint
+  - '7'
+script:
+  - npm install
+  - npm run lint
