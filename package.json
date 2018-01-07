@@ -22,6 +22,9 @@
     "type": "git",
     "url": "https://github.com/bufferoverflow/verdaccio-gitlab.git"
   },
+  "dependencies": {
+    "verdaccio": "^2.7.2"
+  },
   "devDependencies": {
     "@commitlint/cli": "^5.2.8",
     "@commitlint/config-conventional": "^5.2.3",
