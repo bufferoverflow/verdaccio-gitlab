@@ -9,7 +9,7 @@
     "lint": "jshint index.js && jscs index.js && eclint check && markdownlint README.md"
   },
   "main": "index.js",
-  "version": "0.0.1-beta.5",
+  "version": "0.0.1-beta.6",
   "description": "Verdaccio module to authenticate users via GitLab",
   "keywords": [
     "sinopia",
