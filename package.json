@@ -7,7 +7,7 @@
   "scripts": {
     "changelog": "commitlint --from=master",
     "lint": "jshint index.js && jscs index.js && eclint check && markdownlint README.md",
-    "start": "verdaccio"
+    "start": "cd node_modules/verdaccio && npm link ../../ && verdaccio"
   },
   "main": "index.js",
   "version": "0.0.1-beta.9",
