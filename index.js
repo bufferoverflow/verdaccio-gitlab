@@ -36,3 +36,7 @@ Auth.prototype.authenticate = function(user, password, cb) {
     if (error) return cb('Personal access token invalid');
   });
 };
+
+Auth.prototype.adduser = function(user, password, cb) {
+  cb(null, false);
+};

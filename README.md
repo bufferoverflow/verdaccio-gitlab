@@ -34,7 +34,7 @@ start verdaccio and authenticate with your credentials:
 via web on [http://localhost:4873](http://localhost:4873) or adduser
 
 ```sh
-npm adduser --registry http://localhost:4873
+npm login --registry http://localhost:4873
 ```
 
 and publish packages
