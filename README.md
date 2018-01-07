@@ -8,6 +8,7 @@ The main goal and difference to other sinopia/verdaccio plugins is:
 
 - no admin token required
 - user authenticates with Personal Access Token
+- owned groups (no subgroups) are added to the user
 
 > This is experimental!
 
@@ -46,7 +47,7 @@ npm publish --registry http://localhost:4873
 
 - [x] authenticate with personal access token
 - [x] compare provided user name and GitLab username
-- [ ] get user groups from GitLab
+- [x] get user groups from GitLab
 - [ ] authorize based on group member ship
   - [ ] publish
   - [ ] pull
