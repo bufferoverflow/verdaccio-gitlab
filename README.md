@@ -25,7 +25,22 @@ auth:
     url: https://gitlab.com
 ```
 
-authenticate with your gitlab username and your [Personal Access Token](https://gitlab.com/profile/personal_access_tokens)
+start verdaccio and authenticate with your credentials:
+
+- gitlab username
+- [Personal Access Token](https://gitlab.com/profile/personal_access_tokens)
+
+via web on [http://localhost:4873](http://localhost:4873) or adduser
+
+```sh
+npm adduser --registry http://localhost:4873
+```
+
+and publish packages
+
+```sh
+npm publish --registry http://localhost:4873
+```
 
 ## Todo
 
