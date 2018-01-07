@@ -38,6 +38,12 @@ auth:
 - [ ] pass repolinter
 - make it perfect ;-r
 
+## Inspired by
+
+- [verdaccio-ldap](https://github.com/Alexandre-io/verdaccio-ldap)
+- [node-bacstack](https://github.com/fh1ch/node-bacstack)
+- [verdaccio-bitbucket](https://github.com/idangozlan/verdaccio-bitbucket)
+
 ## License
 
 [MIT](https://spdx.org/licenses/MIT)
