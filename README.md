@@ -11,21 +11,21 @@ The main goal and difference to other sinopia/verdaccio plugins is:
 
 > This is experimental!
 
-## Install
-
-As simple as running:
+## Use it
 
 ```sh
 npm install -g verdaccio-gitlab
 ```
 
-## Configure
+configure the following within your `~/.config/verdaccio/config.yaml`
 
 ```yaml
 auth:
   gitlab:
     url: https://gitlab.com
 ```
+
+authenticate with your gitlab username and your [Personal Access Token](https://gitlab.com/profile/personal_access_tokens)
 
 ## Todo
 
