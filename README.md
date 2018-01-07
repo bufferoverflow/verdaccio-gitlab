@@ -15,10 +15,14 @@ The main goal and difference to other sinopia/verdaccio plugins is:
 ## Use it
 
 ```sh
-npm install -g verdaccio-gitlab
+git clone https://github.com/bufferoverflow/verdaccio-gitlab.git
+cd verdaccio-gitlab
+npm install
+npm start
 ```
 
-configure the following within your `~/.config/verdaccio/config.yaml`
+verdaccio is now up and running, now configure the following within
+your `~/.config/verdaccio/config.yaml` to use this plugin
 
 ```yaml
 auth:
@@ -26,12 +30,12 @@ auth:
     url: https://gitlab.com
 ```
 
-start verdaccio and authenticate with your credentials:
+restart verdaccio and authenticate with your credentials:
 
 - gitlab username
 - [Personal Access Token](https://gitlab.com/profile/personal_access_tokens)
 
-via web on [http://localhost:4873](http://localhost:4873) or adduser
+on the web ui [http://localhost:4873](http://localhost:4873) or via npm
 
 ```sh
 npm login --registry http://localhost:4873
