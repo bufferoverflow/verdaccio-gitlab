@@ -5,8 +5,7 @@
     "email": "roger@bufferoverflow.ch"
   },
   "scripts": {
-    "changelog": "commitlint --from=master",
-    "lint": "jshint index.js && jscs index.js && eclint check && markdownlint README.md",
+    "lint": "commitlint --from=master && jshint index.js && jscs index.js && eclint check && markdownlint README.md",
     "start": "cd node_modules/verdaccio && npm link ../../ && verdaccio"
   },
   "main": "index.js",
