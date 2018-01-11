@@ -10,7 +10,7 @@
     "start": "cd node_modules/verdaccio && npm link ../../ && verdaccio"
   },
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Verdaccio module to authenticate users via GitLab",
   "keywords": [
     "sinopia",
