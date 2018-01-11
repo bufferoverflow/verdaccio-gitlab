@@ -52,9 +52,8 @@ npm publish --registry http://localhost:4873
 - [x] authenticate with personal access token
 - [x] compare provided user name and GitLab username
 - [x] get user groups from GitLab
-- [ ] authorize based on group member ship
-  - [ ] publish
-  - [ ] pull
+- [ ] authorize publish based on group ownership
+- [ ] Docker Compose setup of GitLab and Verdaccio
 - [ ] use openid connect for web ui
 - [ ] improve linting, eslint vs. jshint, etc.
 - [ ] pass repolinter
