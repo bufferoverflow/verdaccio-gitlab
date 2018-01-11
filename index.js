@@ -22,8 +22,8 @@ Auth.prototype.authenticate = function(user, password, cb) {
 
   GitlabAPI.users.current().then((response) => {
     if (user !== response.body.username) return cb(httperror[403]('wrong gitlab username'));
+    var ownedGroups = [user];
     GitlabAPI.groups.all({'owned': 'true'}).then((groups) => {
-      var ownedGroups = [];
       groups.forEach(function(item) {
         if (item.path === item.full_path) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
           ownedGroups.push(item.path);
