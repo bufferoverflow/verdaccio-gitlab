@@ -10,12 +10,15 @@
   },
   "main": "index.js",
   "version": "0.0.2",
-  "description": "Verdaccio module to authenticate users via GitLab",
+  "description": "private npm registry (Verdaccio) using gitlab-ce as authentication and authorization provider",
   "keywords": [
     "sinopia",
     "verdaccio",
     "gitlab",
-    "auth"
+    "auth",
+    "npm",
+    "registry",
+    "npm-registry"
   ],
   "license": "MIT",
   "repository": {
