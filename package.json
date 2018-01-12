@@ -34,8 +34,8 @@
     "verdaccio": "^2.7.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^5.2.8",
-    "@commitlint/config-conventional": "^5.2.3",
+    "@commitlint/cli": "^6.0.2",
+    "@commitlint/config-conventional": "^6.0.2",
     "eclint": "^2.5.0",
     "jscs": "^3.0.7",
     "jshint": "^2.9.5",
