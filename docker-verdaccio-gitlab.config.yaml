@@ -1,0 +1,30 @@
+storage: /verdaccio/storage
+
+listen:
+  - 0.0.0.0:4873
+
+auth:
+  gitlab:
+    url: http://gitlab
+
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+
+packages:
+  '@*/*':
+    # scoped packages
+    access: $all
+    publish: $authenticated
+    proxy: npmjs
+    gitlab: true
+
+  '**':
+    access: $authenticated
+    publish: $authenticated
+    proxy: npmjs
+    gitlab: true
+
+logs:
+  - {type: stdout, format: pretty, level: http}
+  #- {type: file, path: verdaccio.log, level: info}

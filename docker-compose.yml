@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  gitlab:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    environment:
+      - GITLAB_ROOT_PASSWORD=verdaccio
+    ports:
+      - '50080:80'
+      - '50022:22'
+    volumes:
+      - gitlab-config:/etc/gitlab
+      - gitlab-log:/var/log/gitlab
+      - gitlab-data:/var/opt/gitlab
+
+  verdaccio:
+    image: verdaccio/verdaccio
+    restart: always
+    ports:
+      - '4873:4873'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - verdaccio:/verdaccio
+    links:
+      - gitlab
+
+volumes:
+  gitlab-config:
+  gitlab-log:
+  gitlab-data:
+  verdaccio:

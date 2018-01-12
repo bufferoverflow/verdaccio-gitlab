@@ -40,3 +40,10 @@ Auth.prototype.authenticate = function(user, password, cb) {
 Auth.prototype.adduser = function(user, password, cb) {
   cb(null, false);
 };
+
+Auth.prototype.allow_publish = function(user, _package, cb) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+  if (_package.gitlab) {
+    // TODO compare owned groups with publish namespaces
+    return cb(null, false);
+  }
+};

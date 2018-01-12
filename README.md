@@ -47,13 +47,26 @@ and publish packages
 npm publish --registry http://localhost:4873
 ```
 
+## Docker
+
+```sh
+git clone https://github.com/bufferoverflow/verdaccio-gitlab.git
+cd verdaccio-gitlab
+docker-compose up --build -d
+```
+
+login with user `root` and password `verdaccio` on
+Gitlab([localhost:50080](http://localhost:50080)),
+create a Personal Access Token and use the npm registry
+Verdaccio([localhost:4873](http://localhost:4873)).
+
 ## Todo
 
 - [x] authenticate with personal access token
 - [x] compare provided user name and GitLab username
 - [x] get user groups from GitLab
 - [ ] authorize publish based on group ownership
-- [ ] Docker Compose setup of GitLab and Verdaccio
+- [x] Docker Compose setup of GitLab and Verdaccio
 - [ ] use openid connect for web ui
 - [ ] improve linting, eslint vs. jshint, etc.
 - [ ] pass repolinter
