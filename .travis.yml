@@ -1,8 +1,10 @@
 language: node_js
 sudo: false
 node_js:
-  - '6'
-  - '7'
+  - 'lts/boron'
+  - 'lts/carbon'
+  - 'lts/*'
 script:
   - npm install
+  - commitlint-travis
   - npm run lint

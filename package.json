@@ -5,7 +5,8 @@
     "email": "roger@bufferoverflow.ch"
   },
   "scripts": {
-    "lint": "commitlint --from=master && jshint index.js && jscs index.js && eclint check && markdownlint README.md",
+    "changelog": "commitlint --from=master",
+    "lint": "jshint index.js && jscs index.js && eclint check && markdownlint README.md",
     "start": "cd node_modules/verdaccio && npm link ../../ && verdaccio"
   },
   "main": "index.js",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@commitlint/cli": "^6.0.2",
     "@commitlint/config-conventional": "^6.0.2",
+    "@commitlint/travis-cli": "^6.0.2",
     "eclint": "^2.5.0",
     "jscs": "^3.0.7",
     "jshint": "^2.9.5",
