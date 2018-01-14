@@ -20,7 +20,7 @@ packages:
     gitlab: true
 
   '**':
-    access: $authenticated
+    access: $all
     publish: $authenticated
     proxy: npmjs
     gitlab: true

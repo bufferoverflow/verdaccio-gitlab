@@ -13,6 +13,7 @@ The main goal and difference to other sinopia/verdaccio plugins is:
 - no admin token required
 - user authenticates with Personal Access Token
 - owned groups (no subgroups) are added to the user
+- publish packages if package scope or name is an owned group name
 
 > This is experimental!
 
@@ -32,6 +33,20 @@ your `~/.config/verdaccio/config.yaml` to use this plugin
 auth:
   gitlab:
     url: https://gitlab.com
+
+packages:
+  '@*/*':
+    # scoped packages
+    access: $all
+    publish: $authenticated
+    proxy: npmjs
+    gitlab: true
+
+  '**':
+    access: $all
+    publish: $authenticated
+    proxy: npmjs
+    gitlab: true
 ```
 
 restart verdaccio and authenticate with your credentials:
@@ -69,10 +84,10 @@ Verdaccio([localhost:4873](http://localhost:4873)).
 - [x] authenticate with personal access token
 - [x] compare provided user name and GitLab username
 - [x] get user groups from GitLab
-- [ ] authorize publish based on group ownership
+- [x] authorize publish based on group ownership
 - [x] Docker Compose setup of GitLab and Verdaccio
 - [ ] use openid connect for web ui
-- [ ] improve linting, eslint vs. jshint, etc.
+- [ ] improve linting, eslint vs. jshint vs. babel ,etc.
 - [ ] pass repolinter
 - make it perfect ;-r
 
