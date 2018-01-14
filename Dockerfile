@@ -1,4 +1,4 @@
-FROM node:8.4.0-alpine
+FROM node:carbon-alpine
 LABEL maintainer="https://github.com/bufferoverflow/verdaccio-gitlab"
 
 RUN apk --no-cache add openssl && \
