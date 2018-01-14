@@ -1,3 +1,13 @@
+#### 0.0.4 (2018-01-14)
+
+##### Documentation Changes
+
+*  improve authorization related topics ([d1f06445](https://github.com/bufferoverflow/verdaccio-gitlab/commit/d1f0644537cd1a06ea8c4098f05a30d5daf8741f))
+
+##### New Features
+
+*  changelog generator ([47653197](https://github.com/bufferoverflow/verdaccio-gitlab/commit/476531977e082148068ac806526612ff5498be07))
+
 #### 0.0.3 (2018-01-14)
 
 ##### Chores
