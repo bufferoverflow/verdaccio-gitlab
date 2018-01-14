@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "node-gitlab-api": "^2.1.1",
-    "verdaccio": "^2.7.2"
+    "verdaccio": "^2.7.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^6.0.2",

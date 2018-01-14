@@ -15,7 +15,7 @@ ADD . $APPDIR
 ENV NODE_ENV=production
 
 RUN npm config set registry http://registry.npmjs.org/ && \
-    npm install -g verdaccio@2.7.2 && \
+    npm install -g verdaccio@2.7.3 && \
     npm install -g verdaccio-gitlab@latest
 
 RUN mkdir -p /verdaccio/storage /verdaccio/conf
