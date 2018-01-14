@@ -81,6 +81,30 @@ docker-compose up --build -d
 - login to the npm registry [http://localhost:4873](http://localhost:4873) via browser
 - publish your packages via command line
 
+## Development
+
+Setup development environment, `npm start` will do:
+
+```sh
+cd node_modules/verdaccio
+npm link ../../
+cd ../../
+```
+
+Run one of the following command to create a release:
+
+```sh
+npm run release:major
+npm run release:minor
+npm run release:patch
+```
+
+finally run
+
+```sh
+npm publish
+```
+
 ## Todo
 
 - [x] authenticate with personal access token
