@@ -66,6 +66,8 @@ and publish packages
 npm publish --registry http://localhost:4873
 ```
 
+> **NOTE**: you need a fresh login, so that verdaccio recognizes your owned groups
+
 ## Docker
 
 ```sh
@@ -74,10 +76,10 @@ cd verdaccio-gitlab
 docker-compose up --build -d
 ```
 
-login with user `root` and password `verdaccio` on
-Gitlab([localhost:50080](http://localhost:50080)),
-create a Personal Access Token and use the npm registry
-Verdaccio([localhost:4873](http://localhost:4873)).
+- login with user `root` and password `verdaccio` on Gitlab via [http://localhost:50080](http://localhost:50080)
+- create a Personal Access Token
+- login to the npm registry [http://localhost:4873](http://localhost:4873) via browser
+- publish your packages via command line
 
 ## Todo
 
@@ -86,6 +88,7 @@ Verdaccio([localhost:4873](http://localhost:4873)).
 - [x] get user groups from GitLab
 - [x] authorize publish based on group ownership
 - [x] Docker Compose setup of GitLab and Verdaccio
+- [ ] how to handle group owner ship changes? timeout?
 - [ ] use openid connect for web ui
 - [ ] improve linting, eslint vs. jshint vs. babel ,etc.
 - [ ] pass repolinter
