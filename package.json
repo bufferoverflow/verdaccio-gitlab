@@ -35,7 +35,7 @@
     "url": "https://github.com/bufferoverflow/verdaccio-gitlab/issues"
   },
   "dependencies": {
-    "node-gitlab-api": "^2.1.1",
+    "node-gitlab-api": "^2.2.0",
     "verdaccio": "^2.7.3"
   },
   "devDependencies": {

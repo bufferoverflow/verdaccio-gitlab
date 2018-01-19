@@ -21,7 +21,7 @@ Auth.prototype.authenticate = function(user, password, cb) {
   });
 
   GitlabAPI.users.current().then((response) => {
-    if (user !== response.body.username) return cb(httperror[403]('wrong gitlab username'));
+    if (user !== response.username) return cb(httperror[403]('wrong gitlab username'));
     var ownedGroups = [user];
     GitlabAPI.groups.all({'owned': 'true'}).then((groups) => {
       groups.forEach(function(item) {
