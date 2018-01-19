@@ -7,4 +7,5 @@ node_js:
 script:
   - npm install
   - commitlint-travis
+  - npm run license
   - npm run lint

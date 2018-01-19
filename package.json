@@ -6,6 +6,7 @@
   },
   "scripts": {
     "changelog": "commitlint --from=master",
+    "license": "license-checker --onlyAllow 'Apache-2.0, BSD, BSD-2-Clause, BSD-3-Clause, ISC, MIT, Unlicense, WTFPL' --production",
     "lint": "jshint index.js && jscs index.js && eclint check && markdownlint README.md",
     "release:major": "changelog -M && git commit -a -m 'docs: updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags",
     "release:minor": "changelog -m && git commit -a -m 'docs: updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags",
@@ -45,6 +46,7 @@
     "generate-changelog": "^1.7.0",
     "jscs": "^3.0.7",
     "jshint": "^2.9.5",
+    "license-checker": "^16.0.0",
     "markdownlint-cli": "^0.6.0",
     "repolinter": "^0.5.0"
   },
