@@ -5,7 +5,7 @@
     "email": "roger@bufferoverflow.ch"
   },
   "scripts": {
-    "changelog": "commitlint --from=master",
+    "commitmsg": "commitlint -e $GIT_PARAMS",
     "license": "license-checker --onlyAllow 'Apache-2.0, BSD, BSD-2-Clause, BSD-3-Clause, ISC, MIT, Unlicense, WTFPL' --production",
     "lint": "jshint index.js && jscs index.js && eclint check && markdownlint README.md",
     "release:major": "changelog -M && git commit -a -m 'docs: updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags",
@@ -44,6 +44,7 @@
     "@commitlint/travis-cli": "^6.0.2",
     "eclint": "^2.5.0",
     "generate-changelog": "^1.7.0",
+    "husky": "^0.14.3",
     "jscs": "^3.0.7",
     "jshint": "^2.9.5",
     "license-checker": "^16.0.0",
