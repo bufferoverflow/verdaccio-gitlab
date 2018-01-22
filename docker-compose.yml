@@ -6,8 +6,11 @@ services:
     restart: always
     environment:
       - GITLAB_ROOT_PASSWORD=verdaccio
+      - GITLAB_HOST=http://localhost:50080/
+      - GITLAB_OMNIBUS_CONFIG=gitlab_rails['registry_enabled'] = true; registry['registry_http_addr'] = 'http://localhost:50081/'; registry_external_url 'https://localhost:50081'
     ports:
       - '50080:80'
+      - '50081:81'
       - '50022:22'
     volumes:
       - gitlab-config:/etc/gitlab

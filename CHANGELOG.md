@@ -1,3 +1,21 @@
+#### 0.0.5 (2018-01-22)
+
+##### Chores
+
+*  use husky and git commitmsg hook ([eb23c9f5](https://github.com/bufferoverflow/verdaccio-gitlab/commit/eb23c9f52c48537178b2fc9caf9dc44d449b18b8))
+*  use node-gitlab-api 2.2.0 ([c7b682dc](https://github.com/bufferoverflow/verdaccio-gitlab/commit/c7b682dcfc3e55a3fba9827a82cf54fa86abe97d))
+*  use license-checker to enforce license compliance ([c8008d4b](https://github.com/bufferoverflow/verdaccio-gitlab/commit/c8008d4b2d16b3300af8a22ce662e92983ce9b61))
+*  use verdaccio 2.7.3 ([01350e61](https://github.com/bufferoverflow/verdaccio-gitlab/commit/01350e610e3557c96b1e10e59dd2fc66ee5475be))
+* **docker:**  use carbon-alpine ([72b84e40](https://github.com/bufferoverflow/verdaccio-gitlab/commit/72b84e40c100e404f9feb8792b04eb327e9b0c4f))
+
+##### Documentation Changes
+
+*  add development section ([a0561b75](https://github.com/bufferoverflow/verdaccio-gitlab/commit/a0561b75acdfcfba12d502f776e676e4988ca768))
+
+##### New Features
+
+*  authorize access for authenticated users ([58eb2cd3](https://github.com/bufferoverflow/verdaccio-gitlab/commit/58eb2cd36079f42b0c4d43340727285173d0895e))
+
 #### 0.0.4 (2018-01-14)
 
 ##### Documentation Changes
