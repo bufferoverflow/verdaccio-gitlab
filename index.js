@@ -40,6 +40,15 @@ Auth.prototype.authenticate = function(user, password, cb) {
 Auth.prototype.adduser = function(user, password, cb) {
   cb(null, false);
 };
+Auth.prototype.allow_access = function(user, _package, cb) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+  if (_package.gitlab) {
+    if (_package.access.includes('$authenticated') && user.name !== undefined) {
+      return cb(null, true);
+    } else {
+      return cb(null, false);
+    }
+  }
+};
 
 Auth.prototype.allow_publish = function(user, _package, cb) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
   if (_package.gitlab) {
