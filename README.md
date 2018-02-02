@@ -105,22 +105,6 @@ finally run
 npm publish
 ```
 
-## Todo
-
-- [x] authenticate with personal access token
-- [x] compare provided user name and GitLab username
-- [x] get user groups from GitLab
-- [x] authorize publish based on group ownership
-- [x] authorize access for authenticated users
-- [x] Docker Compose setup of GitLab and Verdaccio
-- [ ] remove npm link and add a verdaccio.js to run it
-- [ ] GitLab-CI authorizer
-- [ ] how to handle group owner ship changes? timeout?
-- [ ] use openid connect for web ui
-- [ ] improve linting, eslint vs. jshint vs. babel ,etc.
-- [ ] pass repolinter
-- make it perfect ;-r
-
 ## Inspired by
 
 - [verdaccio-ldap](https://github.com/Alexandre-io/verdaccio-ldap)
