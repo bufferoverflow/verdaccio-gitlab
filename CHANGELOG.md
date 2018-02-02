@@ -1,3 +1,10 @@
+## 1.0.0 (2018-02-02)
+
+##### Bug Fixes
+
+*  call next plugin ([e4aaa339](https://github.com/bufferoverflow/verdaccio-gitlab/commit/e4aaa339c7ead89a381e59a2be4201980ffc0951))
+* **docker:**  remove registry stuff from docker-compose ([6cd53c7e](https://github.com/bufferoverflow/verdaccio-gitlab/commit/6cd53c7ed49dba3cfa6f6100b3796ece304b5cfb))
+
 #### 0.0.5 (2018-01-22)
 
 ##### Chores
