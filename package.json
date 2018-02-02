@@ -14,7 +14,7 @@
     "start": "cd node_modules/verdaccio && npm link ../../ && verdaccio"
   },
   "main": "index.js",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "description": "private npm registry (Verdaccio) using gitlab-ce as authentication and authorization provider",
   "keywords": [
     "sinopia",
