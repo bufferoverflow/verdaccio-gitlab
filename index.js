@@ -40,46 +40,45 @@ Auth.prototype.authenticate = function(user, password, cb) {
 Auth.prototype.adduser = function(user, password, cb) {
   cb(null, false);
 };
+
 Auth.prototype.allow_access = function(user, _package, cb) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
-  if (_package.gitlab) {
-    if (_package.access.includes('$authenticated') && user.name !== undefined) {
-      return cb(null, true);
-    } else {
-      return cb(null, false);
-    }
+  if (!_package.gitlab) return cb();
+  if (_package.access.includes('$authenticated') && user.name !== undefined) {
+    return cb(null, true);
+  } else {
+    return cb(null, false);
   }
 };
 
 Auth.prototype.allow_publish = function(user, _package, cb) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
-  if (_package.gitlab) {
-    var packageScopeOwner = false;
-    var packageOwner = false;
+  if (!_package.gitlab) return cb();
+  var packageScopeOwner = false;
+  var packageOwner = false;
 
-    user.real_groups.forEach(function(item) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
-      if (item === _package.name) {
-        packageOwner = true;
-        return false;
-      } else {
-        if (_package.name.indexOf('@') === 0) {
-          if (item === _package.name.slice(1, _package.name.lastIndexOf('/'))) {
-            packageScopeOwner = true;
-            return false;
-          }
+  user.real_groups.forEach(function(item) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+    if (item === _package.name) {
+      packageOwner = true;
+      return false;
+    } else {
+      if (_package.name.indexOf('@') === 0) {
+        if (item === _package.name.slice(1, _package.name.lastIndexOf('/'))) {
+          packageScopeOwner = true;
+          return false;
         }
       }
-    });
+    }
+  });
 
-    if (packageOwner === true) {
+  if (packageOwner === true) {
+    return cb(null, false);
+  } else {
+    if (packageScopeOwner === true) {
       return cb(null, false);
     } else {
-      if (packageScopeOwner === true) {
-        return cb(null, false);
+      if (_package.name.indexOf('@') === 0) {
+        return cb(httperror[403]('must be owner of package-scope'));
       } else {
-        if (_package.name.indexOf('@') === 0) {
-          return cb(httperror[403]('must be owner of package-scope'));
-        } else {
-          return cb(httperror[403]('must be owner of package-name'));
-        }
+        return cb(httperror[403]('must be owner of package-name'));
       }
     }
   }
