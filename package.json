@@ -7,7 +7,7 @@
   "scripts": {
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "license": "license-checker --onlyAllow 'Apache-2.0, BSD, BSD-2-Clause, BSD-3-Clause, ISC, MIT, Unlicense, WTFPL' --production",
-    "lint": "jshint index.js && jscs index.js && eclint check && markdownlint README.md",
+    "lint": "eslint index.js && eclint check && markdownlint README.md",
     "release:major": "changelog -M && git commit -a -m 'docs: updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags",
     "release:minor": "changelog -m && git commit -a -m 'docs: updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags",
     "release:patch": "changelog -p && git commit -a -m 'docs: updated CHANGELOG.md' && npm version patch && git push origin && git push origin --tags",
@@ -43,10 +43,9 @@
     "@commitlint/config-conventional": "^6.0.2",
     "@commitlint/travis-cli": "^6.0.2",
     "eclint": "^2.5.0",
+    "eslint": "4.17.0",
     "generate-changelog": "^1.7.0",
     "husky": "^0.14.3",
-    "jscs": "^3.0.7",
-    "jshint": "^2.9.5",
     "license-checker": "^16.0.0",
     "markdownlint-cli": "^0.6.0",
     "repolinter": "^0.5.0"

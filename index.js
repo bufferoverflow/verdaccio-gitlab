@@ -25,7 +25,7 @@ Auth.prototype.authenticate = function(user, password, cb) {
     var ownedGroups = [user];
     GitlabAPI.groups.all({'owned': 'true'}).then((groups) => {
       groups.forEach(function(item) {
-        if (item.path === item.full_path) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+        if (item.path === item.full_path) {
           ownedGroups.push(item.path);
         }
       });
@@ -41,7 +41,7 @@ Auth.prototype.adduser = function(user, password, cb) {
   cb(null, false);
 };
 
-Auth.prototype.allow_access = function(user, _package, cb) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+Auth.prototype.allow_access = function(user, _package, cb) {
   if (!_package.gitlab) return cb();
   if (_package.access.includes('$authenticated') && user.name !== undefined) {
     return cb(null, true);
