@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  verdaccio:
+    image: verdaccio/verdaccio
+    restart: always
+    ports:
+      - '4873:4873'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - verdaccio:/verdaccio
+
+volumes:
+  verdaccio:
