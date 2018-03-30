@@ -19,7 +19,8 @@ ADD . $APPDIR
 
 ENV NODE_ENV=production
 
-RUN npm config set registry http://registry.npmjs.org/ && \
+RUN npm config set unsafe-perm true && \
+    npm config set registry http://registry.npmjs.org/ && \
     npm install -g verdaccio@2.7.3 && \
     npm install -g verdaccio-gitlab@latest && \
     apk del .gyp
