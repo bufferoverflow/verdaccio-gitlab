@@ -1,7 +1,7 @@
 // Copyright 2018 Roger Meier <roger@bufferoverflow.ch>
 // SPDX-License-Identifier: MIT
 
-var httperror = require('http-errors');
+import {httperror} from 'http-errors';
 
 function Auth(config, stuff) {
   var self = Object.create(Auth.prototype);
