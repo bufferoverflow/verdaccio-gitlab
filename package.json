@@ -5,7 +5,7 @@
     "email": "roger@bufferoverflow.ch"
   },
   "scripts": {
-    "build": "babel src/ --out-dir lib/ --copy-files --ignore ___tests___",
+    "build": "babel src/ --out-dir lib/ --copy-files --ignore ___tests___ --source-maps",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "license": "license-checker --onlyAllow 'Apache-2.0, BSD, BSD-2-Clause, BSD-3-Clause, ISC, MIT, Unlicense, WTFPL' --production",
     "lint": "eslint index.js && eclint check && markdownlint README.md",
@@ -37,7 +37,7 @@
     "url": "https://github.com/bufferoverflow/verdaccio-gitlab/issues"
   },
   "dependencies": {
-    "node-gitlab-api": "^2.2.0",
+    "gitlab": "^3.2.2",
     "verdaccio": "^v3.0.0-beta.7"
   },
   "devDependencies": {
