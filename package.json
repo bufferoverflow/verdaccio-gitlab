@@ -43,8 +43,8 @@
     "node": ">=6.12.0"
   },
   "dependencies": {
-    "gitlab": "^3.2.2",
-    "verdaccio": "^v3.0.0-beta.7"
+    "gitlab": "3.2.2",
+    "verdaccio": "v3.0.0-beta.7"
   },
   "devDependencies": {
     "@commitlint/cli": "^6.0.2",
