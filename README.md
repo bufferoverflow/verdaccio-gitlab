@@ -19,6 +19,8 @@ The main goal and difference to other sinopia/verdaccio plugins is:
 
 ## Use it
 
+You need at least node version 6.x.x, codename boron.
+
 ```sh
 git clone https://github.com/bufferoverflow/verdaccio-gitlab.git
 cd verdaccio-gitlab
