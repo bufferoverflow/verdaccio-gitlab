@@ -5,15 +5,20 @@
     "email": "roger@bufferoverflow.ch"
   },
   "scripts": {
+    "build": "babel src/ --out-dir lib/ --copy-files --ignore ___tests___ --source-maps",
     "commitmsg": "commitlint -e $GIT_PARAMS",
-    "license": "license-checker --onlyAllow 'Apache-2.0, BSD, BSD-2-Clause, BSD-3-Clause, ISC, MIT, Unlicense, WTFPL' --production",
+    "license": "license-checker --onlyAllow 'Apache-2.0; BSD; BSD-2-Clause; BSD-3-Clause; ISC; MIT; Unlicense; WTFPL' --production",
     "lint": "eslint index.js && eclint check && markdownlint README.md",
+    "prepublish": "in-publish && npm run lint && npm run build || not-in-publish",
     "release:major": "changelog -M && git commit -a -m 'docs: updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags",
     "release:minor": "changelog -m && git commit -a -m 'docs: updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags",
     "release:patch": "changelog -p && git commit -a -m 'docs: updated CHANGELOG.md' && npm version patch && git push origin && git push origin --tags",
-    "start": "cd node_modules/verdaccio && npm link ../../ && verdaccio"
+    "start": "npm run build && NODE_PATH=$NODE_PATH:.. node lib/verdaccio.js"
   },
-  "main": "index.js",
+  "main": "lib/index.js",
+  "files": [
+    "lib/verdaccio.js"
+  ],
   "version": "1.0.0",
   "description": "private npm registry (Verdaccio) using gitlab-ce as authentication and authorization provider",
   "keywords": [
@@ -34,21 +39,27 @@
   "bugs": {
     "url": "https://github.com/bufferoverflow/verdaccio-gitlab/issues"
   },
+  "engines": {
+    "node": ">=6.12.0"
+  },
   "dependencies": {
-    "node-gitlab-api": "^2.2.0",
-    "verdaccio": "^v3.0.0-beta.7"
+    "gitlab": "3.2.2",
+    "verdaccio": "v3.0.0-beta.7"
   },
   "devDependencies": {
     "@commitlint/cli": "^6.0.2",
     "@commitlint/config-conventional": "^6.0.2",
     "@commitlint/travis-cli": "^6.0.2",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "eclint": "^2.5.0",
-    "eslint": "4.17.0",
+    "eslint": "^4.19.1",
     "generate-changelog": "^1.7.0",
     "husky": "^0.14.3",
-    "license-checker": "^16.0.0",
-    "markdownlint-cli": "^0.7.0",
-    "repolinter": "^0.5.0"
+    "in-publish": "^2.0.0",
+    "license-checker": "^19.0.0",
+    "markdownlint-cli": "^0.8.1",
+    "repolinter": "^0.6.0"
   },
   "commitlint": {
     "extends": [

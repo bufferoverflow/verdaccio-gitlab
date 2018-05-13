@@ -1,7 +1,8 @@
 // Copyright 2018 Roger Meier <roger@bufferoverflow.ch>
 // SPDX-License-Identifier: MIT
 
-var httperror = require('http-errors');
+import Gitlab from 'gitlab';
+import {httperror} from 'http-errors';
 
 function Auth(config, stuff) {
   var self = Object.create(Auth.prototype);
@@ -15,15 +16,15 @@ module.exports = Auth;
 
 Auth.prototype.authenticate = function(user, password, cb) {
 
-  var GitlabAPI = require('node-gitlab-api')({
+  var GitlabAPI = new Gitlab({
     url:   this._config.url,
     token: password
   });
 
-  GitlabAPI.users.current().then((response) => {
+  GitlabAPI.Users.current().then((response) => {
     if (user !== response.username) return cb(httperror[403]('wrong gitlab username'));
     var ownedGroups = [user];
-    GitlabAPI.groups.all({'owned': 'true'}).then((groups) => {
+    GitlabAPI.Groups.all({'owned': 'true'}).then((groups) => {
       groups.forEach(function(item) {
         if (item.path === item.full_path) {
           ownedGroups.push(item.path);
