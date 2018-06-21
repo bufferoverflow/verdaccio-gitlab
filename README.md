@@ -28,6 +28,8 @@ npm install
 npm start
 ```
 
+> **NOTE**: Define `http_proxy` environment variable if you are behind a proxy.
+
 verdaccio is now up and running, now configure the following within
 your `~/.config/verdaccio/config.yaml` to use this plugin
 

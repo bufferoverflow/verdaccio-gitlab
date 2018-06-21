@@ -43,7 +43,9 @@
     "node": ">=6.12.0"
   },
   "dependencies": {
+    "@verdaccio/types": "^3.0.0",
     "gitlab": "^3.4.2",
+    "global-tunnel-ng": "^2.1.1",
     "verdaccio": "^3.1.1"
   },
   "devDependencies": {
@@ -55,7 +57,7 @@
     "babel-preset-flow": "^6.23.0",
     "eclint": "^2.5.0",
     "eslint": "^4.19.1",
-    "flow-bin": "^0.74.0",
+    "flow-bin": "^0.75.0",
     "flow-runtime": "^0.17.0",
     "generate-changelog": "^1.7.0",
     "husky": "^0.14.3",
