@@ -3,6 +3,7 @@
 // @flow
 
 import Gitlab from 'gitlab';
+import { AuthCache, UserData } from './authcache'
 import httperror from 'http-errors';
 import type { PackageAccess, Config, Logger, Callback } from '@verdaccio/types';
 
@@ -10,11 +11,16 @@ export default class VerdaccioGitLab {
   users: {};
   stuff: {};
   config: {};
+  authCache: AuthCache;
   logger: Logger;
 
   constructor(
     config: {
-      url: string
+      url: string,
+      authCache?: {
+        enabled?: boolean,
+        ttl?: number
+      }
     },
     stuff: {
       [config: string]: {
@@ -23,25 +29,47 @@ export default class VerdaccioGitLab {
       }
     }
   ) {
-    this.users = {};
+    this.logger = stuff.logger;
 
+    this.users = {};
     this.config = config;
     this.stuff = stuff;
 
-    this.logger = stuff.logger;
+    if ((this.config.authCache || {}).enabled === false) {
+      this.logger.info('[gitlab] auth cache disabled');
+    } else {
+      const ttl = (this.config.authCache || {}).ttl || AuthCache.DEFAULT_TTL;
+      this.authCache = new AuthCache(this.logger, ttl);
+
+      this.logger.info('[gitlab] initialized auth cache with ttl:', ttl, 'seconds');
+    }
 
   }
 
   authenticate(user: string, password: string, cb: Callback) {
     this.logger.trace('[gitlab] authenticate called for user:', user);
 
+    // Try to find the user groups in the cache
+    const cachedUserGroups = this._getCachedUserGroups(user, password);
+
+    if (cachedUserGroups) {
+      this.logger.debug('[gitlab] user found in cache:', user, 'authenticated, with groups:',
+        cachedUserGroups);
+      return cb(null, cachedUserGroups);
+    }
+
+    // Not found in cache, query gitlab
+    this.logger.trace('[gitlab] not found user in cache:', user);
+
     const GitlabAPI = new Gitlab({
-      url:   this.config.url,
+      url: this.config.url,
       token: password
     });
 
     GitlabAPI.Users.current().then(response => {
-      if (user !== response.username) { return cb(httperror[401]('wrong gitlab username')); }
+      if (user !== response.username) {
+        return cb(httperror[401]('wrong gitlab username'));
+      }
 
       // Set the groups of an authenticated user to themselves and all gitlab projects of which they are an owner
       let ownedGroups = [user];
@@ -52,19 +80,24 @@ export default class VerdaccioGitLab {
           }
         }
 
+        // Store found groups in cache
+        this._setCachedUserGroups(user, password, ownedGroups);
+        this.logger.trace('[gitlab] saving data in cache for user:', user);
+
         this.logger.debug('[gitlab] user:', user, 'authenticated, with groups:', ownedGroups);
-        cb(null, ownedGroups);
+        return cb(null, ownedGroups);
       });
-    }).
-    catch(error => {
+    }).catch(error => {
       this.logger.debug('[gitlab] error authenticating:', error.error || null);
-      if (error) { return cb(httperror[401]('personal access token invalid')); }
+      if (error) {
+        return cb(httperror[401]('personal access token invalid'));
+      }
     });
   }
 
   adduser(user: string, password: string, cb: Callback) {
     this.logger.trace('[gitlab] adduser called for user:', user);
-    cb(null, true);
+    return cb(null, true);
   }
 
   allow_access(user, _package: PackageAccess, cb: Callback) {
@@ -72,8 +105,11 @@ export default class VerdaccioGitLab {
     if (_package.access.includes('$authenticated') && user.name !== undefined) {
       this.logger.debug('[gitlab] allow user:', user.name, 'access to package:', _package.name);
       return cb(null, true);
+    } else if (! _package.access.includes('$authenticated')) {
+      this.logger.debug('[gitlab] allow unauthenticated access to package:', _package.name);
+      return cb(null, true);
     } else {
-      this.logger.debug('[gitlab] pass-through unauthenticated access package:', _package.name);
+      this.logger.debug('[gitlab] deny user:', user.name, 'access to package:', _package.name);
       return cb(null, false);
     }
   }
@@ -116,5 +152,17 @@ export default class VerdaccioGitLab {
         }
       }
     }
+  }
+
+  _getCachedUserGroups(username: string, password: string): string[] {
+    if (! this.authCache) {
+      return null;
+    }
+    const userData = this.authCache.findUser(username, password);
+    return (userData || {}).groups || null;
+  }
+
+  _setCachedUserGroups(username: string, password: string, groups: string[]): boolean {
+    return this.authCache && this.authCache.storeUser(username, password, new UserData(username, groups));
   }
 }
