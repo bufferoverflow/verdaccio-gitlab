@@ -37,6 +37,9 @@ your `~/.config/verdaccio/config.yaml` to use this plugin
 auth:
   gitlab:
     url: https://gitlab.com
+    authCache:
+      enabled: true
+      ttl: 300
 
 packages:
   '@*/*':
@@ -71,6 +74,34 @@ npm publish --registry http://localhost:4873
 ```
 
 > **NOTE**: you need a fresh login, so that verdaccio recognizes your owned groups
+
+## Authentication Cache
+
+In order to avoid too many authentication requests to the underlying
+gitlab instance, the plugin provides an in-memory cache that will save
+the detected groups of the users for a configurable ttl in seconds.
+No clear-text password will be saved in-memory, just an SHA-256 hash
+and the groups information.
+
+By default, the cache will be enabled and the credentials will be stored
+for 300 seconds. The ttl is checked on access, but there's also an
+internal timer that will check expired values regularly, so data of
+users not actively interacting with the system will also be eventually
+invalidated.
+
+```yaml
+auth:
+  gitlab:
+    url: https://gitlab.com
+    authCache:
+      enabled: (default true)
+      ttl: (default: 300)
+```
+
+*Please note* that this implementation is in-memory and not
+multi-process; if the cluster module is used for starting several
+verdaccio processes, each process will store its own copy of the cache,
+so each user will actually be logged in multiple times.
 
 ## Docker
 
