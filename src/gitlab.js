@@ -3,37 +3,37 @@
 // @flow
 
 import Gitlab from 'gitlab';
-import { AuthCache, UserData } from './authcache'
+import { AuthCache, UserData } from './authcache';
 import httperror from 'http-errors';
-import type { PackageAccess, Config, Logger, Callback } from '@verdaccio/types';
+import type { Callback, Config, IPluginAuth, Logger, PluginOptions, RemoteUser, PackageAccess } from '@verdaccio/types';
 
-export default class VerdaccioGitLab {
-  users: {};
-  stuff: {};
-  config: {};
+export type VerdaccioGitlabConfig = Config & {
+  url: string,
+  authCache?: {
+    enabled?: boolean,
+    ttl?: number
+  }
+};
+
+type VerdaccioGitlabPackageAccess = PackageAccess & {
+  name: string,
+  gitlab?: boolean
+}
+
+export default class VerdaccioGitLab implements IPluginAuth {
+  options: PluginOptions;
+  config: VerdaccioGitlabConfig;
   authCache: AuthCache;
   logger: Logger;
 
   constructor(
-    config: {
-      url: string,
-      authCache?: {
-        enabled?: boolean,
-        ttl?: number
-      }
-    },
-    stuff: {
-      [config: string]: {
-        users_file: string,
-        self_path: string
-      }
-    }
+    config: VerdaccioGitlabConfig,
+    options: PluginOptions
   ) {
-    this.logger = stuff.logger;
+    this.logger = options.logger;
 
-    this.users = {};
     this.config = config;
-    this.stuff = stuff;
+    this.options = options;
 
     if ((this.config.authCache || {}).enabled === false) {
       this.logger.info('[gitlab] auth cache disabled');
@@ -41,25 +41,24 @@ export default class VerdaccioGitLab {
       const ttl = (this.config.authCache || {}).ttl || AuthCache.DEFAULT_TTL;
       this.authCache = new AuthCache(this.logger, ttl);
 
-      this.logger.info('[gitlab] initialized auth cache with ttl:', ttl, 'seconds');
+      this.logger.info(`[gitlab] initialized auth cache with ttl: ${ttl} seconds`);
     }
 
   }
 
   authenticate(user: string, password: string, cb: Callback) {
-    this.logger.trace('[gitlab] authenticate called for user:', user);
+    this.logger.trace(`[gitlab] authenticate called for user ${user}`);
 
     // Try to find the user groups in the cache
     const cachedUserGroups = this._getCachedUserGroups(user, password);
 
     if (cachedUserGroups) {
-      this.logger.debug('[gitlab] user found in cache:', user, 'authenticated, with groups:',
-        cachedUserGroups);
+      this.logger.debug(`[gitlab] user found in cache: ${user} authenticated, with groups: ${cachedUserGroups.toString()}`);
       return cb(null, cachedUserGroups);
     }
 
     // Not found in cache, query gitlab
-    this.logger.trace('[gitlab] not found user in cache:', user);
+    this.logger.trace(`[gitlab] not found user in cache: ${user}`);
 
     const GitlabAPI = new Gitlab({
       url: this.config.url,
@@ -73,7 +72,7 @@ export default class VerdaccioGitLab {
 
       // Set the groups of an authenticated user to themselves and all gitlab projects of which they are an owner
       let ownedGroups = [user];
-      GitlabAPI.Groups.all({'owned': 'true'}).then(groups => {
+      GitlabAPI.Groups.all({owned: true}).then(groups => {
         for (let group of groups) {
           if (group.path === group.full_path) {
             ownedGroups.push(group.path);
@@ -82,13 +81,13 @@ export default class VerdaccioGitLab {
 
         // Store found groups in cache
         this._setCachedUserGroups(user, password, ownedGroups);
-        this.logger.trace('[gitlab] saving data in cache for user:', user);
+        this.logger.trace(`[gitlab] saving data in cache for user: ${user}`);
 
-        this.logger.debug('[gitlab] user:', user, 'authenticated, with groups:', ownedGroups);
+        this.logger.debug(`[gitlab] user: ${user} authenticated, with groups: ${ownedGroups.toString()}`);
         return cb(null, ownedGroups);
       });
     }).catch(error => {
-      this.logger.debug('[gitlab] error authenticating:', error.error || null);
+      this.logger.debug(`[gitlab] error authenticating: ${error.error || null}`);
       if (error) {
         return cb(httperror[401]('personal access token invalid'));
       }
@@ -96,25 +95,25 @@ export default class VerdaccioGitLab {
   }
 
   adduser(user: string, password: string, cb: Callback) {
-    this.logger.trace('[gitlab] adduser called for user:', user);
+    this.logger.trace(`[gitlab] adduser called for user: ${user}`);
     return cb(null, true);
   }
 
-  allow_access(user, _package: PackageAccess, cb: Callback) {
+  allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess, cb: Callback) {
     if (!_package.gitlab) { return cb(); }
-    if (_package.access.includes('$authenticated') && user.name !== undefined) {
-      this.logger.debug('[gitlab] allow user:', user.name, 'access to package:', _package.name);
+    if ((_package.access || []).includes('$authenticated') && user.name !== undefined) {
+      this.logger.debug(`[gitlab] allow user: ${user.name} access to package: ${_package.name}`);
       return cb(null, true);
-    } else if (! _package.access.includes('$authenticated')) {
-      this.logger.debug('[gitlab] allow unauthenticated access to package:', _package.name);
+    } else if (! (_package.access || []).includes('$authenticated')) {
+      this.logger.debug(`[gitlab] allow unauthenticated access to package: ${_package.name}`);
       return cb(null, true);
     } else {
-      this.logger.debug('[gitlab] deny user:', user.name, 'access to package:', _package.name);
+      this.logger.debug(`[gitlab] deny user: ${user.name || ''} access to package: ${_package.name}`);
       return cb(null, false);
     }
   }
 
-  allow_publish(user, _package: PackageAccess, cb: Callback) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+  allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess, cb: Callback) {
     if (!_package.gitlab) { return cb(); }
     let packageScopeOwner = false;
     let packageOwner = false;
@@ -137,14 +136,14 @@ export default class VerdaccioGitLab {
     }
 
     if (packageOwner === true) {
-      this.logger.debug('[gitlab] user:', user.name, 'allowed to publish package:', _package.name, 'as owner of package-name');
+      this.logger.debug(`[gitlab] user: ${user.name || ''} allowed to publish package: ${_package.name} as owner of package-name`);
       return cb(null, false);
     } else {
       if (packageScopeOwner === true) {
-        this.logger.debug('[gitlab] user:', user.name, 'allowed to publish package:', _package.name, 'as owner of package-scope');
+        this.logger.debug(`[gitlab] user: ${user.name || ''} allowed to publish package: ${_package.name} as owner of package-scope`);
         return cb(null, false);
       } else {
-        this.logger.debug('[gitlab] user:', user.name, 'denied from publishing package:', _package.name);
+        this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
         if (_package.name.indexOf('@') === 0) {
           return cb(httperror[403]('must be owner of package-scope'));
         } else {
@@ -154,7 +153,7 @@ export default class VerdaccioGitLab {
     }
   }
 
-  _getCachedUserGroups(username: string, password: string): string[] {
+  _getCachedUserGroups(username: string, password: string): ?string[] {
     if (! this.authCache) {
       return null;
     }

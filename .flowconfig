@@ -1,6 +1,7 @@
 [ignore]
 .*/node_modules/.*
-lib/.*
+.*/.vscode/.*
+.*/lib/.*
 
 [libs]
 node_modules/@verdaccio/types/lib/

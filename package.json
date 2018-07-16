@@ -6,9 +6,10 @@
   },
   "scripts": {
     "build": "babel src/ --out-dir lib/ --copy-files --ignore ___tests___ --source-maps",
+    "flow": "flow",
     "commitmsg": "commitlint -e $GIT_PARAMS",
-    "license": "license-checker --onlyAllow 'Apache-2.0; BSD; BSD-2-Clause; BSD-3-Clause; ISC; MIT; Unlicense; WTFPL; CC-BY-3.0; CC0-1.0' --production",
-    "lint": "eslint src/index.js && eclint check $(git ls-files) && markdownlint README.md",
+    "license": "license-checker --onlyAllow 'Apache-2.0; Apache License, Version 2.0; BSD; BSD-2-Clause; BSD-3-Clause; ISC; MIT; Unlicense; WTFPL; CC-BY-3.0; CC0-1.0' --production",
+    "lint": "flow && eslint . && eclint check $(git ls-files) && markdownlint README.md",
     "prepublish": "in-publish && npm run lint && npm run build || not-in-publish",
     "release:major": "changelog -M && git commit -a -m 'docs: updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags",
     "release:minor": "changelog -m && git commit -a -m 'docs: updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags",
@@ -16,9 +17,6 @@
     "start": "npm run build && NODE_PATH=$NODE_PATH:.. node lib/verdaccio.js"
   },
   "main": "lib/index.js",
-  "files": [
-    "lib/verdaccio.js"
-  ],
   "version": "1.0.0",
   "description": "private npm registry (Verdaccio) using gitlab-ce as authentication and authorization provider",
   "keywords": [
@@ -43,7 +41,6 @@
     "node": ">=6.12.0"
   },
   "dependencies": {
-    "@verdaccio/types": "^3.0.0",
     "gitlab": "^3.4.2",
     "global-tunnel-ng": "^2.1.1",
     "http-errors": "^1.6.3",
@@ -54,11 +51,15 @@
     "@commitlint/cli": "^7.0.0",
     "@commitlint/config-conventional": "^7.0.1",
     "@commitlint/travis-cli": "^7.0.0",
+    "@verdaccio/types": "^3.4.1",
     "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.6",
     "babel-preset-env": "^1.6.1",
     "babel-preset-flow": "^6.23.0",
-    "eclint": "^2.5.0",
+    "eclint": "^2.8.0",
     "eslint": "^4.19.1",
+    "eslint-plugin-flowtype": "^2.50.0",
+    "eslint-plugin-import": "^2.12.0",
     "flow-bin": "^0.75.0",
     "flow-runtime": "^0.17.0",
     "generate-changelog": "^1.7.0",

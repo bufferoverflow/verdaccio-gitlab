@@ -1,7 +1,11 @@
 // Copyright 2018 Roger Meier <roger@bufferoverflow.ch>
 // SPDX-License-Identifier: MIT
-import VerdaccioGitLab from './gitlab';
+// @flow
 
-export default function(config, stuff) {
-  return new VerdaccioGitLab(config, stuff);
+import VerdaccioGitLab from './gitlab';
+import type { PluginOptions } from '@verdaccio/types';
+import type { VerdaccioGitlabConfig } from './gitlab';
+
+export default function(config: VerdaccioGitlabConfig, options: PluginOptions) {
+  return new VerdaccioGitLab(config, options);
 }
