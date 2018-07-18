@@ -6,6 +6,9 @@ listen:
 auth:
   gitlab:
     url: http://gitlab
+    authCache:
+      enabled: true
+      ttl: 300
 
 uplinks:
   npmjs:
@@ -26,5 +29,5 @@ packages:
     gitlab: true
 
 logs:
-  - {type: stdout, format: pretty, level: http}
+  - {type: stdout, format: pretty, level: info }
   #- {type: file, path: verdaccio.log, level: info}

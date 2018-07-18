@@ -24,8 +24,8 @@ You need at least node version 6.x.x, codename boron.
 ```sh
 git clone https://github.com/bufferoverflow/verdaccio-gitlab.git
 cd verdaccio-gitlab
-npm install
-npm start
+yarn install
+yarn start
 ```
 
 > **NOTE**: Define `http_proxy` environment variable if you are behind a proxy.
@@ -61,16 +61,16 @@ restart verdaccio and authenticate with your credentials:
 - gitlab username
 - [Personal Access Token](https://gitlab.com/profile/personal_access_tokens)
 
-on the web ui [http://localhost:4873](http://localhost:4873) or via npm
+on the web ui [http://localhost:4873](http://localhost:4873) or via yarn
 
 ```sh
-npm login --registry http://localhost:4873
+yarn login --registry http://localhost:4873
 ```
 
 and publish packages
 
 ```sh
-npm publish --registry http://localhost:4873
+yarn publish --registry http://localhost:4873
 ```
 
 > **NOTE**: you need a fresh login, so that verdaccio recognizes your owned groups
@@ -121,15 +121,15 @@ docker-compose up --build -d
 Run one of the following command to create a release:
 
 ```sh
-npm run release:major
-npm run release:minor
-npm run release:patch
+yarn release:major
+yarn release:minor
+yarn release:patch
 ```
 
 finally run
 
 ```sh
-npm publish
+yarn publish
 ```
 
 ## Flow Support
@@ -143,7 +143,7 @@ update the flow-typed support files:
 
 ```bash
 # Just once in your environment
-npm install -g flow-typed
+yarn install -g flow-typed
 
 flow-typed install
 ```

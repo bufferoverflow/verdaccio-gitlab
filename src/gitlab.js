@@ -35,6 +35,8 @@ export default class VerdaccioGitLab implements IPluginAuth {
     this.config = config;
     this.options = options;
 
+    this.logger.info(`[gitlab] gitlab url: ${this.config.url}`);
+
     if ((this.config.authCache || {}).enabled === false) {
       this.logger.info('[gitlab] auth cache disabled');
     } else {
@@ -83,11 +85,12 @@ export default class VerdaccioGitLab implements IPluginAuth {
         this._setCachedUserGroups(user, password, ownedGroups);
         this.logger.trace(`[gitlab] saving data in cache for user: ${user}`);
 
+        this.logger.info(`[gitlab] user: ${user} authenticated`);
         this.logger.debug(`[gitlab] user: ${user} authenticated, with groups: ${ownedGroups.toString()}`);
         return cb(null, ownedGroups);
       });
     }).catch(error => {
-      this.logger.debug(`[gitlab] error authenticating: ${error.error || null}`);
+      this.logger.info(`[gitlab] user: ${user} error authenticating: ${error.message || {}}`);
       if (error) {
         return cb(httperror[401]('personal access token invalid'));
       }
