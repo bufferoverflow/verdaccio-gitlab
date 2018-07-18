@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: MIT
 // @flow
 
-import NodeCache from 'node-cache';
 import type { Logger } from '@verdaccio/types';
+
 import Crypto from 'crypto';
+import NodeCache from 'node-cache';
 
 export class AuthCache {
   logger: Logger;
@@ -23,7 +24,7 @@ export class AuthCache {
     });
     this.storage.on('expired', (key, value) => {
       if (this.logger.trace()) {
-        this.logger.trace('[gitlab] expired key:', key, 'with value:', value);
+        this.logger.trace(`[gitlab] expired key: ${key} with value: ${value}`);
       }
     });
   }
