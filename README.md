@@ -8,7 +8,8 @@ as authentication provider for the private npm registry
 [![build](https://travis-ci.org/bufferoverflow/verdaccio-gitlab.svg?branch=master)](https://travis-ci.org/bufferoverflow/verdaccio-gitlab)
 [![dependencies](https://david-dm.org/bufferoverflow/verdaccio-gitlab/status.svg)](https://david-dm.org/bufferoverflow/verdaccio-gitlab)
 
-The main goal and difference to other sinopia/verdaccio plugins is:
+The main goal and the difference from other sinopia/verdaccio plugins are
+the following:
 
 - no admin token required
 - user authenticates with Personal Access Token
@@ -70,7 +71,7 @@ logs:
   - {type: stdout, format: pretty, level: debug}
 ```
 
-Restart Verdaccio and authenticate into in with your credentials
+Restart Verdaccio and authenticate into it with your credentials
 
 - Username: GitLab username
 - Password: [Personal Access Token](https://gitlab.com/profile/personal_access_tokens)
@@ -87,9 +88,9 @@ and publish packages:
 npm publish --registry http://localhost:4873
 ```
 
-> **NOTE**: In order to publish packages, you need to create or be part (as owner) of
-a GitLab group which has the same name as your package name. You also need a fresh
-login, so that Verdaccio recognizes your owned groups.
+> **NOTE**: In order to publish packages, you need to create or be part of
+a GitLab group (as owner) which has the same name as your package name. You
+also need a fresh login, so that Verdaccio recognizes your owned groups.
 
 ## Authentication Cache
 
