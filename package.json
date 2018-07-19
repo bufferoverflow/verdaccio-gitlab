@@ -6,6 +6,7 @@
   },
   "scripts": {
     "build": "babel src/ --out-dir lib/ --copy-files --ignore ___tests___ --source-maps",
+    "build:docker": "docker build -t verdaccio-gitlab . --no-cache",
     "flow": "flow",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "license": "license-checker --onlyAllow 'Apache-2.0; Apache License, Version 2.0; BSD; BSD-2-Clause; BSD-3-Clause; ISC; MIT; Unlicense; WTFPL; CC-BY-3.0; CC0-1.0' --production",
