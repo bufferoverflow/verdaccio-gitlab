@@ -4,7 +4,7 @@ node_js:
   - 'lts/carbon'
   - 'lts/*'
 script:
-  - npm install
+  - yarn install
   - commitlint-travis
-  - npm run license
-  - npm run lint
+  - yarn run license
+  - yarn run lint
