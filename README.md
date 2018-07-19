@@ -2,7 +2,7 @@
 
 Use [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-ce)
 as authentication provider for the private npm registry
-[verdaccio](https://github.com/verdaccio/verdaccio), the sinopia fork.
+[Verdaccio](https://github.com/verdaccio/verdaccio), the sinopia fork.
 
 [![npm](https://badge.fury.io/js/verdaccio-gitlab.svg)](http://badge.fury.io/js/verdaccio-gitlab)
 [![build](https://travis-ci.org/bufferoverflow/verdaccio-gitlab.svg?branch=master)](https://travis-ci.org/bufferoverflow/verdaccio-gitlab)
@@ -30,16 +30,26 @@ npm start
 
 > **NOTE**: Define `http_proxy` environment variable if you are behind a proxy.
 
-verdaccio is now up and running, now configure the following within
-your `~/.config/verdaccio/config.yaml` to use this plugin
+Verdaccio is now up and running. In order the see this plugin in action, you can
+use the following Verdaccio configuration in your `~/.config/verdaccio/config.yaml`.
 
 ```yaml
+# Verdaccio storage location relative to $HOME/.config/verdaccio
+storage: ./storage
+
+listen:
+  - 0.0.0.0:4873
+
 auth:
   gitlab:
     url: https://gitlab.com
     authCache:
       enabled: true
       ttl: 300
+
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
 
 packages:
   '@*/*':
@@ -54,26 +64,32 @@ packages:
     publish: $authenticated
     proxy: npmjs
     gitlab: true
+
+# Log level can be changed to info, http etc. for less verbose output
+logs:
+  - {type: stdout, format: pretty, level: debug}
 ```
 
-restart verdaccio and authenticate with your credentials:
+Restart Verdaccio and authenticate into in with your credentials
 
-- gitlab username
-- [Personal Access Token](https://gitlab.com/profile/personal_access_tokens)
+- Username: GitLab username
+- Password: [Personal Access Token](https://gitlab.com/profile/personal_access_tokens)
 
-on the web ui [http://localhost:4873](http://localhost:4873) or via npm
+using the Web UI [http://localhost:4873](http://localhost:4873) or via npm CLI:
 
 ```sh
 npm login --registry http://localhost:4873
 ```
 
-and publish packages
+and publish packages:
 
 ```sh
 npm publish --registry http://localhost:4873
 ```
 
-> **NOTE**: you need a fresh login, so that verdaccio recognizes your owned groups
+> **NOTE**: In order to publish packages, you need to create or be part (as owner) of
+a GitLab group which has the same name as your package name. You also need a fresh
+login, so that Verdaccio recognizes your owned groups.
 
 ## Authentication Cache
 
