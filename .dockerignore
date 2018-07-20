@@ -1,2 +1,15 @@
 node_modules
 npm-debug.log
+flow-typed/
+
+# dot files by default excluded
+.*
+# dot file exceptions
+!.babelrc
+!.editorconfig
+!.eslintignore
+!.eslintrc*
+!.flowconfig
+
+Dockerfile*
+docker-compose*.yml
