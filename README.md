@@ -20,7 +20,7 @@ the following:
 
 ## Use it
 
-You need at least node version 6.x.x, codename boron.
+You need at least node version 8.x.x, codename **carbon**.
 
 ```sh
 git clone https://github.com/bufferoverflow/verdaccio-gitlab.git
