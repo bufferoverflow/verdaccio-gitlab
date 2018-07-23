@@ -42,33 +42,33 @@
     "node": ">=6.12.0"
   },
   "dependencies": {
-    "gitlab": "3.4.2",
-    "global-tunnel-ng": "2.5.1",
+    "gitlab": "3.5.1",
+    "global-tunnel-ng": "2.5.3",
     "http-errors": "1.6.3",
     "node-cache": "4.2.0",
-    "verdaccio": "3.2.0"
+    "verdaccio": "3.3.0"
   },
   "devDependencies": {
     "@commitlint/cli": "7.0.0",
     "@commitlint/config-conventional": "7.0.1",
     "@commitlint/travis-cli": "7.0.0",
-    "@verdaccio/types": "3.4.3",
+    "@verdaccio/types": "3.5.1",
     "babel-cli": "6.26.0",
     "babel-eslint": "8.2.6",
     "babel-preset-env": "1.7.0",
     "babel-preset-flow": "6.23.0",
     "eclint": "2.8.0",
-    "eslint": "4.19.1",
+    "eslint": "5.2.0",
     "eslint-plugin-flowtype": "2.50.0",
     "eslint-plugin-import": "2.13.0",
-    "flow-bin": "0.75.0",
+    "flow-bin": "0.77.0",
     "flow-runtime": "0.17.0",
     "generate-changelog": "1.7.1",
     "husky": "0.14.3",
     "in-publish": "2.0.0",
     "license-checker": "20.1.0",
-    "markdownlint-cli": "0.10.0",
-    "repolinter": "0.6.0"
+    "markdownlint-cli": "0.11.0",
+    "repolinter": "0.7.0"
   },
   "commitlint": {
     "extends": [
