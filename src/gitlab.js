@@ -49,18 +49,18 @@ export default class VerdaccioGitLab implements IPluginAuth {
   }
 
   authenticate(user: string, password: string, cb: Callback) {
-    this.logger.trace(`[gitlab] authenticate called for user ${user}`);
+    this.logger.trace(`[gitlab] authenticate called for user: ${user}`);
 
     // Try to find the user groups in the cache
     const cachedUserGroups = this._getCachedUserGroups(user, password);
 
     if (cachedUserGroups) {
-      this.logger.debug(`[gitlab] user found in cache: ${user} authenticated, with groups: ${cachedUserGroups.toString()}`);
+      this.logger.debug(`[gitlab] user: ${user} found in cache, authenticated with groups: ${cachedUserGroups.toString()}`);
       return cb(null, cachedUserGroups);
     }
 
     // Not found in cache, query gitlab
-    this.logger.trace(`[gitlab] not found user in cache: ${user}`);
+    this.logger.trace(`[gitlab] user: ${user} not found in cache`);
 
     const GitlabAPI = new Gitlab({
       url: this.config.url,
@@ -125,6 +125,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
     //  - the package has exactly the same name as one of the user groups, or
     //  - the package scope is the same as one of the user groups
     for (let real_group of user.real_groups) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+      this.logger.trace(`[gitlab] publish: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`);
       if (real_group === _package.name) {
         packageOwner = true;
         break;
