@@ -15,7 +15,6 @@ services:
       - gitlab-data:/var/opt/gitlab
 
   verdaccio:
-    image: verdaccio/verdaccio
     restart: always
     ports:
       - '4873:4873'
@@ -23,7 +22,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - verdaccio:/verdaccio
+      - verdaccio-storage:/verdaccio/storage
     links:
       - gitlab
 
@@ -31,4 +30,4 @@ volumes:
   gitlab-config:
   gitlab-log:
   gitlab-data:
-  verdaccio:
+  verdaccio-storage:

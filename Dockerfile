@@ -1,41 +1,34 @@
-FROM node:10-alpine
-LABEL maintainer="https://github.com/bufferoverflow/verdaccio-gitlab"
+FROM node:10-alpine as builder
 
-RUN apk --no-cache add wget openssl dumb-init && \
-    apk del openssl
+WORKDIR /opt/verdaccio-gitlab-build
+COPY . .
 
-ENV APPDIR /usr/local/app
+ENV NODE_ENV=production \
+    VERDACCIO_BUILD_REGISTRY=https://registry.npmjs.org/
 
-WORKDIR $APPDIR
-
-ADD . $APPDIR
-
-ENV NODE_ENV=production
-
-RUN npm config set registry https://registry.npmjs.org/ && \
+RUN yarn config set registry $VERDACCIO_BUILD_REGISTRY && \
     yarn install --production=false && \
     yarn build && \
     yarn cache clean && \
-    yarn install --production=true --pure-lockfile && \
-    yarn add file:.
+    yarn install --production=true --pure-lockfile
 
-RUN mkdir -p /verdaccio/storage /verdaccio/conf
 
-ADD docker-verdaccio-gitlab.config.yaml /verdaccio/conf/config.yaml
 
-RUN addgroup -S verdaccio && adduser -S -G verdaccio verdaccio && \
-    chown -R verdaccio:verdaccio "$APPDIR" && \
-    chown -R verdaccio:verdaccio /verdaccio
+FROM verdaccio/verdaccio:4.x-next
+LABEL maintainer="https://github.com/bufferoverflow/verdaccio-gitlab"
 
-USER verdaccio
+# Go back to root to be able to install the plugin
+USER root
 
-ENV PORT 4873
-ENV PROTOCOL http
+COPY --from=builder /opt/verdaccio-gitlab-build/lib /opt/verdaccio-gitlab/lib
+COPY --from=builder /opt/verdaccio-gitlab-build/package.json /opt/verdaccio-gitlab/package.json
+COPY --from=builder /opt/verdaccio-gitlab-build/node_modules /opt/verdaccio-gitlab/node_modules
 
-EXPOSE $PORT
+ADD conf/docker.yaml /verdaccio/conf/config.yaml
 
-VOLUME ["/verdaccio"]
+# Inherited from parent image
+WORKDIR $VERDACCIO_APPDIR
+RUN ln -s /opt/verdaccio-gitlab/lib /verdaccio/plugins/verdaccio-gitlab
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-
-CMD $APPDIR/node_modules/.bin/verdaccio --config /verdaccio/conf/config.yaml --listen $PROTOCOL://0.0.0.0:${PORT}
+# Inherited from parent image
+USER $VERDACCIO_USER_UID

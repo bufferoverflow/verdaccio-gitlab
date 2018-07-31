@@ -1,4 +1,6 @@
-storage: /verdaccio/storage
+storage: /verdaccio/storage/data
+
+plugins: /verdaccio/plugins
 
 listen:
   - 0.0.0.0:4873
