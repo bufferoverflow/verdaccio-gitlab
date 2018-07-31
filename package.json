@@ -11,11 +11,11 @@
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "license": "license-checker --onlyAllow 'Apache-2.0; Apache License, Version 2.0; BSD; BSD-2-Clause; BSD-3-Clause; ISC; MIT; Unlicense; WTFPL; CC-BY-3.0; CC0-1.0' --production",
     "lint": "flow && eslint . && eclint check $(git ls-files) && markdownlint README.md",
-    "prepublish": "in-publish && yarn run lint && yarn run build || not-in-publish",
+    "prepublish": "in-publish && yarn lint && yarn build || not-in-publish",
     "release:major": "changelog -M && git commit -a -m 'docs: updated CHANGELOG.md' && yarn version major && git push origin && git push origin --tags",
     "release:minor": "changelog -m && git commit -a -m 'docs: updated CHANGELOG.md' && yarn version minor && git push origin && git push origin --tags",
     "release:patch": "changelog -p && git commit -a -m 'docs: updated CHANGELOG.md' && yarn version patch && git push origin && git push origin --tags",
-    "start": "yarn run build && NODE_PATH=$NODE_PATH:.. node lib/verdaccio.js"
+    "start": "yarn build && NODE_PATH=$NODE_PATH:.. node lib/verdaccio.js"
   },
   "main": "lib/index.js",
   "version": "1.0.0",
