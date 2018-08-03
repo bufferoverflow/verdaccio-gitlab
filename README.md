@@ -13,10 +13,15 @@ the following:
 
 - no admin token required
 - user authenticates with Personal Access Token
-- owned groups (no subgroups) are added to the user
-- publish packages if package scope or name is an owned group name
+- access & publish packages if package scope or name match a gitlab
+  group for which the user has appropriate permissions
 
 > This is experimental!
+
+## Gitlab Version Compatibility
+
+Gitlab 11.2+ is required due to usage of the `v4` api version and
+the granular group api `min_access_level` query param
 
 ## Use it
 
@@ -47,6 +52,8 @@ auth:
     authCache:
       enabled: true
       ttl: 300
+    access: $reporter
+    publish: $maintainer
 
 uplinks:
   npmjs:

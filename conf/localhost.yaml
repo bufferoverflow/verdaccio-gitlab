@@ -1,13 +1,13 @@
-storage: /verdaccio/storage/data
+storage: /tmp/storage/data
 
-plugins: /verdaccio/plugins
+plugins: /tmp/plugins
 
 listen:
   - 0.0.0.0:4873
 
 auth:
   gitlab:
-    url: http://gitlab
+    url: http://localhost:50080
     authCache:
       enabled: true
       ttl: 300
@@ -33,5 +33,5 @@ packages:
     gitlab: true
 
 logs:
-  - { type: stdout, format: pretty, level: info }
+  - { type: stdout, format: pretty, level: trace }
   #- {type: file, path: verdaccio.log, level: info}
