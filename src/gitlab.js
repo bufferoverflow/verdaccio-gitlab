@@ -22,7 +22,7 @@ export type VerdaccioGitlabConfig = {
     enabled?: boolean,
     ttl?: number
   },
-  access?: VerdaccioGitlabAccessLevel,
+  legacy_mode?: boolean,
   publish?: VerdaccioGitlabAccessLevel
 };
 
@@ -44,7 +44,6 @@ export default class VerdaccioGitLab implements IPluginAuth {
   config: VerdaccioGitlabConfig;
   authCache: AuthCache;
   logger: Logger;
-  accessLevel: VerdaccioGitlabAccessLevel;
   publishLevel: VerdaccioGitlabAccessLevel;
 
   constructor(
@@ -56,7 +55,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
     this.config = config;
     this.options = options;
 
-    this.logger.info(`[gitlab] gitlab url: ${this.config.url}`);
+    this.logger.info(`[gitlab] url: ${this.config.url}`);
 
     if ((this.config.authCache || {}).enabled === false) {
       this.logger.info('[gitlab] auth cache disabled');
@@ -67,17 +66,22 @@ export default class VerdaccioGitLab implements IPluginAuth {
       this.logger.info(`[gitlab] initialized auth cache with ttl: ${ttl} seconds`);
     }
 
-    this.accessLevel = '$reporter';
-    if (this.config.access) {
-      this.accessLevel = this.config.access;
-    }
-    this.logger.info(`[gitlab] access control level: ${this.config.access || ''}`);
+    if (this.config.legacy_mode) {
+      this.publishLevel = '$owner';
 
-    this.publishLevel = '$owner';
-    if (this.config.publish) {
-      this.publishLevel = this.config.publish;
+      this.logger.info('[gitlab] legacy mode active pre-gitlab v11.2 active, publish is only allowed to group owners');
+    } else {
+      this.publishLevel = '$maintainer';
+      if (this.config.publish) {
+        this.publishLevel = this.config.publish;
+      }
+
+      if (! Object.keys(ACCESS_LEVEL_MAPPING).includes(this.publishLevel)) {
+        throw Error(`[gitlab] invalid publish access level configuration: ${this.publishLevel}`);
+      }
+      this.logger.info(`[gitlab] publish control level: ${this.publishLevel}`);
     }
-    this.logger.info(`[gitlab] publish control level: ${this.config.publish || ''}`);
+
   }
 
   authenticate(user: string, password: string, cb: Callback) {
@@ -105,39 +109,39 @@ export default class VerdaccioGitLab implements IPluginAuth {
         return cb(httperror[401]('wrong gitlab username'));
       }
 
-      const accessLevelId = this.config.access ? ACCESS_LEVEL_MAPPING[this.config.access] : null;
-      const publishLevelId = this.config.publish ? ACCESS_LEVEL_MAPPING[this.config.publish] : null;
-
+      const publishLevelId = ACCESS_LEVEL_MAPPING[this.publishLevel];
       const userGroups = {
-        access: [user],
         publish: [user]
       };
 
-      // Set the groups of an authenticated user:
-      // - for access, themselves and all groups with access level $auth.gitlab.access configuration
-      // - for publish, themselves and all groups with access level $auth.gitlab.publish configuration
+      // Set the groups of an authenticated user, in normal mode:
+      // - for access, depending on the package settings in verdaccio
+      // - for publish, the logged in user id and all the groups they can reach as configured with access level `$auth.gitlab.publish`
+      //
+      // In legacy mode, the groups are:
+      // - for access, themselves and all groups with access level $owner
+      // - for publish, the logged in user id and all the groups they can reach as `$owner`
 
-      const pAccessGroups = GitlabAPI.Groups.all({min_access_level: accessLevelId}).then(groups => {
-        this._addGroupsToArray(groups, userGroups.access);
-      }).catch(error => {
-        this.logger.error(`[gitlab] user: ${user} error querying access groups: ${error}`);
-      });
+      const gitlabPublishQueryParams = this.config.legacy_mode ? { owned: true } : { min_access_level: publishLevelId };
+      const pPublishGroups = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
+        this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams);
 
-      const pPublishGroups = GitlabAPI.Groups.all({min_access_level: publishLevelId}).then(groups => {
         this._addGroupsToArray(groups, userGroups.publish);
       }).catch(error => {
         this.logger.error(`[gitlab] user: ${user} error querying publish groups: ${error}`);
+        return cb(httperror[500]('error querying gitlab'));
       });
 
-      const pGroups = Promise.all([pAccessGroups, pPublishGroups]);
+      const pGroups = Promise.all([pPublishGroups]);
       return pGroups.then(() => {
         this._setCachedUserGroups(user, password, userGroups);
 
-        this.logger.info(`[gitlab] user: ${user} authenticated`);
-        this.logger.debug(`[gitlab] user: ${user} authenticated, with groups:`, userGroups);
+        this.logger.info(`[gitlab] user: ${user} successfully authenticated`);
+        this.logger.debug(`[gitlab] user: ${user}, with groups:`, userGroups);
         return cb(null, userGroups.publish);
       }).catch(error => {
         this.logger.error(`[gitlab] error authenticating: ${error}`);
+        return cb(httperror[500]('error authenticating'));
       });
 
     }).catch(error => {
@@ -222,7 +226,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
     if (! this.authCache) {
       return false;
     }
-    this.logger.trace(`[gitlab] saving data in cache for user: ${username}`);
+    this.logger.debug(`[gitlab] saving data in cache for user: ${username}`);
     return this.authCache.storeUser(username, password, new UserData(username, groups));
   }
 

@@ -46,7 +46,6 @@ export class AuthCache {
 }
 
 export type UserDataGroups = {
-  access: string[],
   publish: string[]
 };
 

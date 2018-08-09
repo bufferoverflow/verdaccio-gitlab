@@ -8,20 +8,19 @@ as authentication provider for the private npm registry
 [![build](https://travis-ci.org/bufferoverflow/verdaccio-gitlab.svg?branch=master)](https://travis-ci.org/bufferoverflow/verdaccio-gitlab)
 [![dependencies](https://david-dm.org/bufferoverflow/verdaccio-gitlab/status.svg)](https://david-dm.org/bufferoverflow/verdaccio-gitlab)
 
-The main goal and the difference from other sinopia/verdaccio plugins are
+The main goal and differences from other sinopia/verdaccio plugins are
 the following:
 
 - no admin token required
 - user authenticates with Personal Access Token
-- access & publish packages if package scope or name match a gitlab
-  group for which the user has appropriate permissions
+- access & publish packages depending on user rights in gitlab
 
 > This is experimental!
 
 ## Gitlab Version Compatibility
 
-Gitlab 11.2+ is required due to usage of the `v4` api version and
-the granular group api `min_access_level` query param
+- If `legacy_mode: false`: Gitlab 11.2+
+- If `legacy_mode: true`: Gitlab 9.0+
 
 ## Use it
 
@@ -49,11 +48,6 @@ listen:
 auth:
   gitlab:
     url: https://gitlab.com
-    authCache:
-      enabled: true
-      ttl: 300
-    access: $reporter
-    publish: $maintainer
 
 uplinks:
   npmjs:
@@ -99,28 +93,71 @@ yarn publish --registry http://localhost:4873
 a GitLab group (as owner) which has the same name as your package name. You
 also need a fresh login, so that Verdaccio recognizes your owned groups.
 
+## Access Levels
+
+Access and publish access rights depend on the mode used.
+
+In the default mode, packages are available:
+
+- *access* is allowed depending on verdaccio `package` configuration
+  directives (unauthenticated / authenticated)
+- *publish* is allowed if the package name matches the logged in user
+  id, or if the package name / scope of the package matches one of the
+  user groups and the user has `$auth.gitlab.publish` access rights on
+  the group
+
+For instance, assuming the following configuration:
+
+- `auth.gitlab.publish` = `$maintainer`
+- the gitlab user `sample_user` had access to group `group1` as
+  `$maintainer` and `group2` as `$reporter`
+- then this user could publish any of the npm packages:
+  - `sample_user`
+  - any package under `group1/**`
+  - error if the user tries to publish any package under `group2/**`
+
+If using the legacy mode, the system behaves as in normal mode with
+fixed `$auth.gitlab.publish` = `$owner`
+
+## Configuration Options
+
+The full set of configuration options is:
+
+```yaml
+auth:
+  gitlab:
+    url: <url>
+    authCache:
+      enabled: <boolean>
+      ttl: <integer>
+    legacy_mode: <boolean>
+    publish: <string>
+```
+
+<!-- markdownlint-disable MD013 -->
+| Option | Default | Type | Description |
+| ------ | ------- | ---- | ----------- |
+| `url` | `<empty>` | url | mandatory, the url of the gitlab server |
+| `authCache: enabled` | `true` | boolean | activate in-memory authentication cache |
+| `authCache: ttl` | `300` (`0`=unlimited) | integer | time-to-live of entries in the authentication cache, in seconds |
+| `legacy_mode` | `false` | boolean | gitlab versions pre-11.2 do not support groups api queries based on access level; this enables the legacy behaviour of only allowing npm publish operations on groups where the logged in user has owner rights |
+| `publish` | `$maintainer` | [`$guest`, `$reporter`, `$developer`, `$maintainer`, `$owner`] | group minimum access level of the logged in user required for npm publish operations (does not apply in legacy mode) |
+<!-- markdownlint-enable MD013 -->
+
 ## Authentication Cache
 
 In order to avoid too many authentication requests to the underlying
 gitlab instance, the plugin provides an in-memory cache that will save
 the detected groups of the users for a configurable ttl in seconds.
-No clear-text password will be saved in-memory, just an SHA-256 hash
-and the groups information.
+
+No clear-text password will is saved in-memory, just an SHA-256 hash of
+the user+password, plus the groups information.
 
 By default, the cache will be enabled and the credentials will be stored
 for 300 seconds. The ttl is checked on access, but there's also an
 internal timer that will check expired values regularly, so data of
 users not actively interacting with the system will also be eventually
 invalidated.
-
-```yaml
-auth:
-  gitlab:
-    url: https://gitlab.com
-    authCache:
-      enabled: (default true)
-      ttl: (default: 300)
-```
 
 *Please note* that this implementation is in-memory and not
 multi-process; if the cluster module is used for starting several
