@@ -19,7 +19,7 @@ the following:
 
 ## Gitlab Version Compatibility
 
-- If `legacy_mode: false`: Gitlab 11.2+
+- If `legacy_mode: false` or undefined (default mode): Gitlab 11.2+
 - If `legacy_mode: true`: Gitlab 9.0+
 
 ## Use it
@@ -89,13 +89,11 @@ and publish packages:
 yarn publish --registry http://localhost:4873
 ```
 
-> **NOTE**: In order to publish packages, you need to create or be part of
-a GitLab group (as owner) which has the same name as your package name. You
-also need a fresh login, so that Verdaccio recognizes your owned groups.
-
 ## Access Levels
 
 Access and publish access rights depend on the mode used.
+
+### Normal Mode
 
 In the default mode, packages are available:
 
@@ -103,21 +101,23 @@ In the default mode, packages are available:
   directives (unauthenticated / authenticated)
 - *publish* is allowed if the package name matches the logged in user
   id, or if the package name / scope of the package matches one of the
-  user groups and the user has `$auth.gitlab.publish` access rights on
+  user groups and the user has `auth.gitlab.publish` access rights on
   the group
 
 For instance, assuming the following configuration:
 
 - `auth.gitlab.publish` = `$maintainer`
-- the gitlab user `sample_user` had access to group `group1` as
+- the gitlab user `sample_user` has access to group `group1` as
   `$maintainer` and `group2` as `$reporter`
 - then this user could publish any of the npm packages:
   - `sample_user`
   - any package under `group1/**`
   - error if the user tries to publish any package under `group2/**`
 
+### Legacy Mode
+
 If using the legacy mode, the system behaves as in normal mode with
-fixed `$auth.gitlab.publish` = `$owner`
+fixed configuration `auth.gitlab.publish` = `$owner`
 
 ## Configuration Options
 
