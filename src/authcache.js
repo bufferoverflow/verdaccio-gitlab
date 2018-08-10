@@ -24,7 +24,7 @@ export class AuthCache {
     });
     this.storage.on('expired', (key, value) => {
       if (this.logger.trace()) {
-        this.logger.trace(`[gitlab] expired key: ${key} with value: ${value}`);
+        this.logger.trace(`[gitlab] expired key: ${key} with value:`, value);
       }
     });
   }
@@ -45,15 +45,19 @@ export class AuthCache {
 
 }
 
+export type UserDataGroups = {
+  publish: string[]
+};
+
 export class UserData {
   _username: string;
-  _groups: string[];
+  _groups: UserDataGroups;
 
   get username(): string { return this._username; }
-  get groups(): string[] { return this._groups; }
-  set groups(groups: string[]) { this._groups = groups; }
+  get groups(): UserDataGroups { return this._groups; }
+  set groups(groups: UserDataGroups) { this._groups = groups; }
 
-  constructor(username: string, groups: string[]) {
+  constructor(username: string, groups: UserDataGroups) {
     this._username = username;
     this._groups = groups;
   }

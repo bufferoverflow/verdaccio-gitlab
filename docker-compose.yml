@@ -2,7 +2,7 @@ version: '3'
 
 services:
   gitlab:
-    image: 'gitlab/gitlab-ce:latest'
+    image: 'gitlab/gitlab-ce:nightly'
     restart: always
     environment:
       - GITLAB_ROOT_PASSWORD=verdaccio

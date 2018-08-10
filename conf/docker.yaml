@@ -11,6 +11,7 @@ auth:
     authCache:
       enabled: true
       ttl: 300
+    publish: $maintainer
 
 uplinks:
   npmjs:
@@ -31,5 +32,5 @@ packages:
     gitlab: true
 
 logs:
-  - {type: stdout, format: pretty, level: info }
+  - { type: stdout, format: pretty, level: info }
   #- {type: file, path: verdaccio.log, level: info}
