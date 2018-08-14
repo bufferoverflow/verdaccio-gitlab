@@ -42,7 +42,6 @@ export class AuthCache {
     sha.update(JSON.stringify({ username: username, password: password }));
     return sha.digest('hex');
   }
-
 }
 
 export type UserDataGroups = {
