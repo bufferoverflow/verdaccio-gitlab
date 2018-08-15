@@ -158,7 +158,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
   }
 
   allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess, cb: Callback) {
-    if (!_package.gitlab) { return cb(); }
+    if (!_package.gitlab) return cb();
 
     if ((_package.access || []).includes('$authenticated') && user.name !== undefined) {
       this.logger.debug(`[gitlab] allow user: ${user.name} access to package: ${_package.name}`);
@@ -170,14 +170,12 @@ export default class VerdaccioGitLab implements IPluginAuth {
       this.logger.debug(`[gitlab] deny user: ${user.name || ''} access to package: ${_package.name}`);
       return cb(null, false);
     }
-
   }
 
   allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess, cb: Callback) {
-    if (!_package.gitlab) { return cb(); }
+    if (!_package.gitlab) return cb();
     let packageScopePermit = false;
     let packagePermit = false;
-
     // Only allow to publish packages when:
     //  - the package has exactly the same name as one of the user groups, or
     //  - the package scope is the same as one of the user groups
@@ -186,31 +184,20 @@ export default class VerdaccioGitLab implements IPluginAuth {
       if (real_group === _package.name) {
         packagePermit = true;
         break;
-      } else {
-        if (_package.name.indexOf('@') === 0) {
-          if (real_group === _package.name.slice(1, _package.name.lastIndexOf('/'))) {
-            packageScopePermit = true;
-            break;
-          }
-        }
+      } else if (_package.name.indexOf('@') === 0 && real_group === _package.name.slice(1, _package.name.lastIndexOf('/'))) {
+        packageScopePermit = true;
+        break;
       }
     }
 
-    if (packagePermit === true) {
-      this.logger.debug(`[gitlab] user: ${user.name || ''} allowed to publish package: ${_package.name} based on package-name`);
+    if (packagePermit || packageScopePermit) {
+      const perm = packagePermit ? 'package-name' : 'package-scope';
+      this.logger.debug(`[gitlab] user: ${user.name || ''} allowed to publish package: ${_package.name} based on ${perm}`);
       return cb(null, false);
     } else {
-      if (packageScopePermit === true) {
-        this.logger.debug(`[gitlab] user: ${user.name || ''} allowed to publish package: ${_package.name} based on package-scope`);
-        return cb(null, false);
-      } else {
-        this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
-        if (_package.name.indexOf('@') === 0) {
-          return cb(httperror[403](`must have required permissions: ${this.config.publish || ''} at package-scope`));
-        } else {
-          return cb(httperror[403](`must have required permissions: ${this.config.publish || ''} at package-name`));
-        }
-      }
+      this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
+      const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
+      return cb(httperror[403](`must have required permissions: ${this.config.publish || ''} at ${missingPerm}`));
     }
   }
 
@@ -237,5 +224,4 @@ export default class VerdaccioGitLab implements IPluginAuth {
       }
     });
   }
-
 }
