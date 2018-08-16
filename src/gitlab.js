@@ -46,15 +46,10 @@ export default class VerdaccioGitLab implements IPluginAuth {
   logger: Logger;
   publishLevel: VerdaccioGitlabAccessLevel;
 
-  constructor(
-    config: VerdaccioGitlabConfig,
-    options: PluginOptions
-  ) {
+  constructor(config: VerdaccioGitlabConfig, options: PluginOptions) {
     this.logger = options.logger;
-
     this.config = config;
     this.options = options;
-
     this.logger.info(`[gitlab] url: ${this.config.url}`);
 
     if ((this.config.authCache || {}).enabled === false) {
@@ -62,13 +57,11 @@ export default class VerdaccioGitLab implements IPluginAuth {
     } else {
       const ttl = (this.config.authCache || {}).ttl || AuthCache.DEFAULT_TTL;
       this.authCache = new AuthCache(this.logger, ttl);
-
       this.logger.info(`[gitlab] initialized auth cache with ttl: ${ttl} seconds`);
     }
 
     if (this.config.legacy_mode) {
       this.publishLevel = '$owner';
-
       this.logger.info('[gitlab] legacy mode active pre-gitlab v11.2 active, publish is only allowed to group owners');
     } else {
       this.publishLevel = '$maintainer';
@@ -76,12 +69,11 @@ export default class VerdaccioGitLab implements IPluginAuth {
         this.publishLevel = this.config.publish;
       }
 
-      if (! Object.keys(ACCESS_LEVEL_MAPPING).includes(this.publishLevel)) {
+      if (!Object.keys(ACCESS_LEVEL_MAPPING).includes(this.publishLevel)) {
         throw Error(`[gitlab] invalid publish access level configuration: ${this.publishLevel}`);
       }
       this.logger.info(`[gitlab] publish control level: ${this.publishLevel}`);
     }
-
   }
 
   authenticate(user: string, password: string, cb: Callback) {
@@ -89,7 +81,6 @@ export default class VerdaccioGitLab implements IPluginAuth {
 
     // Try to find the user groups in the cache
     const cachedUserGroups = this._getCachedUserGroups(user, password);
-
     if (cachedUserGroups) {
       this.logger.debug(`[gitlab] user: ${user} found in cache, authenticated with groups:`, cachedUserGroups);
       return cb(null, cachedUserGroups.publish);
@@ -121,11 +112,9 @@ export default class VerdaccioGitLab implements IPluginAuth {
       // In legacy mode, the groups are:
       // - for access, themselves and all groups with access level $owner
       // - for publish, the logged in user id and all the groups they can reach as `$owner`
-
       const gitlabPublishQueryParams = this.config.legacy_mode ? { owned: true } : { min_access_level: publishLevelId };
       const pPublishGroups = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
         this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams);
-
         this._addGroupsToArray(groups, userGroups.publish);
       }).catch(error => {
         this.logger.error(`[gitlab] user: ${user} error querying publish groups: ${error}`);
@@ -135,7 +124,6 @@ export default class VerdaccioGitLab implements IPluginAuth {
       const pGroups = Promise.all([pPublishGroups]);
       return pGroups.then(() => {
         this._setCachedUserGroups(user, password, userGroups);
-
         this.logger.info(`[gitlab] user: ${user} successfully authenticated`);
         this.logger.debug(`[gitlab] user: ${user}, with groups:`, userGroups);
         return cb(null, userGroups.publish);
@@ -143,7 +131,6 @@ export default class VerdaccioGitLab implements IPluginAuth {
         this.logger.error(`[gitlab] error authenticating: ${error}`);
         return cb(httperror[500]('error authenticating'));
       });
-
     }).catch(error => {
       this.logger.info(`[gitlab] user: ${user} error authenticating: ${error.message || {}}`);
       if (error) {
@@ -202,7 +189,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
   }
 
   _getCachedUserGroups(username: string, password: string): ?UserDataGroups {
-    if (! this.authCache) {
+    if (!this.authCache) {
       return null;
     }
     const userData = this.authCache.findUser(username, password);
@@ -210,7 +197,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
   }
 
   _setCachedUserGroups(username: string, password: string, groups: UserDataGroups): boolean {
-    if (! this.authCache) {
+    if (!this.authCache) {
       return false;
     }
     this.logger.debug(`[gitlab] saving data in cache for user: ${username}`);
