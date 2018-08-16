@@ -72,7 +72,7 @@ logs:
   - {type: stdout, format: pretty, level: debug}
 ```
 
-Restart Verdaccio and authenticate into it with your credentials
+Restart Verdaccio and authenticate using your credentials
 
 - Username: GitLab username
 - Password: [Personal Access Token](https://gitlab.com/profile/personal_access_tokens)
@@ -91,7 +91,7 @@ yarn publish --registry http://localhost:4873
 
 ## Access Levels
 
-Access and publish access rights depend on the mode used.
+Access and publish access rights depending on the mode used.
 
 ### Normal Mode
 
