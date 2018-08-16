@@ -46,7 +46,7 @@
     "global-tunnel-ng": "2.5.3",
     "http-errors": "1.6.3",
     "node-cache": "4.2.0",
-    "verdaccio": "3.3.0"
+    "verdaccio": "3.6.0"
   },
   "devDependencies": {
     "@commitlint/cli": "7.0.0",
