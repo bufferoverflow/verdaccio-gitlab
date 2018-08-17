@@ -1,3 +1,5 @@
 node_modules/
-lib/
+build/
 flow-typed/
+coverage/
+tests-report/
