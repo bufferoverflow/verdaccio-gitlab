@@ -62,7 +62,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
 
     if (this.config.legacy_mode) {
       this.publishLevel = '$owner';
-      this.logger.info('[gitlab] legacy mode active pre-gitlab v11.2 active, publish is only allowed to group owners');
+      this.logger.info('[gitlab] legacy mode pre-gitlab v11.2 active, publish is only allowed to group owners');
     } else {
       this.publishLevel = '$maintainer';
       if (this.config.publish) {
@@ -110,7 +110,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
       // - for publish, the logged in user id and all the groups they can reach as configured with access level `$auth.gitlab.publish`
       //
       // In legacy mode, the groups are:
-      // - for access, themselves and all groups with access level $owner
+      // - for access, depending on the package settings in verdaccio
       // - for publish, the logged in user id and all the groups they can reach as `$owner`
       const gitlabPublishQueryParams = this.config.legacy_mode ? { owned: true } : { min_access_level: publishLevelId };
       const pPublishGroups = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
@@ -150,12 +150,12 @@ export default class VerdaccioGitLab implements IPluginAuth {
     if ((_package.access || []).includes('$authenticated') && user.name !== undefined) {
       this.logger.debug(`[gitlab] allow user: ${user.name} access to package: ${_package.name}`);
       return cb(null, true);
-    } else if (!(_package.access || []).includes('$authenticated')) {
+    } else if ((_package.access || []).includes('$all')) {
       this.logger.debug(`[gitlab] allow unauthenticated access to package: ${_package.name}`);
       return cb(null, true);
     } else {
-      this.logger.debug(`[gitlab] deny user: ${user.name || ''} access to package: ${_package.name}`);
-      return cb(null, false);
+      this.logger.debug(`[gitlab] deny user: ${user.name || '<empty>'} access to package: ${_package.name}`);
+      return cb(httperror[401]('access denied, user not authenticated in gitlab and unauthenticated package access disabled'));
     }
   }
 

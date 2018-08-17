@@ -108,6 +108,28 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     verdaccioGitlab.allow_access(user, _package, cb);
   });
 
+  test('should deny access to package based on unauthenticated', done => {
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(defaultConfig, options);
+    const user: RemoteUser = {
+      real_groups: [],
+      groups: [],
+      name: undefined
+    };
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@myGroup/myPackage',
+      access: ['$authenticated'],
+      gitlab: true
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeTruthy();
+      expect(data).toBeFalsy();
+      done();
+    };
+
+    verdaccioGitlab.allow_access(user, _package, cb);
+  });
+
   test('should allow publish of package based on user group', done => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(defaultConfig, options);
     const user: RemoteUser = {
