@@ -14,7 +14,13 @@ export class AuthCache {
 
   static get DEFAULT_TTL() { return 300; }
 
-  constructor(logger: Logger, ttl: number) {
+  static _generateKeyHash(username: string, password: string) {
+    const sha = Crypto.createHash('sha256');
+    sha.update(JSON.stringify({ username: username, password: password }));
+    return sha.digest('hex');
+  }
+
+  constructor(logger: Logger, ttl?: number) {
     this.logger = logger;
     this.ttl = ttl || AuthCache.DEFAULT_TTL;
 
@@ -30,17 +36,11 @@ export class AuthCache {
   }
 
   findUser(username: string, password: string): UserData {
-    return this.storage.get(this._generateKeyHash(username, password));
+    return this.storage.get(AuthCache._generateKeyHash(username, password));
   }
 
   storeUser(username: string, password: string, userData: UserData): boolean {
-    return this.storage.set(this._generateKeyHash(username, password), userData);
-  }
-
-  _generateKeyHash(username: string, password: string) {
-    const sha = Crypto.createHash('sha256');
-    sha.update(JSON.stringify({ username: username, password: password }));
-    return sha.digest('hex');
+    return this.storage.set(AuthCache._generateKeyHash(username, password), userData);
   }
 }
 

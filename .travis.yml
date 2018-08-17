@@ -8,3 +8,4 @@ script:
   - commitlint-travis
   - yarn license
   - yarn lint
+  - yarn test:all
