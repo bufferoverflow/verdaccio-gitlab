@@ -1,15 +1,18 @@
 env:
   es6: true
   node: true
-parser: babel-eslint
-extends:
-- eslint:recommended
-- plugin:flowtype/recommended
+  jest: true
 plugins:
-- flowtype
+  - flowtype
+  - jest
+extends:
+  - "eslint:recommended"
+  - "plugin:flowtype/recommended"
+  - "plugin:jest/recommended"
+parser: babel-eslint
 parserOptions:
-  sourceType": module
-  ecmaVersion": 6
+  sourceType: module
+  ecmaVersion: 6
   ecmaFeatures:
     impliedStrict: true
     jsx: true
@@ -19,8 +22,8 @@ rules:
   no-fallthrough: 2
   no-new-require: 2
   max-len:
-  - 2
-  - 160
+    - 2
+    - 160
   camelcase: 0
   require-jsdoc: 0
   valid-jsdoc: 0
@@ -28,6 +31,5 @@ rules:
   prefer-rest-params: 1
   linebreak-style: 0
   quote-props:
-  - "error"
-  - "as-needed"
-
+    - error
+    - as-needed

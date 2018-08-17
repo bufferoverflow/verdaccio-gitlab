@@ -1,0 +1,15 @@
+env:
+  node: true,
+  mocha: true
+  es6: true
+extends:
+  - "eslint:recommended"
+rules:
+  valid-jsdoc: 0
+  no-redeclare: 1
+  no-console:
+    - 2
+    - allow:
+        - log
+        - error
+  no-useless-escape: 0
