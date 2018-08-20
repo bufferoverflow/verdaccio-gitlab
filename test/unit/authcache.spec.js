@@ -1,20 +1,9 @@
 // @flow
 
-import type { Logger } from '@verdaccio/types';
-import type { UserDataGroups } from '../../src/authcache.js';
-
 import { AuthCache, UserData } from '../../src/authcache.js';
+import logger from './partials/logger.js';
+import config from './partials/config';
 
-
-const logger: Logger = {
-  error: jest.fn(),
-  info: jest.fn(),
-  debug: jest.fn(),
-  child: jest.fn(),
-  warn: jest.fn(),
-  http: jest.fn(),
-  trace: jest.fn()
-};
 
 describe('AuthCache Unit Tests', () => {
   test('should create an AuthCache instance', () => {
@@ -32,32 +21,20 @@ describe('AuthCache Unit Tests', () => {
 
   test('should store and find some user data', () => {
     const authCache: AuthCache = new AuthCache(logger);
-    const user: string = 'fooUser';
-    const pass: string = 'fooPass';
-    const dataGroups: UserDataGroups = {
-      publish: ['fooGroup1', 'fooGroup2']
-    };
-    const data: UserData = new UserData(user, dataGroups);
 
-    authCache.storeUser(user, pass, data);
-    const returnedData: UserData = authCache.findUser(user, pass);
+    authCache.storeUser(config.user, config.pass, config.userData);
+    const returnedData: UserData = authCache.findUser(config.user, config.pass);
 
-    expect(returnedData).toEqual(data);
+    expect(returnedData).toEqual(config.userData);
   });
 
   test('should store and find some user data when ttl is unlimited', () => {
     const UNLIMITED_TTL: number = 0;
     const authCache: AuthCache = new AuthCache(logger, UNLIMITED_TTL);
-    const user: string = 'fooUser';
-    const pass: string = 'fooPass';
-    const dataGroups: UserDataGroups = {
-      publish: ['fooGroup1', 'fooGroup2']
-    };
-    const data: UserData = new UserData(user, dataGroups);
 
-    authCache.storeUser(user, pass, data);
-    const returnedData: UserData = authCache.findUser(user, pass);
+    authCache.storeUser(config.user, config.pass, config.userData);
+    const returnedData: UserData = authCache.findUser(config.user, config.pass);
 
-    expect(returnedData).toEqual(data);
+    expect(returnedData).toEqual(config.userData);
   });
 });

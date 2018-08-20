@@ -3,11 +3,14 @@
 module.exports = {
   name: 'verdaccio-gitlab-unit-jest',
   verbose: true,
+  rootDir: '..',
   collectCoverage: true,
+  collectCoverageFrom: [
+    'src/*.{js,jsx}'
+  ],
   testRegex: '(test/unit.*\\.spec|test/unit/webui/.*\\.spec)\\.js',
   coveragePathIgnorePatterns: [
     'node_modules',
     'fixtures',
-    '<rootDir>/test',
   ]
 };
