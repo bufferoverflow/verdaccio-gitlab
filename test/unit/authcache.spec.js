@@ -1,17 +1,8 @@
 // @flow
 
-import type { UserDataGroups } from '../../src/authcache.js';
-
 import { AuthCache, UserData } from '../../src/authcache.js';
 import logger from './partials/logger.js';
-
-
-const TEST_USER: string = 'myUser';
-const TEST_PASS: string = 'myPass';
-const TEST_DATA_GROUPS: UserDataGroups = {
-  publish: ['fooGroup1', 'fooGroup2']
-};
-const TEST_USER_DATA: UserData = new UserData(TEST_USER, TEST_DATA_GROUPS);
+import config from './partials/config';
 
 
 describe('AuthCache Unit Tests', () => {
@@ -31,19 +22,19 @@ describe('AuthCache Unit Tests', () => {
   test('should store and find some user data', () => {
     const authCache: AuthCache = new AuthCache(logger);
 
-    authCache.storeUser(TEST_USER, TEST_PASS, TEST_USER_DATA);
-    const returnedData: UserData = authCache.findUser(TEST_USER, TEST_PASS);
+    authCache.storeUser(config.user, config.pass, config.userData);
+    const returnedData: UserData = authCache.findUser(config.user, config.pass);
 
-    expect(returnedData).toEqual(TEST_USER_DATA);
+    expect(returnedData).toEqual(config.userData);
   });
 
   test('should store and find some user data when ttl is unlimited', () => {
     const UNLIMITED_TTL: number = 0;
     const authCache: AuthCache = new AuthCache(logger, UNLIMITED_TTL);
 
-    authCache.storeUser(TEST_USER, TEST_PASS, TEST_USER_DATA);
-    const returnedData: UserData = authCache.findUser(TEST_USER, TEST_PASS);
+    authCache.storeUser(config.user, config.pass, config.userData);
+    const returnedData: UserData = authCache.findUser(config.user, config.pass);
 
-    expect(returnedData).toEqual(TEST_USER_DATA);
+    expect(returnedData).toEqual(config.userData);
   });
 });

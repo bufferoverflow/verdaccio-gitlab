@@ -22,10 +22,6 @@ the following:
 - If `legacy_mode: false` or undefined (default mode): Gitlab 11.2+
 - If `legacy_mode: true`: Gitlab 9.0+
 
-## Node Compatibility
-
-verdaccio-gitlab requires node 8+
-
 ## Use it
 
 You need at least node version 8.x.x, codename **carbon**.
