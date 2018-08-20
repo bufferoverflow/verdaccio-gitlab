@@ -8,7 +8,7 @@ module.exports = {
   collectCoverageFrom: [
     'src/*.{js,jsx}'
   ],
-  testRegex: '(test/unit.*\\.spec|test/unit/webui/.*\\.spec)\\.js',
+  testRegex: 'test/unit/.*\\.spec\\.js',
   coveragePathIgnorePatterns: [
     'node_modules',
     'fixtures',

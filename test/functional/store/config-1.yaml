@@ -1,0 +1,42 @@
+storage: ./test-storage1
+
+max_users: 2
+
+web:
+  enable: true
+  title: verdaccio-gitlab-server-1
+
+auth:
+  gitlab:
+    url: http://localhost:50080/
+    authCache:
+      enabled: false
+    publish: $maintainer
+
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+
+logs:
+  - { type: stdout, format: pretty, level: trace }
+
+packages:
+  'verdaccio':
+    access: $authenticated
+    publish: $authenticated
+    storage: false
+    gitlab: true
+    proxy: npmjs
+
+  '@*/*':
+    access: $all
+    publish: $all
+    gitlab: true
+
+  '**':
+    access: $all
+    publish: $authenticated
+    gitlab: true
+
+# expose internal methods
+_debug: true

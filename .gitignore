@@ -3,3 +3,5 @@ npm-debug.log
 build/
 coverage/
 tests-report/
+test-storage*
+yarn-error.log
