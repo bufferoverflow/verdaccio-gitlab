@@ -1,7 +1,7 @@
 // @flow
 
 import { CREDENTIALS, WRONG_CREDENTIALS } from '../config.functional';
-import {HTTP_STATUS} from "../../lib/constants";
+import { HTTP_STATUS } from "../../lib/constants";
 
 export default (server: any, gitlab: any) => { // eslint-disable-line no-unused-vars
 

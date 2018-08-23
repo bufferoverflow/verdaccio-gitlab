@@ -1,5 +1,5 @@
-// const chalk = require('chalk');
+const chalk = require('chalk');
+
 module.exports = async () => {
-  // console.log(chalk.green('Teardown Verdaccio Functional'));
-  // console.log(chalk.blue('Teardown:: all server were closed'));
+  console.log(chalk.blue('teardown: all servers closed'));
 };

@@ -27,7 +27,10 @@ export default (server: any, gitlab: any) => { // eslint-disable-line no-unused-
         .status(HTTP_STATUS.CREATED)
         .body_ok(/created new package/)
         .then((body) => {
-          console.log(body);
+          expect(body).toHaveProperty('ok');
+          expect(body.ok).toMatch(/created/);
+          expect(body).toHaveProperty('success');
+          expect(body.success).toBe(true);
         });
     });
   });
