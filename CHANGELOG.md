@@ -1,3 +1,63 @@
+## 2.0.0 (2018-09-03)
+
+##### Chores
+
+*  fix yarn parameter for publishing ([adfee8e4](https://github.com/bufferoverflow/verdaccio-gitlab/commit/adfee8e4f8851646a903edfdf2e4c0a65843a419))
+*  misc corrections ([d81439d4](https://github.com/bufferoverflow/verdaccio-gitlab/commit/d81439d41f965d01e4fbedb5ad288c3b95ede43d))
+*  misc corrections ([37c46e69](https://github.com/bufferoverflow/verdaccio-gitlab/commit/37c46e69c20b30b105fa41fcc70d932dbbe857a8))
+*  automated unit testing with jest ([b506d7ae](https://github.com/bufferoverflow/verdaccio-gitlab/commit/b506d7ae2395244594187774b88274504c780335))
+*  build refactor and jest testing support ([1e515c0d](https://github.com/bufferoverflow/verdaccio-gitlab/commit/1e515c0d5547b2c80ea9a324f93c814d867c85dd))
+*  update dependencies ([c2567be4](https://github.com/bufferoverflow/verdaccio-gitlab/commit/c2567be4baa5acd9bfa16999968cb329865864b9))
+*  fix yarn scripts syntax ([c11aad20](https://github.com/bufferoverflow/verdaccio-gitlab/commit/c11aad2010d0859e23f0df8c40da4240c5839900))
+*  improve logging statements ([0462e349](https://github.com/bufferoverflow/verdaccio-gitlab/commit/0462e34995841eb5e383d5a49830fc39fe5737f9))
+*  update all dependencies ([48b9a729](https://github.com/bufferoverflow/verdaccio-gitlab/commit/48b9a729cb43eb92530b356022fd062eb8048468))
+*  drop node 6 support ([144cdb46](https://github.com/bufferoverflow/verdaccio-gitlab/commit/144cdb46293e2ad608db94f8878c5a7240ac24f1))
+*  fix node runtime dependencies ([a616c253](https://github.com/bufferoverflow/verdaccio-gitlab/commit/a616c25373d10112b319ed3854aa216eef64d450))
+*  used node >= 6.12.0 ([70b98348](https://github.com/bufferoverflow/verdaccio-gitlab/commit/70b983482a1ad6d81a9771e08165be8fca91422d))
+*  get rid of npm linka and run verdaccio cli ([aeb16899](https://github.com/bufferoverflow/verdaccio-gitlab/commit/aeb168993e97530b8748199bf363b2416face7a0))
+*  update devDependencies ([8520b471](https://github.com/bufferoverflow/verdaccio-gitlab/commit/8520b4719bf803cb9d8546fd242d2a7ccae92ef6))
+*  use gitlab 3.2.2 ([360959aa](https://github.com/bufferoverflow/verdaccio-gitlab/commit/360959aab07c260ebf30916e5741b3a583dc76d5))
+*  use verdaccio v3.0.0-beta.7 ([e4f66624](https://github.com/bufferoverflow/verdaccio-gitlab/commit/e4f6662416691a05fd0aa2f81e9f8b8b77e5b048))
+* **lint:**
+  *  upgrade markdownlint-cli ([20bb5a59](https://github.com/bufferoverflow/verdaccio-gitlab/commit/20bb5a59fa42fa5ed6d31c29dc4538cf95699bef))
+  *  use eslint instead of jslint and jshint ([82bf88ea](https://github.com/bufferoverflow/verdaccio-gitlab/commit/82bf88eaa0f8a5711f3989cd6a68f57d5d13738f))
+
+##### Documentation Changes
+
+*  mention that at least node 8 (carbon) is required ([0521b4b1](https://github.com/bufferoverflow/verdaccio-gitlab/commit/0521b4b12283f91fef011d49dd0188c694f6b8f0))
+*  use alt text for badges ([27296ee3](https://github.com/bufferoverflow/verdaccio-gitlab/commit/27296ee34628f81c0629705b7a2832ed1744ef23))
+*  use GitHub issues instead of Todo within README.md ([ca061e90](https://github.com/bufferoverflow/verdaccio-gitlab/commit/ca061e904fcf35ec86b1fec7c2942873f87ac3f2))
+* **readme:**
+  *  minor typo and grammatical fixes to readme ([08b0276b](https://github.com/bufferoverflow/verdaccio-gitlab/commit/08b0276b6966b4cf8975af253c6efcbba98a0e49))
+  *  add usage clarifications in readme ([71ff969c](https://github.com/bufferoverflow/verdaccio-gitlab/commit/71ff969c44578a432e6ad2125bb8a758417c5b35))
+
+##### New Features
+
+*  gitlab-11.2-group-api-improvements ([207a490d](https://github.com/bufferoverflow/verdaccio-gitlab/commit/207a490dc4d9da4784c69c0f5d428e08d96e01bc))
+*  gitlab-11.2-group-api-improvements ([68068bf1](https://github.com/bufferoverflow/verdaccio-gitlab/commit/68068bf1c96c4c82805d39d13d71e2b9c615e02f))
+*  gitlab-11.2-group-api-improvements ([9353fc37](https://github.com/bufferoverflow/verdaccio-gitlab/commit/9353fc37d5664e08b1e7e1e1eed463e787d1ad4e))
+*  use types and classes ([255f85b5](https://github.com/bufferoverflow/verdaccio-gitlab/commit/255f85b547cd1e3b64dfb5908f890d6211a589d6))
+*  transpile using babel ([68659626](https://github.com/bufferoverflow/verdaccio-gitlab/commit/6865962628f9e006c1bf5fc71eff7e7b64488511))
+
+##### Bug Fixes
+
+*  improve auth handling ([8bde1977](https://github.com/bufferoverflow/verdaccio-gitlab/commit/8bde1977fde91d75ae7103a40ce9c4bf093e1534))
+*  flow ([f4113963](https://github.com/bufferoverflow/verdaccio-gitlab/commit/f4113963cfd0d0c836db08d128092b21d475e300))
+
+##### Refactors
+
+*  access should fail if unauthenticated depending on verdaccio ([8310d05c](https://github.com/bufferoverflow/verdaccio-gitlab/commit/8310d05c4977a28fa8e76df763bb775324db94d6))
+*  docker build improvements ([04603ad1](https://github.com/bufferoverflow/verdaccio-gitlab/commit/04603ad12c17b0f4f2c6d20d9af89d38af60f0f6))
+*  migrate from npm to yarn ([35a555e9](https://github.com/bufferoverflow/verdaccio-gitlab/commit/35a555e96cac3c334a8258efd48b2b2c50b352e3))
+*  add flow support to eslint configuration ([0f3d4a44](https://github.com/bufferoverflow/verdaccio-gitlab/commit/0f3d4a44be43a359766e267f213414e391c900bd))
+*  add configurable authentication cache ([31bb3096](https://github.com/bufferoverflow/verdaccio-gitlab/commit/31bb309638f0240f97da084d07da7f462311832e))
+* **gitlab:**  simplify allow_publish function ([dbe36e3d](https://github.com/bufferoverflow/verdaccio-gitlab/commit/dbe36e3dabf4a2ee72b8daacabd22c8daeed63ee))
+* **dockerfile:**  multistage builder / random uid user support ([6edd7016](https://github.com/bufferoverflow/verdaccio-gitlab/commit/6edd701682719582a03fbba8b808785859a1f08b))
+
+##### Code Style Changes
+
+* **gitlab:**  consistent white-space usage ([eea4c9ec](https://github.com/bufferoverflow/verdaccio-gitlab/commit/eea4c9ece3170de3511c1631c588d2cee5d40eb8))
+
 ## 1.0.0 (2018-02-02)
 
 ##### Bug Fixes
