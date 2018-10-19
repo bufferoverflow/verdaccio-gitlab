@@ -150,7 +150,7 @@ In order to avoid too many authentication requests to the underlying
 gitlab instance, the plugin provides an in-memory cache that will save
 the detected groups of the users for a configurable ttl in seconds.
 
-No clear-text password will is saved in-memory, just an SHA-256 hash of
+No clear-text password is saved in-memory, just an SHA-256 hash of
 the user+password, plus the groups information.
 
 By default, the cache will be enabled and the credentials will be stored
@@ -176,6 +176,13 @@ docker-compose up --build -d
 - create a Personal Access Token
 - login to the npm registry [http://localhost:4873](http://localhost:4873) via browser
 - publish your packages via command line
+
+The Dockerfile provides a [default configuration file](conf/docker.yaml)
+that is internally available under `/verdaccio/config/conf.yaml`. In order
+to overwrite this configuration you can provide your own file and mount it
+on docker startup with the `--volume` option, or equivalent mechanism
+(e.g. ConfigMaps on Kubernetes / OpenShift with the
+[helm chart](https://github.com/helm/charts/tree/master/stable/verdaccio)).
 
 ## Create a Release
 
