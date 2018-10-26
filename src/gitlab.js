@@ -180,7 +180,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
     if (packagePermit || packageScopePermit) {
       const perm = packagePermit ? 'package-name' : 'package-scope';
       this.logger.debug(`[gitlab] user: ${user.name || ''} allowed to publish package: ${_package.name} based on ${perm}`);
-      return cb(null, false);
+      return cb(null, true);
     } else {
       this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
       const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
