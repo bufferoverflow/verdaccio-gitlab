@@ -216,6 +216,16 @@ yarn global add flow-typed
 flow-typed install
 ```
 
+## Functional Tests
+
+In order to run functional tests with debug output, set the
+`VERDACCIO_DEBUG=true` environment variable,
+[as documented by verdaccio](https://github.com/verdaccio/verdaccio/wiki/Running-and-Debugging-tests):
+
+```bash
+VERDACCIO_DEBUG=true yarn test:functional
+```
+
 ## Inspired by
 
 - [verdaccio-ldap](https://github.com/Alexandre-io/verdaccio-ldap)

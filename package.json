@@ -19,7 +19,8 @@
     "build:docker": "docker build -t verdaccio-gitlab . --no-cache",
     "test": "yarn test:unit",
     "test:unit": "cross-env BABEL_ENV=test TZ=UTC jest --config ./test/jest.config.unit.js --maxWorkers 2",
-    "test:all": "yarn test"
+    "test:functional": "cross-env BABEL_ENV=test TZ=UTC jest --config ./test/jest.config.functional.js",
+    "test:all": "yarn test && yarn test:functional"
   },
   "main": "build/index.js",
   "version": "2.0.0",
@@ -63,22 +64,29 @@
     "babel-jest": "^23.4.2",
     "babel-preset-env": "1.7.0",
     "babel-preset-flow": "6.23.0",
+    "body-parser": "^1.18.3",
+    "chalk": "^2.4.1",
     "cross-env": "^5.2.0",
     "eclint": "2.8.0",
     "eslint": "5.2.0",
     "eslint-plugin-flowtype": "2.50.0",
     "eslint-plugin-import": "2.13.0",
     "eslint-plugin-jest": "^21.21.0",
+    "express": "^4.16.3",
     "flow-bin": "0.77.0",
     "flow-runtime": "0.17.0",
     "generate-changelog": "1.7.1",
+    "http-status": "^1.2.0",
     "husky": "0.14.3",
     "in-publish": "2.0.0",
     "jest": "^23.5.0",
     "jest-environment-node": "^23.4.0",
     "license-checker": "20.1.0",
+    "lodash": "^4.17.10",
     "markdownlint-cli": "0.11.0",
-    "repolinter": "0.7.0"
+    "repolinter": "0.7.0",
+    "request": "^2.88.0",
+    "rimraf": "^2.6.2"
   },
   "commitlint": {
     "extends": [

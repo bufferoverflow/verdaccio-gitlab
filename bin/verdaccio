@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+
+process.env.NODE_PATH = __dirname + '/../..';
+require("module").Module._initPaths();
+
+require('../build/verdaccio.js');
