@@ -329,7 +329,7 @@ abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
 
-accepts@~1.3.4, accepts@~1.3.5:
+accepts@~1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/accepts/-/accepts-1.3.5.tgz#eb777df6011723a3b14e8a72c0805c8e86746bd2"
   dependencies:
@@ -384,6 +384,10 @@ ajv@^6.0.1, ajv@^6.5.0:
 align-text@^0.1.1, align-text@^0.1.3:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/align-text/-/align-text-0.1.4.tgz#0cd90a561093f35d0a99256c22b7069433fad117"
+  dependencies:
+    kind-of "^3.0.2"
+    longest "^1.0.1"
+    repeat-string "^1.5.2"
 
 amdefine@>=0.0.4:
   version "1.0.1"
@@ -578,12 +582,6 @@ arrify@^1.0.0, arrify@^1.0.1:
 asap@^2.0.0:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
-
-asciidoctor.js@1.5.6:
-  version "1.5.6"
-  resolved "https://registry.yarnpkg.com/asciidoctor.js/-/asciidoctor.js-1.5.6.tgz#12f4810c62ea47867da145e819fc93b0674b5431"
-  dependencies:
-    opal-runtime "1.0.3"
 
 asn1@~0.2.3:
   version "0.2.4"
@@ -1670,23 +1668,11 @@ component-emitter@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.2.1.tgz#137918d6d78283f7df7a6b7c5a63e140e69425e6"
 
-compressible@~2.0.13, compressible@~2.0.14:
+compressible@~2.0.14:
   version "2.0.14"
   resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.14.tgz#326c5f507fbb055f54116782b969a81b67a29da7"
   dependencies:
     mime-db ">= 1.34.0 < 2"
-
-compression@1.7.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/compression/-/compression-1.7.2.tgz#aaffbcd6aaf854b44ebb280353d5ad1651f59a69"
-  dependencies:
-    accepts "~1.3.4"
-    bytes "3.0.0"
-    compressible "~2.0.13"
-    debug "2.6.9"
-    on-headers "~1.0.1"
-    safe-buffer "5.1.1"
-    vary "~1.1.2"
 
 compression@1.7.3:
   version "1.7.3"
@@ -2920,7 +2906,7 @@ glob-stream@^6.1.0:
     to-absolute-glob "^2.0.0"
     unique-stream "^2.0.2"
 
-glob@6.0.4, glob@^6.0.1:
+glob@^6.0.1:
   version "6.0.4"
   resolved "https://registry.yarnpkg.com/glob/-/glob-6.0.4.tgz#0f08860f6a155127b2fadd4f9ce24b1aab6e4d22"
   dependencies:
@@ -4987,7 +4973,7 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
-mv@~2:
+mv@2.1.1, mv@~2:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/mv/-/mv-2.1.1.tgz#ae6ce0d6f6d5e0a4f7d893798d03c1ea9559b6a2"
   dependencies:
@@ -5272,13 +5258,6 @@ onetime@^2.0.0:
   resolved "https://registry.yarnpkg.com/onetime/-/onetime-2.0.1.tgz#067428230fd67443b2794b22bba528b6867962d4"
   dependencies:
     mimic-fn "^1.0.0"
-
-opal-runtime@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/opal-runtime/-/opal-runtime-1.0.3.tgz#e81e5c2a2568bbb0b05743b427d035dd901485b7"
-  dependencies:
-    glob "6.0.4"
-    xmlhttprequest "1.8.0"
 
 optimist@^0.6.1:
   version "0.6.1"
@@ -7058,12 +7037,13 @@ vary@^1, vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
 
-verdaccio-audit@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/verdaccio-audit/-/verdaccio-audit-0.2.0.tgz#426e26a3fa2e26341d7a12096025f48a8d40f6d2"
+verdaccio-audit@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/verdaccio-audit/-/verdaccio-audit-1.0.0.tgz#4893baac6f711c4d065022684085220060b7c020"
+  integrity sha512-8lNrtdRt5wafBcVhM/yziPcItPWuOFmlPQn7+E+GxH0oAjUiA4ag0uBPykbtl+CVj4gQeJAwoBxhrctRgC/ETA==
   dependencies:
     body-parser "1.18.3"
-    compression "1.7.2"
+    compression "1.7.3"
     express "4.16.3"
     request "2.87.0"
 
@@ -7076,15 +7056,15 @@ verdaccio-htpasswd@0.2.2:
     bcryptjs "2.4.3"
     unix-crypt-td-js "^1.0.0"
 
-verdaccio@3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/verdaccio/-/verdaccio-3.6.0.tgz#7e59a0bc808084b9828f105a1267c732d90ebdd8"
+verdaccio@3.8.6:
+  version "3.8.6"
+  resolved "https://registry.yarnpkg.com/verdaccio/-/verdaccio-3.8.6.tgz#6d2c87944f86d3431897140aa37bda327c5a3539"
+  integrity sha512-k6h4cQCn4Twg2doNUDXPsV6ggESLXiTrbxMxVFlbtMvmxbP+oFT7cb8nUfFlJe/nCXeoZCpqmbrrPdO5Au05AQ==
   dependencies:
     "@verdaccio/file-locking" "0.0.7"
     "@verdaccio/local-storage" "1.1.3"
     "@verdaccio/streams" "1.0.0"
     JSONStream "1.3.3"
-    asciidoctor.js "1.5.6"
     async "2.6.1"
     body-parser "1.18.3"
     bunyan "1.8.12"
@@ -7109,10 +7089,11 @@ verdaccio@3.6.0:
     mime "2.3.1"
     minimatch "3.0.4"
     mkdirp "0.5.1"
+    mv "2.1.1"
     pkginfo "0.4.1"
     request "2.87.0"
     semver "5.5.0"
-    verdaccio-audit "0.2.0"
+    verdaccio-audit "1.0.0"
     verdaccio-htpasswd "0.2.2"
 
 verror@1.10.0:
@@ -7302,10 +7283,6 @@ xml-name-validator@^3.0.0:
 xmlbuilder@^10.0.0:
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-10.0.0.tgz#c64e52f8ae097fe5fd46d1c38adaade071ee1b55"
-
-xmlhttprequest@1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/xmlhttprequest/-/xmlhttprequest-1.8.0.tgz#67fe075c5c24fef39f9d65f5f7b7fe75171968fc"
 
 xregexp@4.0.0:
   version "4.0.0"
