@@ -94,8 +94,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
       token: password
     });
 
-    const pUsers = GitlabAPI.Users.current();
-    return pUsers.then(response => {
+    GitlabAPI.Users.current().then(response => {
       if (user !== response.username) {
         return cb(httperror[401]('wrong gitlab username'));
       }
@@ -111,31 +110,25 @@ export default class VerdaccioGitLab implements IPluginAuth {
       //
       // In legacy mode, the groups are:
       // - for access, depending on the package settings in verdaccio
-      // - for publish, the logged in user id and all the groups they can reach as `$owner`
+      // - for publish, the logged in user id and all the groups they can reach as fixed `$auth.gitlab.publish` = `$owner`
       const gitlabPublishQueryParams = this.config.legacy_mode ? { owned: true } : { min_access_level: publishLevelId };
-      const pPublishGroups = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
-        this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams);
-        this._addGroupsToArray(groups, userGroups.publish);
-      }).catch(error => {
-        this.logger.error(`[gitlab] user: ${user} error querying publish groups: ${error}`);
-        return cb(httperror[500]('error querying gitlab'));
-      });
+      this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams);
 
-      const pGroups = Promise.all([pPublishGroups]);
-      return pGroups.then(() => {
+      GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
+        this._addGroupsToArray(groups, userGroups.publish);
         this._setCachedUserGroups(user, password, userGroups);
+
         this.logger.info(`[gitlab] user: ${user} successfully authenticated`);
         this.logger.debug(`[gitlab] user: ${user}, with groups:`, userGroups);
+
         return cb(null, userGroups.publish);
       }).catch(error => {
-        this.logger.error(`[gitlab] error authenticating: ${error}`);
-        return cb(httperror[500]('error authenticating'));
+        this.logger.error(`[gitlab] user: ${user} error querying gitlab publish groups: ${error}`);
+        return cb(httperror[401]('error authenticating user'));
       });
     }).catch(error => {
-      this.logger.info(`[gitlab] user: ${user} error authenticating: ${error.message || {}}`);
-      if (error) {
-        return cb(httperror[401]('personal access token invalid'));
-      }
+      this.logger.error(`[gitlab] user: ${user} error querying gitlab user data: ${error.message || {}}`);
+      return cb(httperror[401]('error authenticating user'));
     });
   }
 
@@ -145,14 +138,14 @@ export default class VerdaccioGitLab implements IPluginAuth {
   }
 
   allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess, cb: Callback) {
-    if (!_package.gitlab) return cb();
+    if (!_package.gitlab) return cb(null, false);
 
     if ((_package.access || []).includes('$authenticated') && user.name !== undefined) {
       this.logger.debug(`[gitlab] allow user: ${user.name} access to package: ${_package.name}`);
-      return cb(null, true);
+      return cb(null, false);
     } else if ((_package.access || []).includes('$all')) {
       this.logger.debug(`[gitlab] allow unauthenticated access to package: ${_package.name}`);
-      return cb(null, true);
+      return cb(null, false);
     } else {
       this.logger.debug(`[gitlab] deny user: ${user.name || '<empty>'} access to package: ${_package.name}`);
       return cb(httperror[401]('access denied, user not authenticated in gitlab and unauthenticated package access disabled'));
@@ -160,7 +153,8 @@ export default class VerdaccioGitLab implements IPluginAuth {
   }
 
   allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess, cb: Callback) {
-    if (!_package.gitlab) return cb();
+    if (!_package.gitlab) return cb(null, false);
+
     let packageScopePermit = false;
     let packagePermit = false;
     // Only allow to publish packages when:
@@ -168,6 +162,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
     //  - the package scope is the same as one of the user groups
     for (let real_group of user.real_groups) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
       this.logger.trace(`[gitlab] publish: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`);
+
       if (real_group === _package.name) {
         packagePermit = true;
         break;
