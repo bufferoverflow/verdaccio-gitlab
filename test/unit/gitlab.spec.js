@@ -67,7 +67,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const cb: Callback = (err, data) => {
       expect(err).toBeFalsy();
       // false allows the plugin chain to continue
-      expect(data).toBe(false);
+      expect(data).toBe(true);
       done();
     };
 
@@ -85,7 +85,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const cb: Callback = (err, data) => {
       expect(err).toBeFalsy();
       // false allows the plugin chain to continue
-      expect(data).toBe(false);
+      expect(data).toBe(true);
       done();
     };
 
@@ -123,7 +123,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
 
     const cb: Callback = (err, data) => {
       expect(err).toBeFalsy();
-      expect(data).toBe(false);
+      expect(data).toBe(true);
       done();
     };
 
@@ -139,7 +139,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
 
     const cb: Callback = (err, data) => {
       expect(err).toBeFalsy();
-      expect(data).toBe(false);
+      expect(data).toBe(true);
       done();
     };
 

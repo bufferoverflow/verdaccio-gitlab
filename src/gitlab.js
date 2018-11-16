@@ -39,6 +39,13 @@ const ACCESS_LEVEL_MAPPING = {
   $owner: 50
 };
 
+// List of verdaccio builtin levels that map to anonymous access
+const BUILTIN_ACCESS_LEVEL_ANONYMOUS = [ '$anonymous', '$all' ];
+
+// Level to apply on 'allow_access' calls when a package definition does not define one
+const DEFAULT_ALLOW_ACCESS_LEVEL = [ '$all' ];
+
+
 export default class VerdaccioGitLab implements IPluginAuth {
   options: PluginOptions;
   config: VerdaccioGitlabConfig;
@@ -140,15 +147,19 @@ export default class VerdaccioGitLab implements IPluginAuth {
   allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess, cb: Callback) {
     if (!_package.gitlab) return cb(null, false);
 
-    if ((_package.access || []).includes('$authenticated') && user.name !== undefined) {
-      this.logger.debug(`[gitlab] allow user: ${user.name} access to package: ${_package.name}`);
-      return cb(null, false);
-    } else if ((_package.access || []).includes('$all')) {
-      this.logger.debug(`[gitlab] allow unauthenticated access to package: ${_package.name}`);
-      return cb(null, false);
-    } else {
-      this.logger.debug(`[gitlab] deny user: ${user.name || '<empty>'} access to package: ${_package.name}`);
-      return cb(httperror[401]('access denied, user not authenticated in gitlab and unauthenticated package access disabled'));
+    const packageAccess = (_package.access && _package.access.length > 0) ? _package.access : DEFAULT_ALLOW_ACCESS_LEVEL;
+
+    if (user.name !== undefined) { // successfully authenticated
+      this.logger.debug(`[gitlab] allow user: ${user.name} authenticated access to package: ${_package.name}`);
+      return cb(null, true);
+    } else { // unauthenticated
+      if (BUILTIN_ACCESS_LEVEL_ANONYMOUS.some(level => packageAccess.includes(level))) {
+        this.logger.debug(`[gitlab] allow anonymous access to package: ${_package.name}`);
+        return cb(null, true);
+      } else {
+        this.logger.debug(`[gitlab] deny access to package: ${_package.name}`);
+        return cb(httperror[401]('access denied, user not authenticated and anonymous access disabled'));
+      }
     }
   }
 
@@ -175,7 +186,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
     if (packagePermit || packageScopePermit) {
       const perm = packagePermit ? 'package-name' : 'package-scope';
       this.logger.debug(`[gitlab] user: ${user.name || ''} allowed to publish package: ${_package.name} based on ${perm}`);
-      return cb(null, false);
+      return cb(null, true);
     } else {
       this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
       const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
