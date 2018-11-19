@@ -104,12 +104,15 @@ In normal mode, packages are available:
 
 #### Access
 
-*access* is allowed depending on verdaccio `package` configuration
+*access* is allowed depending on the following verdaccio `package` configuration
 directives:
 
 - authenticated users are able to access all packages
 - unauthenticated users will be able to access packages marked with either
-  `$all` or `$anonymous` access levels
+  `$all` or `$anonymous` access levels at the package group definition
+
+Please note that no group or package name mapping is applied on access, any
+user successfully authenticated can access all packages.
 
 #### Publish
 
@@ -123,7 +126,8 @@ For instance, assuming the following configuration:
 - `auth.gitlab.publish` = `$maintainer`
 - the gitlab user `sample_user` has access to group `group1` as
   `$maintainer` and `group2` as `$reporter` in gitlab
-- then this user would be able to publish any of the npm packages in verdaccio:
+- then this user would be able to *access* any package
+- *publish* any of the following npm packages in verdaccio:
   - `sample_user`
   - any package under `group1/**`
   - error if the user tries to publish any package under `group2/**`
