@@ -30,7 +30,7 @@ export default (server: any, gitlab: any) => { // eslint-disable-line no-unused-
         .status(HTTP_STATUS.UNAUTHORIZED)
         .then((body) => {
           expect(body).toHaveProperty('error');
-          expect(body.error).toMatch(/invalid/);
+          expect(body.error).toMatch(/error/);
         });
     });
   });

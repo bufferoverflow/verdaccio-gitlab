@@ -67,7 +67,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const cb: Callback = (err, data) => {
       expect(err).toBeFalsy();
       // false allows the plugin chain to continue
-      expect(data).toBe(false);
+      expect(data).toBe(true);
       done();
     };
 
@@ -85,7 +85,25 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const cb: Callback = (err, data) => {
       expect(err).toBeFalsy();
       // false allows the plugin chain to continue
-      expect(data).toBe(false);
+      expect(data).toBe(true);
+      done();
+    };
+
+    verdaccioGitlab.allow_access(config.remoteUser, _package, cb);
+  });
+
+  test('should allow access to package when access level is empty (default = $all)', done => {
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: config.user,
+      access: undefined,
+      gitlab: true
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeFalsy();
+      // false allows the plugin chain to continue
+      expect(data).toBe(true);
       done();
     };
 
@@ -123,7 +141,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
 
     const cb: Callback = (err, data) => {
       expect(err).toBeFalsy();
-      expect(data).toBe(false);
+      expect(data).toBe(true);
       done();
     };
 
@@ -139,7 +157,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
 
     const cb: Callback = (err, data) => {
       expect(err).toBeFalsy();
-      expect(data).toBe(false);
+      expect(data).toBe(true);
       done();
     };
 

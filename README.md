@@ -93,23 +93,41 @@ yarn publish --registry http://localhost:4873
 
 Access and publish access rights depend on the mode used.
 
-### Normal Mode
+verdaccio-gitlab access control will only be applied to package sections that
+are marked with `gitlab: true` as in the configuration sample above. If you
+wish to disable gitlab authentication to any package config, just remove the
+element from the config.
 
-In the default mode, packages are available:
+### Normal Mode (default)
 
-- *access* is allowed depending on verdaccio `package` configuration
-  directives (unauthenticated / authenticated)
-- *publish* is allowed if the package name matches the logged in user
-  id, or if the package name / scope of the package matches one of the
-  user groups and the user has `auth.gitlab.publish` access rights on
+In normal mode, packages are available:
+
+#### Access
+
+*access* is allowed depending on the following verdaccio `package` configuration
+directives:
+
+- authenticated users are able to access all packages
+- unauthenticated users will be able to access packages marked with either
+  `$all` or `$anonymous` access levels at the package group definition
+
+Please note that no group or package name mapping is applied on access, any
+user successfully authenticated can access all packages.
+
+#### Publish
+
+*publish* is allowed if the package name matches the logged in user
+  id, or if the package name or scope of the package matches one of the
+  user's groups, and the user has `auth.gitlab.publish` access rights on
   the group
 
 For instance, assuming the following configuration:
 
 - `auth.gitlab.publish` = `$maintainer`
 - the gitlab user `sample_user` has access to group `group1` as
-  `$maintainer` and `group2` as `$reporter`
-- then this user could publish any of the npm packages:
+  `$maintainer` and `group2` as `$reporter` in gitlab
+- then this user would be able to *access* any package
+- *publish* any of the following npm packages in verdaccio:
   - `sample_user`
   - any package under `group1/**`
   - error if the user tries to publish any package under `group2/**`
