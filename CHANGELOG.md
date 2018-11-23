@@ -1,3 +1,25 @@
+### 2.1.0 (2018-11-23)
+
+##### Chores
+
+*  upgrade verdaccio to latest stable 3.8.6 ([ee3f3d97](https://github.com/bufferoverflow/verdaccio-gitlab/commit/ee3f3d97daf6116bd7761fc4d59e75b8cdb833c5))
+*  add functional tests ([22e91e81](https://github.com/bufferoverflow/verdaccio-gitlab/commit/22e91e81ceb32e3a0df5b06165e0cc4a9a86194f))
+*  add functional tests ([6f2d6b62](https://github.com/bufferoverflow/verdaccio-gitlab/commit/6f2d6b625ecc6dfcaa9852685c5c2ac971f107a0))
+
+##### Documentation Changes
+
+*  explain how to overwrite default conf with dockerfile ([76ad223c](https://github.com/bufferoverflow/verdaccio-gitlab/commit/76ad223cee4c49a8785d95beb4b1337b48da7441))
+
+##### New Features
+
+*  make allow_access behave closer to htpasswd default auth plugin ([ccf53254](https://github.com/bufferoverflow/verdaccio-gitlab/commit/ccf53254d95555a9232ad617aa680b7cc2e883dc))
+*  make allow_access behave closer to htpasswd default auth plugin ([6e4c1768](https://github.com/bufferoverflow/verdaccio-gitlab/commit/6e4c1768428438e0199f25ed3c4b568e877527a6))
+*  make allow_access behave closer to htpasswd default auth plugin ([366bc5c2](https://github.com/bufferoverflow/verdaccio-gitlab/commit/366bc5c21e512ad717064701314277b109b0697c))
+
+##### Refactors
+
+*  consistent use of plugin chain ([14b8b186](https://github.com/bufferoverflow/verdaccio-gitlab/commit/14b8b1860593c818fa14825fe7be05f89929883f))
+
 ## 2.0.0 (2018-09-03)
 
 ##### Chores
