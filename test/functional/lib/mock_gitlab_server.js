@@ -36,6 +36,12 @@ export default class GitlabServer {
         });
       });
 
+      this.app.get('/api/v4/projects', (req, res) => {
+        this._checkAuthentication(req, res, () => {
+          res.send(GITLAB_DATA.testUserProjects);
+        });
+      });
+
       this.server = this.app.listen(port, () => {
         console.log(chalk.blue(`gitlab mock listening on port: ${port}`));
         resolve(this);
@@ -52,4 +58,3 @@ export default class GitlabServer {
     }
   }
 }
-

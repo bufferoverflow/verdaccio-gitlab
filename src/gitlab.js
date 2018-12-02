@@ -107,9 +107,6 @@ export default class VerdaccioGitLab implements IPluginAuth {
       }
 
       const publishLevelId = ACCESS_LEVEL_MAPPING[this.publishLevel];
-      const userGroups = {
-        publish: [user]
-      };
 
       // Set the groups of an authenticated user, in normal mode:
       // - for access, depending on the package settings in verdaccio
@@ -121,18 +118,27 @@ export default class VerdaccioGitLab implements IPluginAuth {
       const gitlabPublishQueryParams = this.config.legacy_mode ? { owned: true } : { min_access_level: publishLevelId };
       this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams);
 
-      GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
-        this._addGroupsToArray(groups, userGroups.publish);
-        this._setCachedUserGroups(user, password, userGroups);
+      const groupsPromise = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
+        return groups.filter(group => group.path === group.full_path).map(group => group.path);
+      });
+
+      const projectsPromise = GitlabAPI.Projects.all(gitlabPublishQueryParams).then(projects => {
+        return projects.map(project => project.path_with_namespace);
+      });
+
+      Promise.all([groupsPromise, projectsPromise]).then(([groups, projectGroups]) => {
+        const realGroups = [user, ...groups, ...projectGroups];
+        this._setCachedUserGroups(user, password, { publish: realGroups });
 
         this.logger.info(`[gitlab] user: ${user} successfully authenticated`);
-        this.logger.debug(`[gitlab] user: ${user}, with groups:`, userGroups);
+        this.logger.debug(`[gitlab] user: ${user}, with groups:`, realGroups);
 
-        return cb(null, userGroups.publish);
+        return cb(null, realGroups);
       }).catch(error => {
-        this.logger.error(`[gitlab] user: ${user} error querying gitlab publish groups: ${error}`);
+        this.logger.error(`[gitlab] user: ${user} error querying gitlab: ${error}`);
         return cb(httperror[401]('error authenticating user'));
       });
+
     }).catch(error => {
       this.logger.error(`[gitlab] user: ${user} error querying gitlab user data: ${error.message || {}}`);
       return cb(httperror[401]('error authenticating user'));
@@ -174,11 +180,8 @@ export default class VerdaccioGitLab implements IPluginAuth {
     for (let real_group of user.real_groups) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
       this.logger.trace(`[gitlab] publish: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`);
 
-      if (real_group === _package.name) {
+      if (this._matchGroupWithPackage(real_group, _package.name)) {
         packagePermit = true;
-        break;
-      } else if (_package.name.indexOf('@') === 0 && real_group === _package.name.slice(1, _package.name.lastIndexOf('/'))) {
-        packageScopePermit = true;
         break;
       }
     }
@@ -192,6 +195,31 @@ export default class VerdaccioGitLab implements IPluginAuth {
       const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
       return cb(httperror[403](`must have required permissions: ${this.config.publish || ''} at ${missingPerm}`));
     }
+  }
+
+  _matchGroupWithPackage(real_group: string, package_name: string): boolean {
+    if (real_group === package_name) {
+      return true
+    }
+
+    if (package_name.indexOf('@') === 0) {
+      const split_real_group = real_group.split('/');
+      const split_package_name = package_name.slice(1).split('/');
+
+      if (split_real_group.length > split_package_name.length) {
+        return false;
+      }
+
+      for (let i = 0; i < split_real_group.length; i += 1) {
+        if (split_real_group[i] !== split_package_name[i]) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
   _getCachedUserGroups(username: string, password: string): ?UserDataGroups {
@@ -208,13 +236,5 @@ export default class VerdaccioGitLab implements IPluginAuth {
     }
     this.logger.debug(`[gitlab] saving data in cache for user: ${username}`);
     return this.authCache.storeUser(username, password, new UserData(username, groups));
-  }
-
-  _addGroupsToArray(src: {path: string, full_path: string}[], dst: string[]) {
-    src.forEach(group => {
-      if (group.path === group.full_path) {
-        dst.push(group.path);
-      }
-    });
   }
 }

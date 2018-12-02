@@ -1,7 +1,7 @@
-// flow-typed signature: cc24a4e737d9dfb8e1381c3bd4ebaa65
-// flow-typed version: d11eab7bb5/express_v4.16.x/flow_>=v0.32.x
+// flow-typed signature: 207bac286d971cad7615b09aa20d4acf
+// flow-typed version: bb849ae672/express_v4.16.x/flow_>=v0.32.x
 
-import type { Server } from "http";
+import * as http from "http";
 import type { Socket } from "net";
 
 declare type express$RouterOptions = {
@@ -219,15 +219,15 @@ declare class express$Application extends express$Router mixins events$EventEmit
     hostname?: string,
     backlog?: number,
     callback?: (err?: ?Error) => mixed
-  ): ?Server;
+  ): ?http.Server;
   listen(
     port: number,
     hostname?: string,
     callback?: (err?: ?Error) => mixed
-  ): ?Server;
-  listen(port: number, callback?: (err?: ?Error) => mixed): ?Server;
-  listen(path: string, callback?: (err?: ?Error) => mixed): ?Server;
-  listen(handle: Object, callback?: (err?: ?Error) => mixed): ?Server;
+  ): ?http.Server;
+  listen(port: number, callback?: (err?: ?Error) => mixed): ?http.Server;
+  listen(path: string, callback?: (err?: ?Error) => mixed): ?http.Server;
+  listen(handle: Object, callback?: (err?: ?Error) => mixed): ?http.Server;
   disable(name: string): void;
   disabled(name: string): boolean;
   enable(name: string): express$Application;
