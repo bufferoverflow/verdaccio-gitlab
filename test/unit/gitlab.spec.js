@@ -23,7 +23,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
 
     const cb: Callback = (err, data) => {
       expect(err).toBeFalsy();
-      expect(data.sort()).toEqual(['myGroup', 'myUser'].sort());
+      expect(data.sort()).toEqual(['myGroup', 'anotherGroup/myProject', 'myUser'].sort());
       done();
     };
 
@@ -60,6 +60,24 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
       name: '@myGroup/myPackage',
+      access: ['$authenticated'],
+      gitlab: true
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeFalsy();
+      // false allows the plugin chain to continue
+      expect(data).toBe(true);
+      done();
+    };
+
+    verdaccioGitlab.allow_access(config.remoteUser, _package, cb);
+  });
+
+  test('should allow access to package based on user project', done => {
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@anotherGroup/myProject',
       access: ['$authenticated'],
       gitlab: true
     };
@@ -136,6 +154,22 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
       name: '@myGroup/myPackage',
+      gitlab: true
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeFalsy();
+      expect(data).toBe(true);
+      done();
+    };
+
+    verdaccioGitlab.allow_publish(config.remoteUser, _package, cb);
+  });
+
+  test('should allow publish of package based on user project', done => {
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@anotherGroup/myProject',
       gitlab: true
     };
 

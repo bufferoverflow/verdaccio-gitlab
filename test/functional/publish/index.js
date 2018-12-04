@@ -23,7 +23,31 @@ export default (server: any, gitlab: any) => { // eslint-disable-line no-unused-
     });
 
     test('should allow publish of package when gitlab groups match', () => {
-      return server.putPackage(PACKAGE.NAME, require('../fixtures/package')(PACKAGE.NAME))
+      return server.putPackage(PACKAGE.GROUP_NAME, require('../fixtures/package')(PACKAGE.GROUP_NAME))
+        .status(HTTP_STATUS.CREATED)
+        .body_ok(/created new package/)
+        .then((body) => {
+          expect(body).toHaveProperty('ok');
+          expect(body.ok).toMatch(/created/);
+          expect(body).toHaveProperty('success');
+          expect(body.success).toBe(true);
+        });
+    });
+
+    test('should allow publish of scoped package when gitlab groups match', () => {
+      return server.putPackage(PACKAGE.SCOPED_GROUP_NAME, require('../fixtures/package')(PACKAGE.SCOPED_GROUP_NAME))
+        .status(HTTP_STATUS.CREATED)
+        .body_ok(/created new package/)
+        .then((body) => {
+          expect(body).toHaveProperty('ok');
+          expect(body.ok).toMatch(/created/);
+          expect(body).toHaveProperty('success');
+          expect(body.success).toBe(true);
+        });
+    });
+
+    test('should allow publish of scoped package when gitlab projects match', () => {
+      return server.putPackage(PACKAGE.SCOPED_PROJECT_NAME, require('../fixtures/package')(PACKAGE.SCOPED_PROJECT_NAME))
         .status(HTTP_STATUS.CREATED)
         .body_ok(/created new package/)
         .then((body) => {

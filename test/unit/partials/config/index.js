@@ -21,8 +21,8 @@ const options: PluginOptions = {
 const user: string = 'myUser';
 const pass: string = 'myPass';
 const remoteUser: RemoteUser = {
-  real_groups: ['myGroup', user],
-  groups: ['myGroup', user],
+  real_groups: ['myGroup', 'anotherGroup/myProject', user],
+  groups: ['myGroup', 'anotherGroup/myProject', user],
   name: user
 };
 

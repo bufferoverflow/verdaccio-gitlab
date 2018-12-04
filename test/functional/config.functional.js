@@ -20,7 +20,10 @@ export const DOMAIN_SERVERS = localhost;
 export const PACKAGE = {
   EXISTING_NAME: 'verdaccio',
   NON_EXISTING_NAME: 'non-existing-package',
-  NAME: 'test-group',
+  NAME: 'test-name',
+  GROUP_NAME: 'test-group',
+  SCOPED_GROUP_NAME: '@test-group/another-project',
+  SCOPED_PROJECT_NAME: '@another-group/test-project',
   VERSION: '0.0.1',
 };
 
@@ -35,14 +38,36 @@ export const GITLAB_DATA = {
   testUserGroups: [
     {
       'id': 1,
-      "name": "Test Group",
-      "path": "test-group",
-      "description": "An interesting group",
-      "visibility": "public",
-      "lfs_enabled": true,
-      "request_access_enabled": false,
-      "full_path": "test-group",
-      "parent_id": null
+      'name': 'Test Group',
+      'path': 'test-group',
+      'description': 'An interesting group',
+      'visibility': 'public',
+      'lfs_enabled': true,
+      'request_access_enabled': false,
+      'full_path': 'test-group',
+      'parent_id': null
+    },
+  ],
+  testUserProjects: [
+    {
+      'id': 3,
+      'name': 'Test Project',
+      'name_with_namespace': 'Another Group / Test Project',
+      'path': 'test-project',
+      'path_with_namespace': 'another-group/test-project',
+      'namespace': {
+        'id': 2,
+        'name': 'Another Group',
+        'path': 'another-group',
+        'kind': 'group',
+        'full_path': 'another-group',
+        'parent_id': null
+      },
+      'description': 'An interesting project group',
+      'visibility': 'public',
+      'lfs_enabled': true,
+      'request_access_enabled': false,
+      'parent_id': null
     },
   ]
 };

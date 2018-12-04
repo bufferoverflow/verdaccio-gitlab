@@ -117,20 +117,25 @@ user successfully authenticated can access all packages.
 #### Publish
 
 *publish* is allowed if the package name matches the logged in user
-  id, or if the package name or scope of the package matches one of the
+  id, if the package name or scope of the package matches one of the
   user's groups, and the user has `auth.gitlab.publish` access rights on
-  the group
+  the group, or if the package name (possibly scoped) matches on the user's
+  projects, and the user has `auth.gitlab.publish` access rights on
+  the project.
 
 For instance, assuming the following configuration:
 
 - `auth.gitlab.publish` = `$maintainer`
 - the gitlab user `sample_user` has access to group `group1` as
-  `$maintainer` and `group2` as `$reporter` in gitlab
+  `$maintainer` and `group2` as `$reporter` in gitlab and has access to project
+  `group3/project` as `$maintainer`
 - then this user would be able to *access* any package
 - *publish* any of the following npm packages in verdaccio:
   - `sample_user`
-  - any package under `group1/**`
-  - error if the user tries to publish any package under `group2/**`
+  - `group1`
+  - any package under `@group1/**`
+  - `@group3/project`
+  - error if the user tries to publish any package under `@group2/**`
 
 ### Legacy Mode
 

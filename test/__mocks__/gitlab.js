@@ -14,6 +14,13 @@ const mock = jest.fn().mockImplementation(() => {
           full_path: 'myGroup'
         }]);
       }
+    },
+    Projects: {
+      all: (params) => { // eslint-disable-line no-unused-vars
+        return Promise.resolve([{
+          path_with_namespace: 'anotherGroup/myProject'
+        }]);
+      }
     }
   };
 });
