@@ -1,3 +1,9 @@
+### 2.2.0 (2018-12-07)
+
+##### New Features
+
+*  add project groups ([cb13b62c](https://github.com/bufferoverflow/verdaccio-gitlab/commit/cb13b62c0adef627cbc00f227348e11a20dad9ac))
+
 ### 2.1.0 (2018-11-23)
 
 ##### Chores
