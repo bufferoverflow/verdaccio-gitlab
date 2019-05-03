@@ -201,7 +201,7 @@ docker-compose up --build -d
 - publish your packages via command line
 
 The Dockerfile provides a [default configuration file](conf/docker.yaml)
-that is internally available under `/verdaccio/config/conf.yaml`. In order
+that is internally available under `/verdaccio/conf/config.yaml`. In order
 to overwrite this configuration you can provide your own file and mount it
 on docker startup with the `--volume` option, or equivalent mechanism
 (e.g. ConfigMaps on Kubernetes / OpenShift with the
