@@ -14,15 +14,15 @@ export class AuthCache {
 
   static get DEFAULT_TTL() { return 300; }
 
-  static _generateKeyHash(username: string, password: string) {
+  static _generateKeyHash(username: string) {
     const sha = Crypto.createHash('sha256');
-    sha.update(JSON.stringify({ username: username, password: password }));
+    sha.update(JSON.stringify({ username: username }));
     return sha.digest('hex');
   }
 
   constructor(logger: Logger, ttl?: number) {
     this.logger = logger;
-    this.ttl = ttl || AuthCache.DEFAULT_TTL;
+    this.ttl = ttl <= 0 ? AuthCache.DEFAULT_TTL : ttl || AuthCache.DEFAULT_TTL;
 
     this.storage = new NodeCache({
       stdTTL: this.ttl,
@@ -35,17 +35,18 @@ export class AuthCache {
     });
   }
 
-  findUser(username: string, password: string): UserData {
-    return this.storage.get(AuthCache._generateKeyHash(username, password));
+  findUser(username: string): UserData {
+    return this.storage.get(AuthCache._generateKeyHash(username));
   }
 
-  storeUser(username: string, password: string, userData: UserData): boolean {
-    return this.storage.set(AuthCache._generateKeyHash(username, password), userData);
+  storeUser(username: string, userData: UserData): boolean {
+    return this.storage.set(AuthCache._generateKeyHash(username), userData);
   }
 }
 
 export type UserDataGroups = {
-  publish: string[]
+  publish: Array<string>,
+  access: Array<string>
 };
 
 export class UserData {

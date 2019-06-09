@@ -22,8 +22,8 @@ describe('AuthCache Unit Tests', () => {
   test('should store and find some user data', () => {
     const authCache: AuthCache = new AuthCache(logger);
 
-    authCache.storeUser(config.user, config.pass, config.userData);
-    const returnedData: UserData = authCache.findUser(config.user, config.pass);
+    authCache.storeUser(config.user, config.userData);
+    const returnedData: UserData = authCache.findUser(config.user);
 
     expect(returnedData).toEqual(config.userData);
   });
@@ -32,8 +32,8 @@ describe('AuthCache Unit Tests', () => {
     const UNLIMITED_TTL: number = 0;
     const authCache: AuthCache = new AuthCache(logger, UNLIMITED_TTL);
 
-    authCache.storeUser(config.user, config.pass, config.userData);
-    const returnedData: UserData = authCache.findUser(config.user, config.pass);
+    authCache.storeUser(config.user, config.userData);
+    const returnedData: UserData = authCache.findUser(config.user);
 
     expect(returnedData).toEqual(config.userData);
   });

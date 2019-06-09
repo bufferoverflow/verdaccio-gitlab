@@ -27,7 +27,8 @@ const remoteUser: RemoteUser = {
 };
 
 const userDataGroups: UserDataGroups = {
-  publish: ['fooGroup1', 'fooGroup2']
+  publish: ['fooGroup1', 'fooGroup2'],
+  access: ['fooGroup1', 'fooGroup2'],
 };
 const userData: UserData = new UserData(user, userDataGroups);
 
