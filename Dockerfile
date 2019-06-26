@@ -14,7 +14,7 @@ RUN yarn config set registry $VERDACCIO_BUILD_REGISTRY && \
 
 
 
-FROM verdaccio/verdaccio:4.x-next
+FROM verdaccio/verdaccio:4.0
 LABEL maintainer="https://github.com/bufferoverflow/verdaccio-gitlab"
 
 # Go back to root to be able to install the plugin
