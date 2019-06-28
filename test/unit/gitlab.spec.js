@@ -61,7 +61,9 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const _package: VerdaccioGitlabPackageAccess = {
       name: '@myGroup/myPackage',
       access: ['$authenticated'],
-      gitlab: true
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs']
     };
 
     const cb: Callback = (err, data) => {
@@ -79,7 +81,9 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const _package: VerdaccioGitlabPackageAccess = {
       name: '@anotherGroup/myProject',
       access: ['$authenticated'],
-      gitlab: true
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs']
     };
 
     const cb: Callback = (err, data) => {
@@ -97,7 +101,9 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const _package: VerdaccioGitlabPackageAccess = {
       name: config.user,
       access: ['$authenticated'],
-      gitlab: true
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs']
     };
 
     const cb: Callback = (err, data) => {
@@ -114,8 +120,10 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
       name: config.user,
-      access: undefined,
-      gitlab: true
+      access: [],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs']
     };
 
     const cb: Callback = (err, data) => {
@@ -138,7 +146,9 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const _package: VerdaccioGitlabPackageAccess = {
       name: '@myGroup/myPackage',
       access: ['$authenticated'],
-      gitlab: true
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs']
     };
 
     const cb: Callback = (err, data) => {
@@ -154,7 +164,10 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
       name: '@myGroup/myPackage',
-      gitlab: true
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs']
     };
 
     const cb: Callback = (err, data) => {
@@ -170,7 +183,10 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
       name: '@anotherGroup/myProject',
-      gitlab: true
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs']
     };
 
     const cb: Callback = (err, data) => {
@@ -186,7 +202,10 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
       name: config.user,
-      gitlab: true
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs']
     };
 
     const cb: Callback = (err, data) => {
@@ -207,7 +226,10 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     };
     const _package: VerdaccioGitlabPackageAccess = {
       name: config.user,
-      gitlab: true
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs']
     };
 
     const cb: Callback = (err, data) => {
@@ -223,7 +245,10 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
       name: '@anotherGroup/myPackage',
-      gitlab: true
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs']
     };
 
     const cb: Callback = (err, data) => {
@@ -239,7 +264,10 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
       name: 'anotherUser',
-      gitlab: true
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs']
     };
 
     const cb: Callback = (err, data) => {

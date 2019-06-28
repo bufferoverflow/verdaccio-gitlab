@@ -350,10 +350,10 @@
   resolved "https://registry.yarnpkg.com/@verdaccio/streams/-/streams-2.0.0-beta.0.tgz#af8c7e673a3c368deacc8024c6f5671aa2ec32ac"
   integrity sha512-EdVF6RP0abRNT0RfgLCsqLNv7FOpm+BpzMZoaQuQGHSBQRj7OTM8ft5mpbJ40rYVXKv6D8xyU0vUnoRl09ah6g==
 
-"@verdaccio/types@3.5.1":
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/@verdaccio/types/-/types-3.5.1.tgz#1ddfb6e4d12680e6689e1fb189e25377f9e606a6"
-  integrity sha512-qxqki7geilVfhk2Q5iIeWNrjr1d4EDzyoGeJortgex6kgIB2NTccXn7IrIk4dF7Gkt+0qpTzU5dd6hSbgAVKgw==
+"@verdaccio/types@^4.1.5":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@verdaccio/types/-/types-4.3.0.tgz#e881ade5b4b0648ec72e81b23685f405fd07332e"
+  integrity sha512-SXuN07exu315Q5nPduGWMZxkwAHL23skCEolmigvEWOOpcuaoJ59IrS/Jn7PrYFjbR3O1vcGWt4gJ6MjPRucoQ==
 
 "@verdaccio/ui-theme@0.1.11":
   version "0.1.11"

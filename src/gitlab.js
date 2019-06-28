@@ -150,6 +150,11 @@ export default class VerdaccioGitLab implements IPluginAuth {
     return cb(null, true);
   }
 
+  changePassword(user: string, password: string, newPassword: string, cb: verdaccio$Callback) {
+    this.logger.trace(`[gitlab] changePassword called for user: ${user}`);
+    return cb(httperror[501]('You are using verdaccio-gitlab integration. Please change your password in gitlab'));
+  }
+
   allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess, cb: Callback) {
     if (!_package.gitlab) return cb(null, false);
 
@@ -193,7 +198,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
     } else {
       this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
       const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
-      return cb(httperror[403](`must have required permissions: ${this.config.publish || ''} at ${missingPerm}`));
+      return cb(httperror[403](`must have required permissions: ${this.publishLevel || ''} at ${missingPerm}`));
     }
   }
 
