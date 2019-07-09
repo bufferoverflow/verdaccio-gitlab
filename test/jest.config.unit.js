@@ -5,10 +5,14 @@ module.exports = {
   verbose: true,
   rootDir: '..',
   collectCoverage: true,
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest'
+  },
   collectCoverageFrom: [
-    'src/*.{js,jsx}'
+    'src/*.{ts}'
   ],
-  testRegex: 'test/unit/.*\\.spec\\.js',
+  testRegex: 'test/unit/.*\\.spec\\.ts',
   coveragePathIgnorePatterns: [
     'node_modules',
     'fixtures',

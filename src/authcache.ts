@@ -1,8 +1,7 @@
 // Copyright 2018 Roger Meier <roger@bufferoverflow.ch>
 // SPDX-License-Identifier: MIT
-// @flow
 
-import type { Logger } from '@verdaccio/types';
+import { Logger } from '@verdaccio/types';
 
 import Crypto from 'crypto';
 import NodeCache from 'node-cache';

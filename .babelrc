@@ -1,31 +1,40 @@
 {
   "env": {
-    "test": {
-      "presets": [
-        ["env", {
-          "targets": { "node": "current" }
-        }],
-        "flow"
-      ],
-      "plugins": []
-    },
     "registry": {
       "presets": [
-        ["env", {
-          "targets": { "node": "current" }
-        }],
-        "flow"
+          [
+              "@babel/env",
+              {
+                  "targets": {
+                      "node": "8.15"
+                  }
+              }
+          ],
+          "@babel/typescript"
       ],
-      "plugins": []
+      "plugins": [
+          "@babel/proposal-class-properties",
+          "@babel/proposal-object-rest-spread"
+      ]
     },
     "registry-docker": {
-      "presets": [
-        ["env", {
-          "targets": { "node": "10" }
-        }],
-        "flow"
-      ],
-      "plugins": []
+      "registry": {
+        "presets": [
+            [
+                "@babel/env",
+                {
+                    "targets": {
+                        "node": "10"
+                    }
+                }
+            ],
+            "@babel/typescript"
+        ],
+        "plugins": [
+            "@babel/proposal-class-properties",
+            "@babel/proposal-object-rest-spread"
+        ]
+      },
     },
     "development": {}
   }
