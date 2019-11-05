@@ -28,9 +28,7 @@ export class AuthCache {
       useClones: false
     });
     this.storage.on('expired', (key, value) => {
-      if (this.logger.trace()) {
-        this.logger.trace(`[gitlab] expired key: ${key} with value:`, value);
-      }
+      this.logger.trace(`[gitlab] expired key: ${key} with value:`, value);
     });
   }
 

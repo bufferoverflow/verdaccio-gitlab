@@ -1,13 +1,12 @@
 // Copyright 2018 Roger Meier <roger@bufferoverflow.ch>
 // SPDX-License-Identifier: MIT
-// @flow
 
-import type { Callback, IPluginAuth, Logger, PluginOptions, RemoteUser, PackageAccess } from '@verdaccio/types';
-import type { UserDataGroups } from './authcache';
+import { Callback, IPluginAuth, Logger, PluginOptions, RemoteUser, PackageAccess } from '@verdaccio/types';
+import { getInternalError, getUnauthorized, getForbidden } from '@verdaccio/commons-api';
+import { UserDataGroups } from './authcache';
 
 import Gitlab from 'gitlab';
 import { AuthCache, UserData } from './authcache';
-import httperror from 'http-errors';
 
 export type VerdaccioGitlabAccessLevel =
   '$guest' |
@@ -26,10 +25,10 @@ export type VerdaccioGitlabConfig = {
   publish?: VerdaccioGitlabAccessLevel
 };
 
-export type VerdaccioGitlabPackageAccess = PackageAccess & {
-  name: string,
+export interface VerdaccioGitlabPackageAccess extends PackageAccess {
+  name?: string,
   gitlab?: boolean
-}
+};
 
 const ACCESS_LEVEL_MAPPING = {
   $guest: 10,
@@ -46,14 +45,19 @@ const BUILTIN_ACCESS_LEVEL_ANONYMOUS = [ '$anonymous', '$all' ];
 const DEFAULT_ALLOW_ACCESS_LEVEL = [ '$all' ];
 
 
-export default class VerdaccioGitLab implements IPluginAuth {
-  options: PluginOptions;
+export interface VerdaccioGitLabPlugin extends IPluginAuth<VerdaccioGitlabConfig> {
+  authCache: AuthCache;
+}
+
+
+export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
+  options: PluginOptions<VerdaccioGitlabConfig>;
   config: VerdaccioGitlabConfig;
   authCache: AuthCache;
   logger: Logger;
   publishLevel: VerdaccioGitlabAccessLevel;
 
-  constructor(config: VerdaccioGitlabConfig, options: PluginOptions) {
+  constructor(config: VerdaccioGitlabConfig, options: PluginOptions<VerdaccioGitlabConfig>) {
     this.logger = options.logger;
     this.config = config;
     this.options = options;
@@ -103,7 +107,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
 
     GitlabAPI.Users.current().then(response => {
       if (user !== response.username) {
-        return cb(httperror[401]('wrong gitlab username'));
+        return cb(getForbidden('wrong gitlab username'));
       }
 
       const publishLevelId = ACCESS_LEVEL_MAPPING[this.publishLevel];
@@ -136,12 +140,12 @@ export default class VerdaccioGitLab implements IPluginAuth {
         return cb(null, realGroups);
       }).catch(error => {
         this.logger.error(`[gitlab] user: ${user} error querying gitlab: ${error}`);
-        return cb(httperror[401]('error authenticating user'));
+        return cb(getUnauthorized('error authenticating user'));
       });
 
     }).catch(error => {
       this.logger.error(`[gitlab] user: ${user} error querying gitlab user data: ${error.message || {}}`);
-      return cb(httperror[401]('error authenticating user'));
+      return cb(getUnauthorized('error authenticating user'));
     });
   }
 
@@ -150,12 +154,12 @@ export default class VerdaccioGitLab implements IPluginAuth {
     return cb(null, true);
   }
 
-  changePassword(user: string, password: string, newPassword: string, cb: verdaccio$Callback) {
+  changePassword(user: string, password: string, newPassword: string, cb: Callback) {
     this.logger.trace(`[gitlab] changePassword called for user: ${user}`);
-    return cb(httperror[501]('You are using verdaccio-gitlab integration. Please change your password in gitlab'));
+    return cb(getInternalError('You are using verdaccio-gitlab integration. Please change your password in gitlab'));
   }
 
-  allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess, cb: Callback) {
+  allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
     if (!_package.gitlab) return cb(null, false);
 
     const packageAccess = (_package.access && _package.access.length > 0) ? _package.access : DEFAULT_ALLOW_ACCESS_LEVEL;
@@ -169,12 +173,12 @@ export default class VerdaccioGitLab implements IPluginAuth {
         return cb(null, true);
       } else {
         this.logger.debug(`[gitlab] deny access to package: ${_package.name}`);
-        return cb(httperror[401]('access denied, user not authenticated and anonymous access disabled'));
+        return cb(getForbidden('access denied, user not authenticated and anonymous access disabled'));
       }
     }
   }
 
-  allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess, cb: Callback) {
+  allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
     if (!_package.gitlab) return cb(null, false);
 
     let packageScopePermit = false;
@@ -185,7 +189,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
     for (let real_group of user.real_groups) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
       this.logger.trace(`[gitlab] publish: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`);
 
-      if (this._matchGroupWithPackage(real_group, _package.name)) {
+      if (this._matchGroupWithPackage(real_group, _package.name as string)) {
         packagePermit = true;
         break;
       }
@@ -197,8 +201,8 @@ export default class VerdaccioGitLab implements IPluginAuth {
       return cb(null, true);
     } else {
       this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
-      const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
-      return cb(httperror[403](`must have required permissions: ${this.publishLevel || ''} at ${missingPerm}`));
+      const missingPerm = _package.name ?? _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
+      return cb(getForbidden(`must have required permissions: ${this.publishLevel || ''} at ${missingPerm}`));
     }
   }
 
@@ -227,7 +231,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
     return false;
   }
 
-  _getCachedUserGroups(username: string, password: string): ?UserDataGroups {
+  _getCachedUserGroups(username: string, password: string): UserDataGroups | null {
     if (!this.authCache) {
       return null;
     }
