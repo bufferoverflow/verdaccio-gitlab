@@ -1,8 +1,6 @@
-// @flow
+import { AuthCache, UserData } from '../../src/authcache';
 
-import { AuthCache, UserData } from '../../src/authcache.js';
-
-import logger from './partials/logger.js';
+import logger from './partials/logger';
 import config from './partials/config';
 
 describe('AuthCache Unit Tests', () => {

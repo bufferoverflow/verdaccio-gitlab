@@ -2,7 +2,7 @@ import { Callback, RemoteUser } from '@verdaccio/types';
 import Gitlab from 'gitlab'; // eslint-disable-line no-unused-vars
 
 import { VerdaccioGitlabPackageAccess } from '../../src/gitlab';
-import VerdaccioGitlab from '../../src/gitlab.js';
+import VerdaccioGitlab from '../../src/gitlab';
 
 import config from './partials/config';
 

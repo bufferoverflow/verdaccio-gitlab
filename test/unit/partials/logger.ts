@@ -1,6 +1,4 @@
-//@flow
-
-import type { Logger } from '@verdaccio/types';
+import { Logger } from '@verdaccio/types';
 
 const logger: Logger = {
   error: jest.fn(),

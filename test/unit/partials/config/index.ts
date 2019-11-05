@@ -1,20 +1,20 @@
-//@flow
 
-import type { PluginOptions, RemoteUser } from '@verdaccio/types';
-import type { VerdaccioGitlabConfig } from '../../../../src/gitlab.js';
-import type { UserDataGroups } from '../../../../src/authcache.js';
+import { PluginOptions, RemoteUser } from '@verdaccio/types';
+import { VerdaccioGitlabConfig } from '../../../../src/gitlab';
+import { UserDataGroups } from '../../../../src/authcache';
 
-import logger from '../logger.js';
-import { UserData } from '../../../../src/authcache.js';
+import logger from '../logger';
+import { UserData } from '../../../../src/authcache';
 
 
 const verdaccioGitlabConfig: VerdaccioGitlabConfig = {
   url: 'myUrl'
 };
 
-const options: PluginOptions = {
-  // $FlowFixMe
+const options: PluginOptions<VerdaccioGitlabConfig> = {
+  //@ts-ignore
   config:  {},
+  //@ts-ignore
   logger: logger
 };
 
