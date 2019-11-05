@@ -103,7 +103,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
     GitlabAPI.Users.current()
       .then(response => {
         if (user !== response.username) {
-          return cb(getForbidden('wrong gitlab username'));
+          return cb(getUnauthorized('wrong gitlab username'));
         }
 
         const publishLevelId = ACCESS_LEVEL_MAPPING[this.publishLevel];
@@ -177,7 +177,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
         return cb(null, true);
       } else {
         this.logger.debug(`[gitlab] deny access to package: ${_package.name}`);
-        return cb(getForbidden('access denied, user not authenticated and anonymous access disabled'));
+        return cb(getUnauthorized('access denied, user not authenticated and anonymous access disabled'));
       }
     }
   }
