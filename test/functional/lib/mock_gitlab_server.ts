@@ -1,11 +1,9 @@
-// @flow
-
 import express from 'express';
 import bodyParser from 'body-parser';
 import chalk from 'chalk';
+
 import { GITLAB_DATA, CREDENTIALS } from '../config.functional';
 import { GITLAB, HTTP_STATUS } from '../../lib/constants';
-
 
 export default class GitlabServer {
   app: any;
@@ -18,11 +16,15 @@ export default class GitlabServer {
   }
 
   start(port: number): Promise<any> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
+      // @ts-ignore
       this.app.use(bodyParser.json());
-      this.app.use(bodyParser.urlencoded({
-        extended: true
-      }));
+      // @ts-ignore
+      this.app.use(
+        bodyParser.urlencoded({
+          extended: true,
+        })
+      );
 
       this.app.get('/api/v4/user', (req, res) => {
         this._checkAuthentication(req, res, () => {

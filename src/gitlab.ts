@@ -3,52 +3,45 @@
 
 import { Callback, IPluginAuth, Logger, PluginOptions, RemoteUser, PackageAccess } from '@verdaccio/types';
 import { getInternalError, getUnauthorized, getForbidden } from '@verdaccio/commons-api';
-import { UserDataGroups } from './authcache';
-
 import Gitlab from 'gitlab';
+
+import { UserDataGroups } from './authcache';
 import { AuthCache, UserData } from './authcache';
 
-export type VerdaccioGitlabAccessLevel =
-  '$guest' |
-  '$reporter' |
-  '$developer' |
-  '$maintainer' |
-  '$owner';
+export type VerdaccioGitlabAccessLevel = '$guest' | '$reporter' | '$developer' | '$maintainer' | '$owner';
 
 export type VerdaccioGitlabConfig = {
-  url: string,
+  url: string;
   authCache?: {
-    enabled?: boolean,
-    ttl?: number
-  },
-  legacy_mode?: boolean,
-  publish?: VerdaccioGitlabAccessLevel
+    enabled?: boolean;
+    ttl?: number;
+  };
+  legacy_mode?: boolean;
+  publish?: VerdaccioGitlabAccessLevel;
 };
 
 export interface VerdaccioGitlabPackageAccess extends PackageAccess {
-  name?: string,
-  gitlab?: boolean
-};
+  name?: string;
+  gitlab?: boolean;
+}
 
 const ACCESS_LEVEL_MAPPING = {
   $guest: 10,
   $reporter: 20,
   $developer: 30,
   $maintainer: 40,
-  $owner: 50
+  $owner: 50,
 };
 
 // List of verdaccio builtin levels that map to anonymous access
-const BUILTIN_ACCESS_LEVEL_ANONYMOUS = [ '$anonymous', '$all' ];
+const BUILTIN_ACCESS_LEVEL_ANONYMOUS = ['$anonymous', '$all'];
 
 // Level to apply on 'allow_access' calls when a package definition does not define one
-const DEFAULT_ALLOW_ACCESS_LEVEL = [ '$all' ];
-
+const DEFAULT_ALLOW_ACCESS_LEVEL = ['$all'];
 
 export interface VerdaccioGitLabPlugin extends IPluginAuth<VerdaccioGitlabConfig> {
   authCache: AuthCache;
 }
-
 
 export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
   options: PluginOptions<VerdaccioGitlabConfig>;
@@ -104,53 +97,58 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
 
     const GitlabAPI = new Gitlab({
       url: this.config.url,
-      token: password
+      token: password,
     });
 
-    GitlabAPI.Users.current().then(response => {
-      if (user !== response.username) {
-        return cb(getForbidden('wrong gitlab username'));
-      }
+    GitlabAPI.Users.current()
+      .then(response => {
+        if (user !== response.username) {
+          return cb(getForbidden('wrong gitlab username'));
+        }
 
-      const publishLevelId = ACCESS_LEVEL_MAPPING[this.publishLevel];
+        const publishLevelId = ACCESS_LEVEL_MAPPING[this.publishLevel];
 
-      // Set the groups of an authenticated user, in normal mode:
-      // - for access, depending on the package settings in verdaccio
-      // - for publish, the logged in user id and all the groups they can reach as configured with access level `$auth.gitlab.publish`
-      //
-      // In legacy mode, the groups are:
-      // - for access, depending on the package settings in verdaccio
-      // - for publish, the logged in user id and all the groups they can reach as fixed `$auth.gitlab.publish` = `$owner`
-      const gitlabPublishQueryParams = this.config.legacy_mode ? { owned: true } : { min_access_level: publishLevelId };
-      // @ts-ignore
-      this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams);
-
-      const groupsPromise = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
-        return groups.filter(group => group.path === group.full_path).map(group => group.path);
-      });
-
-      const projectsPromise = GitlabAPI.Projects.all(gitlabPublishQueryParams).then(projects => {
-        return projects.map(project => project.path_with_namespace);
-      });
-
-      Promise.all([groupsPromise, projectsPromise]).then(([groups, projectGroups]) => {
-        const realGroups = [user, ...groups, ...projectGroups];
-        this._setCachedUserGroups(user, password, { publish: realGroups });
-
-        this.logger.info(`[gitlab] user: ${user} successfully authenticated`);
+        // Set the groups of an authenticated user, in normal mode:
+        // - for access, depending on the package settings in verdaccio
+        // - for publish, the logged in user id and all the groups they can reach as configured with access level `$auth.gitlab.publish`
+        //
+        // In legacy mode, the groups are:
+        // - for access, depending on the package settings in verdaccio
+        // - for publish, the logged in user id and all the groups they can reach as fixed `$auth.gitlab.publish` = `$owner`
+        const gitlabPublishQueryParams = this.config.legacy_mode
+          ? { owned: true }
+          : { min_access_level: publishLevelId };
         // @ts-ignore
-        this.logger.debug(`[gitlab] user: ${user}, with groups:`, realGroups);
+        this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams);
 
-        return cb(null, realGroups);
-      }).catch(error => {
-        this.logger.error(`[gitlab] user: ${user} error querying gitlab: ${error}`);
+        const groupsPromise = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
+          return groups.filter(group => group.path === group.full_path).map(group => group.path);
+        });
+
+        const projectsPromise = GitlabAPI.Projects.all(gitlabPublishQueryParams).then(projects => {
+          return projects.map(project => project.path_with_namespace);
+        });
+
+        Promise.all([groupsPromise, projectsPromise])
+          .then(([groups, projectGroups]) => {
+            const realGroups = [user, ...groups, ...projectGroups];
+            this._setCachedUserGroups(user, password, { publish: realGroups });
+
+            this.logger.info(`[gitlab] user: ${user} successfully authenticated`);
+            // @ts-ignore
+            this.logger.debug(`[gitlab] user: ${user}, with groups:`, realGroups);
+
+            return cb(null, realGroups);
+          })
+          .catch(error => {
+            this.logger.error(`[gitlab] user: ${user} error querying gitlab: ${error}`);
+            return cb(getUnauthorized('error authenticating user'));
+          });
+      })
+      .catch(error => {
+        this.logger.error(`[gitlab] user: ${user} error querying gitlab user data: ${error.message || {}}`);
         return cb(getUnauthorized('error authenticating user'));
       });
-
-    }).catch(error => {
-      this.logger.error(`[gitlab] user: ${user} error querying gitlab user data: ${error.message || {}}`);
-      return cb(getUnauthorized('error authenticating user'));
-    });
   }
 
   adduser(user: string, password: string, cb: Callback) {
@@ -166,12 +164,14 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
   allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
     if (!_package.gitlab) return cb(null, false);
 
-    const packageAccess = (_package.access && _package.access.length > 0) ? _package.access : DEFAULT_ALLOW_ACCESS_LEVEL;
+    const packageAccess = _package.access && _package.access.length > 0 ? _package.access : DEFAULT_ALLOW_ACCESS_LEVEL;
 
-    if (user.name !== undefined) { // successfully authenticated
+    if (user.name !== undefined) {
+      // successfully authenticated
       this.logger.debug(`[gitlab] allow user: ${user.name} authenticated access to package: ${_package.name}`);
       return cb(null, true);
-    } else { // unauthenticated
+    } else {
+      // unauthenticated
       if (BUILTIN_ACCESS_LEVEL_ANONYMOUS.some(level => packageAccess.includes(level))) {
         this.logger.debug(`[gitlab] allow anonymous access to package: ${_package.name}`);
         return cb(null, true);
@@ -185,13 +185,16 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
   allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
     if (!_package.gitlab) return cb(null, false);
 
-    let packageScopePermit = false;
+    const packageScopePermit = false;
     let packagePermit = false;
     // Only allow to publish packages when:
     //  - the package has exactly the same name as one of the user groups, or
     //  - the package scope is the same as one of the user groups
-    for (let real_group of user.real_groups) { // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
-      this.logger.trace(`[gitlab] publish: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`);
+    for (const real_group of user.real_groups) {
+      // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+      this.logger.trace(
+        `[gitlab] publish: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`
+      );
 
       if (this._matchGroupWithPackage(real_group, _package.name as string)) {
         packagePermit = true;
@@ -201,7 +204,9 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
 
     if (packagePermit || packageScopePermit) {
       const perm = packagePermit ? 'package-name' : 'package-scope';
-      this.logger.debug(`[gitlab] user: ${user.name || ''} allowed to publish package: ${_package.name} based on ${perm}`);
+      this.logger.debug(
+        `[gitlab] user: ${user.name || ''} allowed to publish package: ${_package.name} based on ${perm}`
+      );
       return cb(null, true);
     } else {
       this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
@@ -213,7 +218,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
 
   _matchGroupWithPackage(real_group: string, package_name: string): boolean {
     if (real_group === package_name) {
-      return true
+      return true;
     }
 
     if (package_name.indexOf('@') === 0) {

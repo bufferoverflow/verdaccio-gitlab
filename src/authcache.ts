@@ -1,9 +1,9 @@
 // Copyright 2018 Roger Meier <roger@bufferoverflow.ch>
 // SPDX-License-Identifier: MIT
 
-import { Logger } from '@verdaccio/types';
-
 import Crypto from 'crypto';
+
+import { Logger } from '@verdaccio/types';
 import NodeCache from 'node-cache';
 
 export class AuthCache {
@@ -11,7 +11,9 @@ export class AuthCache {
   ttl: number;
   storage: NodeCache;
 
-  static get DEFAULT_TTL() { return 300; }
+  static get DEFAULT_TTL() {
+    return 300;
+  }
 
   static _generateKeyHash(username: string, password: string) {
     const sha = Crypto.createHash('sha256');
@@ -25,7 +27,7 @@ export class AuthCache {
 
     this.storage = new NodeCache({
       stdTTL: this.ttl,
-      useClones: false
+      useClones: false,
     });
     this.storage.on('expired', (key, value) => {
       this.logger.trace(`[gitlab] expired key: ${key} with value:`, value);
@@ -42,16 +44,22 @@ export class AuthCache {
 }
 
 export type UserDataGroups = {
-  publish: string[]
+  publish: string[];
 };
 
 export class UserData {
   _username: string;
   _groups: UserDataGroups;
 
-  get username(): string { return this._username; }
-  get groups(): UserDataGroups { return this._groups; }
-  set groups(groups: UserDataGroups) { this._groups = groups; }
+  get username(): string {
+    return this._username;
+  }
+  get groups(): UserDataGroups {
+    return this._groups;
+  }
+  set groups(groups: UserDataGroups) {
+    this._groups = groups;
+  }
 
   constructor(username: string, groups: UserDataGroups) {
     this._username = username;

@@ -12,6 +12,8 @@
     "@typescript-eslint/array-type": ["warn"],
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/indent": 0,
-    "@typescript-eslint/interface-name-prefix": 0
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/interface-name-prefix": 0,
+    "@typescript-eslint/explicit-member-accessibility": 0
   }
 }

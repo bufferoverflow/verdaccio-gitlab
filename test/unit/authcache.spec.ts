@@ -1,9 +1,9 @@
 // @flow
 
 import { AuthCache, UserData } from '../../src/authcache.js';
+
 import logger from './partials/logger.js';
 import config from './partials/config';
-
 
 describe('AuthCache Unit Tests', () => {
   test('should create an AuthCache instance', () => {
@@ -29,7 +29,7 @@ describe('AuthCache Unit Tests', () => {
   });
 
   test('should store and find some user data when ttl is unlimited', () => {
-    const UNLIMITED_TTL: number = 0;
+    const UNLIMITED_TTL = 0;
     const authCache: AuthCache = new AuthCache(logger, UNLIMITED_TTL);
 
     authCache.storeUser(config.user, config.pass, config.userData);

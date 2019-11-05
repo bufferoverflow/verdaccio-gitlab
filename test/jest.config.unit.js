@@ -7,14 +7,9 @@ module.exports = {
   collectCoverage: true,
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest'
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
-  collectCoverageFrom: [
-    'src/*.{ts}'
-  ],
+  collectCoverageFrom: ['src/*.{ts}'],
   testRegex: 'test/unit/.*\\.spec\\.ts',
-  coveragePathIgnorePatterns: [
-    'node_modules',
-    'fixtures',
-  ]
+  coveragePathIgnorePatterns: ['node_modules', 'fixtures'],
 };

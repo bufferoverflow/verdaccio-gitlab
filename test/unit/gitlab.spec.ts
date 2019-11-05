@@ -1,15 +1,12 @@
-// @flow
+import { Callback, RemoteUser } from '@verdaccio/types';
+import Gitlab from 'gitlab'; // eslint-disable-line no-unused-vars
 
-import type { Callback, RemoteUser } from '@verdaccio/types';
-import type { VerdaccioGitlabPackageAccess } from "../../src/gitlab";
-
+import { VerdaccioGitlabPackageAccess } from '../../src/gitlab';
 import VerdaccioGitlab from '../../src/gitlab.js';
+
 import config from './partials/config';
 
 // Do not remove, this mocks the gitlab library
-import Gitlab from 'gitlab'; // eslint-disable-line no-unused-vars
-
-
 
 describe('Gitlab Auth Plugin Unit Tests', () => {
   test('should create a plugin instance', () => {
@@ -63,7 +60,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
       access: ['$authenticated'],
       gitlab: true,
       publish: ['$authenticated'],
-      proxy: ['npmjs']
+      proxy: ['npmjs'],
     };
 
     const cb: Callback = (err, data) => {
@@ -83,7 +80,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
       access: ['$authenticated'],
       gitlab: true,
       publish: ['$authenticated'],
-      proxy: ['npmjs']
+      proxy: ['npmjs'],
     };
 
     const cb: Callback = (err, data) => {
@@ -103,7 +100,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
       access: ['$authenticated'],
       gitlab: true,
       publish: ['$authenticated'],
-      proxy: ['npmjs']
+      proxy: ['npmjs'],
     };
 
     const cb: Callback = (err, data) => {
@@ -123,7 +120,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
       access: [],
       gitlab: true,
       publish: ['$authenticated'],
-      proxy: ['npmjs']
+      proxy: ['npmjs'],
     };
 
     const cb: Callback = (err, data) => {
@@ -141,14 +138,14 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const unauthenticatedUser: RemoteUser = {
       real_groups: [],
       groups: [],
-      name: undefined
+      name: undefined,
     };
     const _package: VerdaccioGitlabPackageAccess = {
       name: '@myGroup/myPackage',
       access: ['$authenticated'],
       gitlab: true,
       publish: ['$authenticated'],
-      proxy: ['npmjs']
+      proxy: ['npmjs'],
     };
 
     const cb: Callback = (err, data) => {
@@ -167,7 +164,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
       access: ['$all'],
       gitlab: true,
       publish: ['$authenticated'],
-      proxy: ['npmjs']
+      proxy: ['npmjs'],
     };
 
     const cb: Callback = (err, data) => {
@@ -186,7 +183,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
       access: ['$all'],
       gitlab: true,
       publish: ['$authenticated'],
-      proxy: ['npmjs']
+      proxy: ['npmjs'],
     };
 
     const cb: Callback = (err, data) => {
@@ -205,7 +202,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
       access: ['$all'],
       gitlab: true,
       publish: ['$authenticated'],
-      proxy: ['npmjs']
+      proxy: ['npmjs'],
     };
 
     const cb: Callback = (err, data) => {
@@ -222,14 +219,14 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     const unauthenticatedUser: RemoteUser = {
       real_groups: [],
       groups: [],
-      name: undefined
+      name: undefined,
     };
     const _package: VerdaccioGitlabPackageAccess = {
       name: config.user,
       access: ['$all'],
       gitlab: true,
       publish: ['$authenticated'],
-      proxy: ['npmjs']
+      proxy: ['npmjs'],
     };
 
     const cb: Callback = (err, data) => {
@@ -248,7 +245,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
       access: ['$all'],
       gitlab: true,
       publish: ['$authenticated'],
-      proxy: ['npmjs']
+      proxy: ['npmjs'],
     };
 
     const cb: Callback = (err, data) => {
@@ -267,7 +264,7 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
       access: ['$all'],
       gitlab: true,
       publish: ['$authenticated'],
-      proxy: ['npmjs']
+      proxy: ['npmjs'],
     };
 
     const cb: Callback = (err, data) => {

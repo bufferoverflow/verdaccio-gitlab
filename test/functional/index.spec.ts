@@ -1,12 +1,9 @@
-// @flow
-
-import type { IServerBridge } from '../types';
+import { IServerBridge } from '../types';
 
 import basic from './basic';
 import auth from './auth';
 import access from './access';
 import publish from './publish';
-
 
 describe('Functional Tests verdaccio-gitlab', () => {
   jest.setTimeout(10000);
@@ -21,8 +18,8 @@ describe('Functional Tests verdaccio-gitlab', () => {
   publish(server1, gitlab);
 });
 
-process.on('unhandledRejection', (err) => {
-  console.error("unhandledRejection", err);
+process.on('unhandledRejection', err => {
+  console.error('unhandledRejection', err);
   process.nextTick(() => {
     throw err;
   });
