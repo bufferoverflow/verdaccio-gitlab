@@ -33,7 +33,7 @@ export class AuthCache {
   }
 
   findUser(username: string, password: string): UserData {
-    return this.storage.get(AuthCache._generateKeyHash(username, password));
+    return this.storage.get(AuthCache._generateKeyHash(username, password)) as UserData;
   }
 
   storeUser(username: string, password: string, userData: UserData): boolean {

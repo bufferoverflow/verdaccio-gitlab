@@ -53,6 +53,7 @@ export interface VerdaccioGitLabPlugin extends IPluginAuth<VerdaccioGitlabConfig
 export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
   options: PluginOptions<VerdaccioGitlabConfig>;
   config: VerdaccioGitlabConfig;
+  // @ts-ignore
   authCache: AuthCache;
   logger: Logger;
   publishLevel: VerdaccioGitlabAccessLevel;
@@ -93,6 +94,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
     // Try to find the user groups in the cache
     const cachedUserGroups = this._getCachedUserGroups(user, password);
     if (cachedUserGroups) {
+      // @ts-ignore
       this.logger.debug(`[gitlab] user: ${user} found in cache, authenticated with groups:`, cachedUserGroups);
       return cb(null, cachedUserGroups.publish);
     }
@@ -120,6 +122,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
       // - for access, depending on the package settings in verdaccio
       // - for publish, the logged in user id and all the groups they can reach as fixed `$auth.gitlab.publish` = `$owner`
       const gitlabPublishQueryParams = this.config.legacy_mode ? { owned: true } : { min_access_level: publishLevelId };
+      // @ts-ignore
       this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams);
 
       const groupsPromise = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
@@ -135,6 +138,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
         this._setCachedUserGroups(user, password, { publish: realGroups });
 
         this.logger.info(`[gitlab] user: ${user} successfully authenticated`);
+        // @ts-ignore
         this.logger.debug(`[gitlab] user: ${user}, with groups:`, realGroups);
 
         return cb(null, realGroups);
@@ -201,7 +205,8 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
       return cb(null, true);
     } else {
       this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
-      const missingPerm = _package.name ?? _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
+      // @ts-ignore
+      const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
       return cb(getForbidden(`must have required permissions: ${this.publishLevel || ''} at ${missingPerm}`));
     }
   }
