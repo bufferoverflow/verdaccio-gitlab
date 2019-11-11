@@ -1,7 +1,7 @@
 import { CREDENTIALS, PACKAGE } from '../config.functional';
 import { API_ERROR, HTTP_STATUS } from '../../lib/constants';
 
-export default (server: any, gitlab: any) => {
+export default (server: any, _gitlab: any) => {
   // eslint-disable-line no-unused-vars
 
   describe('package access tests', () => {
