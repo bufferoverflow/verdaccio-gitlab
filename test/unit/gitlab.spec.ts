@@ -1,5 +1,5 @@
 import { Callback, RemoteUser } from '@verdaccio/types';
-// eslint-disable-line @typescript-eslint/no-unused-vars
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Gitlab from 'gitlab';
 
 import { VerdaccioGitlabPackageAccess } from '../../src/gitlab';
