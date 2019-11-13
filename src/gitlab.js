@@ -102,7 +102,7 @@ export default class VerdaccioGitLab implements IPluginAuth {
     });
 
     GitlabAPI.Users.current().then(response => {
-      if (user !== response.username) {
+      if (user !== response.username.toLowerCase()) {
         return cb(httperror[401]('wrong gitlab username'));
       }
 
