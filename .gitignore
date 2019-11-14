@@ -5,3 +5,4 @@ coverage/
 tests-report/
 test-storage*
 yarn-error.log
+.idea/*

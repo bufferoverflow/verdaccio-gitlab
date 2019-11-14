@@ -1,32 +1,3 @@
 {
-  "env": {
-    "test": {
-      "presets": [
-        ["env", {
-          "targets": { "node": "current" }
-        }],
-        "flow"
-      ],
-      "plugins": []
-    },
-    "registry": {
-      "presets": [
-        ["env", {
-          "targets": { "node": "current" }
-        }],
-        "flow"
-      ],
-      "plugins": []
-    },
-    "registry-docker": {
-      "presets": [
-        ["env", {
-          "targets": { "node": "10" }
-        }],
-        "flow"
-      ],
-      "plugins": []
-    },
-    "development": {}
-  }
+  "presets": [["@verdaccio"]]
 }

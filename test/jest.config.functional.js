@@ -1,12 +1,11 @@
 /* eslint comma-dangle: 0 */
 
 module.exports = {
-  name: 'verdaccio-gitlab-functional-jest',
+  name: 'verdaccio-functional-jest',
   verbose: true,
-  rootDir: '..',
-  testEnvironment: './test/functional/test-environment.js',
-  globalSetup: './test/functional/pre-setup.js',
-  globalTeardown: './test/functional/teardown.js',
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  globalSetup: './functional/pre-setup.js',
+  globalTeardown: './functional/teardown.js',
+  testEnvironment: './functional/test-environment.js',
   collectCoverage: false,
-  testRegex: 'test/functional/.*.spec\\.js',
 };

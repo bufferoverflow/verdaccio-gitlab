@@ -7,6 +7,6 @@ script:
   - yarn install
   - commitlint-travis
   - yarn license
-  - yarn lint
+  - yarn lint:ts
   - yarn code:build
   - yarn test:all
