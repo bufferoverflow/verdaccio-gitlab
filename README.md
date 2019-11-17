@@ -17,11 +17,6 @@ the following:
 
 > This is experimental!
 
-## Gitlab Version Compatibility
-
-- If `legacy_mode: false` or undefined (default mode): Gitlab 11.2+
-- If `legacy_mode: true`: Gitlab 9.0+
-
 ## Use it
 
 You need at least node version 8.x.x, codename **carbon**.
@@ -137,11 +132,6 @@ For instance, assuming the following configuration:
   - `@group3/project`
   - error if the user tries to publish any package under `@group2/**`
 
-### Legacy Mode
-
-If using the legacy mode, the system behaves as in normal mode with
-fixed configuration `auth.gitlab.publish` = `$owner`
-
 ## Configuration Options
 
 The full set of configuration options is:
@@ -153,7 +143,6 @@ auth:
     authCache:
       enabled: <boolean>
       ttl: <integer>
-    legacy_mode: <boolean>
     publish: <string>
 ```
 
@@ -163,8 +152,7 @@ auth:
 | `url` | `<empty>` | url | mandatory, the url of the gitlab server |
 | `authCache: enabled` | `true` | boolean | activate in-memory authentication cache |
 | `authCache: ttl` | `300` (`0`=unlimited) | integer | time-to-live of entries in the authentication cache, in seconds |
-| `legacy_mode` | `false` | boolean | gitlab versions pre-11.2 do not support groups api queries based on access level; this enables the legacy behaviour of only allowing npm publish operations on groups where the logged in user has owner rights |
-| `publish` | `$maintainer` | [`$guest`, `$reporter`, `$developer`, `$maintainer`, `$owner`] | group minimum access level of the logged in user required for npm publish operations (does not apply in legacy mode) |
+| `publish` | `$maintainer` | [`$guest`, `$reporter`, `$developer`, `$maintainer`, `$owner`] | group minimum access level of the logged in user required for npm publish operations |
 <!-- markdownlint-enable MD013 -->
 
 ## Authentication Cache
