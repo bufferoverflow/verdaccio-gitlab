@@ -16,7 +16,6 @@ export type VerdaccioGitlabConfig = {
     enabled?: boolean;
     ttl?: number;
   };
-  legacy_mode?: boolean;
   publish?: VerdaccioGitlabAccessLevel;
 };
 
@@ -65,20 +64,16 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
       this.logger.info(`[gitlab] initialized auth cache with ttl: ${ttl} seconds`);
     }
 
-    if (this.config.legacy_mode) {
-      this.publishLevel = '$owner';
-      this.logger.info('[gitlab] legacy mode pre-gitlab v11.2 active, publish is only allowed to group owners');
-    } else {
-      this.publishLevel = '$maintainer';
-      if (this.config.publish) {
-        this.publishLevel = this.config.publish;
-      }
 
-      if (!Object.keys(ACCESS_LEVEL_MAPPING).includes(this.publishLevel)) {
-        throw Error(`[gitlab] invalid publish access level configuration: ${this.publishLevel}`);
-      }
-      this.logger.info(`[gitlab] publish control level: ${this.publishLevel}`);
+    this.publishLevel = '$maintainer';
+    if (this.config.publish) {
+      this.publishLevel = this.config.publish;
     }
+
+    if (!Object.keys(ACCESS_LEVEL_MAPPING).includes(this.publishLevel)) {
+      throw Error(`[gitlab] invalid publish access level configuration: ${this.publishLevel}`);
+    }
+    this.logger.info(`[gitlab] publish control level: ${this.publishLevel}`);
   }
 
   authenticate(user: string, password: string, cb: Callback) {
@@ -111,13 +106,8 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
         // Set the groups of an authenticated user, in normal mode:
         // - for access, depending on the package settings in verdaccio
         // - for publish, the logged in user id and all the groups they can reach as configured with access level `$auth.gitlab.publish`
-        //
-        // In legacy mode, the groups are:
-        // - for access, depending on the package settings in verdaccio
-        // - for publish, the logged in user id and all the groups they can reach as fixed `$auth.gitlab.publish` = `$owner`
-        const gitlabPublishQueryParams = this.config.legacy_mode
-          ? { owned: true }
-          : { min_access_level: publishLevelId };
+        const gitlabPublishQueryParams = { min_access_level: publishLevelId };
+
         // @ts-ignore
         this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams);
 
