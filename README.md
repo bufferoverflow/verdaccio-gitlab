@@ -86,18 +86,14 @@ yarn publish --registry http://localhost:4873
 
 ## Access Levels
 
-Access and publish access rights depend on the mode used.
+Access and publish access rights are mapped following the rules below.
 
 verdaccio-gitlab access control will only be applied to package sections that
 are marked with `gitlab: true` as in the configuration sample above. If you
 wish to disable gitlab authentication to any package config, just remove the
 element from the config.
 
-### Normal Mode (default)
-
-In normal mode, packages are available:
-
-#### Access
+### Access
 
 *access* is allowed depending on the following verdaccio `package` configuration
 directives:
@@ -109,7 +105,7 @@ directives:
 Please note that no group or package name mapping is applied on access, any
 user successfully authenticated can access all packages.
 
-#### Publish
+### Publish
 
 *publish* is allowed if the package name matches the logged in user
   id, if the package name or scope of the package matches one of the
