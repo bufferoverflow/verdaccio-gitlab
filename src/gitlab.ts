@@ -97,7 +97,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
 
     GitlabAPI.Users.current()
       .then(response => {
-        if (user !== response.username.toLowerCase()) {
+        if (user.toLowerCase() !== response.username.toLowerCase()) {
           return cb(getUnauthorized('wrong gitlab username'));
         }
 
