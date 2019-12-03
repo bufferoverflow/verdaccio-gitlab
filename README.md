@@ -57,13 +57,13 @@ packages:
   '@*/*':
     # scoped packages
     access: $all
-    publish: $authenticated
+    publish: $owned-group
     proxy: npmjs
     gitlab: true
 
   '**':
     access: $all
-    publish: $authenticated
+    publish: $owned-group
     proxy: npmjs
     gitlab: true
 
@@ -102,40 +102,47 @@ element from the config.
 
 In normal mode, packages are available:
 
-#### Access
+#### Permissions
 
-*access* is allowed depending on the following verdaccio `package` configuration
-directives:
+In order to define the way users can interact with packages, `verdaccio-gitlab` handles the following internal groups to determine permissions:
 
-- authenticated users are able to access all packages
-- unauthenticated users will be able to access packages marked with either
-  `$all` or `$anonymous` access levels at the package group definition
+* `$all` or `$anonymous`: Any user can perform the action on the packages. No condition at all.
+* `$authenticated`: Any successfully authenticated user can perform the action on the packages.
+* `$owned-group`: A user can perform the action on a package if
+  1. the package name matches the user's GitLab username, or
+  2. the package matches one of the user's groups or
+  3. the package name (possibly scoped) matches one of the user's projects
 
-Please note that no group or package name mapping is applied on access, any
-user successfully authenticated can access all packages.
-
-#### Publish
-
-*publish* is allowed if the package name matches the logged in user
-  id, if the package name or scope of the package matches one of the
-  user's groups, and the user has `auth.gitlab.publish` access rights on
-  the group, or if the package name (possibly scoped) matches on the user's
-  projects, and the user has `auth.gitlab.publish` access rights on
-  the project.
+  For 2. and 3., the GitLab user must have the access rights on the group or project as specified in the `auth.gitlab.publish` setting.
 
 For instance, assuming the following configuration:
 
-- `auth.gitlab.publish` = `$maintainer`
-- the gitlab user `sample_user` has access to group `group1` as
-  `$maintainer` and `group2` as `$reporter` in gitlab and has access to project
-  `group3/project` as `$maintainer`
-- then this user would be able to *access* any package
-- *publish* any of the following npm packages in verdaccio:
+```yaml
+auth:
+  gitlab:
+    publish: $maintainer
+```
+
+The GitLab user `sample_user` has access to:
+
+- Group `group1` as `$maintainer`
+- Group `group2` as `$reporter`
+- Project `group3/project` as `$maintainer`
+
+Then this user would be able to:
+
+- Perform the action on any of the following packages:
   - `sample_user`
   - `group1`
   - any package under `@group1/**`
   - `@group3/project`
-  - error if the user tries to publish any package under `@group2/**`
+
+There would be an error if the user tried to publish any package under `@group2/**`.
+
+#### Default permissions
+
+The default permission for the `access` action is `$all`, anyone can access any package.  
+The default permission for the `publish` action is `$owned-group`, a user can access packages depending on its gitlab projects and/or groups.
 
 ### Legacy Mode
 
