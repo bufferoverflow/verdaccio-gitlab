@@ -228,9 +228,13 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
     }
   }
 
-  allow_access = this.allow_action("access", DEFAULT_ALLOW_ACCESS_LEVEL);
+  allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
+    return this.allow_action("access", DEFAULT_ALLOW_ACCESS_LEVEL)(user, _package, cb);
+  }
 
-  allow_publish = this.allow_action("publish", DEFAULT_ALLOW_PUBLISH_LEVEL);
+  allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
+    return this.allow_action("publish", DEFAULT_ALLOW_PUBLISH_LEVEL)(user, _package, cb);
+  }
 
   _matchGroupWithPackage(real_group: string, package_name: string): boolean {
     if (real_group === package_name) {
