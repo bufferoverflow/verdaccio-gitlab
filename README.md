@@ -95,16 +95,20 @@ element from the config.
 
 ### Permissions
 
-In order to define the way users can interact with packages, `verdaccio-gitlab` handles the following internal groups to determine permissions:
+In order to define the way users can interact with packages, `verdaccio-gitlab`
+handles the following internal groups to determine permissions:
 
-* `$all` or `$anonymous`: Any user can perform the action on the packages. No condition at all.
-* `$authenticated`: Any successfully authenticated user can perform the action on the packages.
-* `$owned-group`: A user can perform the action on a package if
+- `$all` or `$anonymous`: Any user can perform the action on the packages. No
+condition at all.
+- `$authenticated`: Any successfully authenticated user can perform the action
+on the packages.
+- `$owned-group`: A user can perform the action on a package if
   1. the package name matches the user's GitLab username, or
   2. the package matches one of the user's groups or
   3. the package name (possibly scoped) matches one of the user's projects
 
-  For 2. and 3., the GitLab user must have the access rights on the group or project as specified in the `auth.gitlab.publish` setting.
+  For 2. and 3., the GitLab user must have the access rights on the group or
+  project as specified in the `auth.gitlab.publish` setting.
 
 For instance, assuming the following configuration:
 
@@ -132,8 +136,10 @@ There would be an error if the user tried to publish any package under `@group2/
 
 #### Default permissions
 
-The default permission for the `access` action is `$all`, anyone can access any package.  
-The default permission for the `publish` action is `$owned-group`, a user can access packages depending on its gitlab projects and/or groups.
+The default permission for the `access` action is `$all`, anyone can access
+any package.  
+The default permission for the `publish` action is `$owned-group`, a user
+can access packages depending on its gitlab projects and/or groups.
 
 ## Configuration Options
 
