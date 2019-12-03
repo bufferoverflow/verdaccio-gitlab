@@ -17,11 +17,6 @@ the following:
 
 > This is experimental!
 
-## Gitlab Version Compatibility
-
-- If `legacy_mode: false` or undefined (default mode): Gitlab 11.2+
-- If `legacy_mode: true`: Gitlab 9.0+
-
 ## Use it
 
 You need at least node version 8.x.x, codename **carbon**.
@@ -91,18 +86,14 @@ yarn publish --registry http://localhost:4873
 
 ## Access Levels
 
-Access and publish access rights depend on the mode used.
+Access and publish access rights are mapped following the rules below.
 
 verdaccio-gitlab access control will only be applied to package sections that
 are marked with `gitlab: true` as in the configuration sample above. If you
 wish to disable gitlab authentication to any package config, just remove the
 element from the config.
 
-### Normal Mode (default)
-
-In normal mode, packages are available:
-
-#### Permissions
+### Permissions
 
 In order to define the way users can interact with packages, `verdaccio-gitlab` handles the following internal groups to determine permissions:
 
@@ -144,11 +135,6 @@ There would be an error if the user tried to publish any package under `@group2/
 The default permission for the `access` action is `$all`, anyone can access any package.  
 The default permission for the `publish` action is `$owned-group`, a user can access packages depending on its gitlab projects and/or groups.
 
-### Legacy Mode
-
-If using the legacy mode, the system behaves as in normal mode with
-fixed configuration `auth.gitlab.publish` = `$owner`
-
 ## Configuration Options
 
 The full set of configuration options is:
@@ -160,7 +146,6 @@ auth:
     authCache:
       enabled: <boolean>
       ttl: <integer>
-    legacy_mode: <boolean>
     publish: <string>
 ```
 
@@ -170,8 +155,7 @@ auth:
 | `url` | `<empty>` | url | mandatory, the url of the gitlab server |
 | `authCache: enabled` | `true` | boolean | activate in-memory authentication cache |
 | `authCache: ttl` | `300` (`0`=unlimited) | integer | time-to-live of entries in the authentication cache, in seconds |
-| `legacy_mode` | `false` | boolean | gitlab versions pre-11.2 do not support groups api queries based on access level; this enables the legacy behaviour of only allowing npm publish operations on groups where the logged in user has owner rights |
-| `publish` | `$maintainer` | [`$guest`, `$reporter`, `$developer`, `$maintainer`, `$owner`] | group minimum access level of the logged in user required for npm publish operations (does not apply in legacy mode) |
+| `publish` | `$maintainer` | [`$guest`, `$reporter`, `$developer`, `$maintainer`, `$owner`] | group minimum access level of the logged in user required for npm publish operations |
 <!-- markdownlint-enable MD013 -->
 
 ## Authentication Cache
