@@ -38,6 +38,7 @@ const BUILTIN_ACCESS_LEVEL_ANONYMOUS = ['$anonymous', '$all'];
 
 // Level to apply on 'allow_access' calls when a package definition does not define one
 const DEFAULT_ALLOW_ACCESS_LEVEL = ['$all'];
+const DEFAULT_ALLOW_PUBLISH_LEVEL = ['$owned-group'];
 
 export interface VerdaccioGitLabPlugin extends IPluginAuth<VerdaccioGitlabConfig> {
   authCache: AuthCache;
@@ -161,60 +162,80 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
     return cb(getInternalError('You are using verdaccio-gitlab integration. Please change your password in gitlab'));
   }
 
-  allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
-    if (!_package.gitlab) return cb(null, false);
+  allow_action(action: "access" | "publish", defaultPermissions: string[]) {
+    return (user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) => {
+      if (!_package.gitlab) {
+        return cb(null, false);
+      }
 
-    const packageAccess = _package.access && _package.access.length > 0 ? _package.access : DEFAULT_ALLOW_ACCESS_LEVEL;
+      const actionValue = _package[action];
+      const packageAction = actionValue && actionValue.length > 0 ? actionValue : defaultPermissions;
 
-    if (user.name !== undefined) {
-      // successfully authenticated
-      this.logger.debug(`[gitlab] allow user: ${user.name} authenticated access to package: ${_package.name}`);
-      return cb(null, true);
-    } else {
-      // unauthenticated
-      if (BUILTIN_ACCESS_LEVEL_ANONYMOUS.some(level => packageAccess.includes(level))) {
-        this.logger.debug(`[gitlab] allow anonymous access to package: ${_package.name}`);
+      this.logger.debug(`[gitlab][${action}] Checking if user can perform action with configuration: "${packageAction.join(', ')}"`)
+  
+      // Any authenticated used can perform the action
+      if (packageAction.includes("$authenticated") && user.name !== undefined) {
+        this.logger.debug(`[gitlab][${action}] allow user: ${user.name} authenticated action on package: ${_package.name}`);
         return cb(null, true);
-      } else {
-        this.logger.debug(`[gitlab] deny access to package: ${_package.name}`);
-        return cb(getUnauthorized('access denied, user not authenticated and anonymous access disabled'));
       }
-    }
-  }
 
-  allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
-    if (!_package.gitlab) return cb(null, false);
-
-    const packageScopePermit = false;
-    let packagePermit = false;
-    // Only allow to publish packages when:
-    //  - the package has exactly the same name as one of the user groups, or
-    //  - the package scope is the same as one of the user groups
-    for (const real_group of user.real_groups) {
-      // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
-      this.logger.trace(
-        `[gitlab] publish: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`
-      );
-
-      if (this._matchGroupWithPackage(real_group, _package.name as string)) {
-        packagePermit = true;
-        break;
+      // Any user can perform the action
+      if (BUILTIN_ACCESS_LEVEL_ANONYMOUS.some(level => packageAction.includes(level))) {
+        this.logger.debug(`[gitlab][${action}] allow anonymous action on package: ${_package.name}`);
+        return cb(null, true);
       }
-    }
 
-    if (packagePermit || packageScopePermit) {
-      const perm = packagePermit ? 'package-name' : 'package-scope';
-      this.logger.debug(
-        `[gitlab] user: ${user.name || ''} allowed to publish package: ${_package.name} based on ${perm}`
-      );
-      return cb(null, true);
+      // Any authenticated user can perform the action on an owned group
+      // Only allow to perform action on packages when:
+      //  - the package has exactly the same name as one of the user groups, or
+      //  - the package scope is the same as one of the user groups
+      if (packageAction.includes("$owned-group")) {
+        let packagePermit = false;
+
+        for (const real_group of user.real_groups) {
+          // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+          this.logger.trace(
+            `[gitlab][${action}]: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`
+          );
+    
+          if (this._matchGroupWithPackage(real_group, _package.name!)) {
+            packagePermit = true;
+            break;
+          }
+        }
+
+        if (packagePermit) {
+          this.logger.debug(`[gitlab][${action}] is allowed to access the package: ${_package.name}`);
+          return cb(null, true);
+        }
+      }
     } else {
       this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
       // @ts-ignore
       const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
       return cb(getForbidden(`must have required permissions: ${this.publishLevel || ''} at ${missingPerm}`));
+
+      const errorMessages = [
+        `The action '${action}' was denied for the user ${user.name || null}.`,
+        "Possible causes:",
+      ];
+
+      if ((!BUILTIN_ACCESS_LEVEL_ANONYMOUS.some(level => packageAction.includes(level))) && user.name === undefined) {
+        errorMessages.push("\t- You are not authenticated.");
+      }
+
+      if (packageAction.includes("$owned-group")) {
+        errorMessages.push(`\t- You don't have ${this.publishLevel} permission for ${(_package.name || "").replace(/^@/,'')} group or project on Gitlab.`);
+      }
+
+      this.logger.debug(`[gitlab][${action}]\n${errorMessages.join('\n')}`);
+      return cb(getForbidden(errorMessages.join('\n')));
     }
   }
+
+  allow_access = this.allow_action("access", DEFAULT_ALLOW_ACCESS_LEVEL);
+
+  allow_publish = this.allow_action("publish", DEFAULT_ALLOW_PUBLISH_LEVEL);
 
   _matchGroupWithPackage(real_group: string, package_name: string): boolean {
     if (real_group === package_name) {
