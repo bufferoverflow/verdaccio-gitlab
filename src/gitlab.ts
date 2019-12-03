@@ -209,11 +209,6 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
           return cb(null, true);
         }
       }
-    } else {
-      this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
-      // @ts-ignore
-      const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
-      return cb(getForbidden(`must have required permissions: ${this.publishLevel || ''} at ${missingPerm}`));
 
       const errorMessages = [
         `The action '${action}' was denied for the user ${user.name || null}.`,
