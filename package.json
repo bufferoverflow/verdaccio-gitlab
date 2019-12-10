@@ -6,7 +6,7 @@
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "commitmsg": "commitlint -q -e $GIT_PARAMS",
+    "commitmsg": "commitlint -e",
     "license": "license-checker --onlyAllow 'Apache-2.0; Apache License, Version 2.0; BSD; BSD-2-Clause; BSD-3-Clause; ISC; MIT; Unlicense; WTFPL; CC-BY-3.0; CC0-1.0' --production",
     "type-check:watch": "npm run type-check -- --watch",
     "lint:ts": "eslint . --ext .js,.ts",
