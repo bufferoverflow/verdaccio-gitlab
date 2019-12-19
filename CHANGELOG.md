@@ -1,3 +1,46 @@
+## 3.0.0 (2019-12-19)
+
+##### Chores
+
+* **lint:**  add markdownlint, use lint instead of lint:ts witin ci ([8af48c38](https://github.com/bufferoverflow/verdaccio-gitlab/commit/8af48c3877c9ea8d8b0d718d2aa1041ca7f9a70f))
+*  upgrade commitlint and jest-environment-node ([6d4fd063](https://github.com/bufferoverflow/verdaccio-gitlab/commit/6d4fd0630daf1dc5e3623b4d55926add265e6f4a))
+*  remove warning ([74e9e8e9](https://github.com/bufferoverflow/verdaccio-gitlab/commit/74e9e8e90363b201c87d413a60bf2d0b97fdb3be))
+*  add prettier conf ([5dc2c674](https://github.com/bufferoverflow/verdaccio-gitlab/commit/5dc2c674a1866c79fb1738d2eb470999031c936c))
+*  remove eclint ([2f04b5cd](https://github.com/bufferoverflow/verdaccio-gitlab/commit/2f04b5cd935323f75eedeb114b96393a02f5adf9))
+*  fix wrong error ([f7736b46](https://github.com/bufferoverflow/verdaccio-gitlab/commit/f7736b46e75970bfb6a133c3abb8ab5565e0beef))
+*  add missing dependency ([8407cdac](https://github.com/bufferoverflow/verdaccio-gitlab/commit/8407cdac9b05d04358c910d712e00099aceeec88))
+*  fix test ([9a424f9d](https://github.com/bufferoverflow/verdaccio-gitlab/commit/9a424f9d903c121ee2b2a4e28382ba056d19f422))
+*  fix lint issues ([4eed60d7](https://github.com/bufferoverflow/verdaccio-gitlab/commit/4eed60d764d450f731be87bc470449347ff6c30b))
+*  lint issues ([6085b6fc](https://github.com/bufferoverflow/verdaccio-gitlab/commit/6085b6fc7efb79aba619f3deed2b804a4f57bf1a))
+*  migrating to typescript ([56d11877](https://github.com/bufferoverflow/verdaccio-gitlab/commit/56d118775f4ccb06f074015e9eddf993cece4428))
+*  upgrade verdaccio to latest stable 4.0.0 ([ebdea8ac](https://github.com/bufferoverflow/verdaccio-gitlab/commit/ebdea8accc58952486909120ce78da8f9e4b8ae7))
+* **deps:**
+  *  bump handlebars from 4.0.11 to 4.1.2 ([c3acd112](https://github.com/bufferoverflow/verdaccio-gitlab/commit/c3acd112a087361028bd1534805d719464cdfe6f))
+  *  allow patches & minor updates on verdaccio dependency ([6d752fee](https://github.com/bufferoverflow/verdaccio-gitlab/commit/6d752fee1fc5c37fe10f687304bd49b56d12a7b1))
+* **deps-dev:**  bump lodash from 4.17.10 to 4.17.13 ([82848808](https://github.com/bufferoverflow/verdaccio-gitlab/commit/82848808f5156c09b12a765cda998847dff1d8cf))
+* **docker:**  update verdaccio dep to 4.0 ([c2beeba0](https://github.com/bufferoverflow/verdaccio-gitlab/commit/c2beeba096a7c802a3fd49889521e7e1b10e60c4))
+
+##### Documentation Changes
+
+*  remove references to normal mode in readme ([ab36d309](https://github.com/bufferoverflow/verdaccio-gitlab/commit/ab36d309d45a6b7a49c606c53d54336eb8c4a46a))
+*  fix typo within README.md ([23c8a598](https://github.com/bufferoverflow/verdaccio-gitlab/commit/23c8a598352d16a87b8e40e107b1969b2added4e))
+
+##### New Features
+
+*  get rid of legacy mode ([2fa6944c](https://github.com/bufferoverflow/verdaccio-gitlab/commit/2fa6944cc3f43c31f32127a61bb4e09b22504461))
+
+##### Bug Fixes
+
+* **auth:**
+  *  compare to lower-cased version of user ([82b7d1a8](https://github.com/bufferoverflow/verdaccio-gitlab/commit/82b7d1a85760b7780e331240d9bd1e6e0bc3388c))
+  *  allows matching of mixed-case usernames ([d75f3003](https://github.com/bufferoverflow/verdaccio-gitlab/commit/d75f30030a390de7597a18aa284779e4c508ba70))
+
+##### Refactors
+
+*  update dependencies and script ([87c679d3](https://github.com/bufferoverflow/verdaccio-gitlab/commit/87c679d3fe1e2650165a2ed3876feaa90adf71a3))
+*  update dependencies ([cde1a60f](https://github.com/bufferoverflow/verdaccio-gitlab/commit/cde1a60f021c4e809c88e011e91a3d19bbfe1596))
+*  upgrade to latest flow-types for verdaccio 4.x ([03db18d9](https://github.com/bufferoverflow/verdaccio-gitlab/commit/03db18d973425338599fe8b2cdbbbf871868ba44))
+
 ### 2.2.0 (2018-12-07)
 
 ##### New Features
