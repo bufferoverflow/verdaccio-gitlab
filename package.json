@@ -26,7 +26,7 @@
     "test:all": "yarn test && yarn test:functional"
   },
   "main": "build/index.js",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "private npm registry (Verdaccio) using gitlab-ce as authentication and authorization provider",
   "keywords": [
     "sinopia",
