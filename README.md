@@ -107,26 +107,41 @@ user successfully authenticated can access all packages.
 
 ### Publish
 
-*publish* is allowed if the package name matches the logged in user
-  id, if the package name or scope of the package matches one of the
-  user's groups, and the user has `auth.gitlab.publish` access rights on
-  the group, or if the package name (possibly scoped) matches on the user's
-  projects, and the user has `auth.gitlab.publish` access rights on
-  the project.
+*publish* is allowed if:
+
+1. the package name matches the GitLab username, or
+2. if the package name or scope of the package matches one of the
+   user's GitLab groups, or
+3. if the package name (possibly scoped) matches on the user's
+   GitLab projects.
+
+For 2. and 3., the GitLab user must have the access rights on the group or
+project as specified in the `auth.gitlab.publish` setting.
 
 For instance, assuming the following configuration:
 
-- `auth.gitlab.publish` = `$maintainer`
-- the gitlab user `sample_user` has access to group `group1` as
-  `$maintainer` and `group2` as `$reporter` in gitlab and has access to project
-  `group3/project` as `$maintainer`
-- then this user would be able to *access* any package
-- *publish* any of the following npm packages in verdaccio:
+```yaml
+auth:
+  gitlab:
+    publish = $maintainer
+```
+
+The GitLab user `sample_user` has access to:
+
+- Group `group1` as `$maintainer`
+- Group `group2` as `$reporter`
+- Project `group3/project` as `$maintainer`
+
+Then this user would be able to:
+
+- *access* any package
+- *publish* any of the following packages:
   - `sample_user`
   - `group1`
   - any package under `@group1/**`
   - `@group3/project`
-  - error if the user tries to publish any package under `@group2/**`
+
+There would be an error if the user tried to publish any package under `@group2/**`.
 
 ## Configuration Options
 
