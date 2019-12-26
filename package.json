@@ -83,7 +83,6 @@
     "lodash": "^4.17.15",
     "markdownlint-cli": "0.19.0",
     "prettier": "^1.19.1",
-    "repolinter": "0.7.0",
     "request": "^2.88.0",
     "rimraf": "^2.6.2",
     "typescript": "3.7.2"
