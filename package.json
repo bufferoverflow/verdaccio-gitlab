@@ -75,7 +75,7 @@
     "express": "^4.16.3",
     "generate-changelog": "1.7.1",
     "http-status": "^1.2.0",
-    "husky": "0.14.3",
+    "husky": "3.1.0",
     "in-publish": "2.0.0",
     "jest": "24.9.0",
     "jest-environment-node": "^24.9.0",
