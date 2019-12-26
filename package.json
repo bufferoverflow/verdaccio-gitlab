@@ -6,7 +6,6 @@
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "commitmsg": "commitlint -e $GIT_PARAMS",
     "license": "license-checker --onlyAllow 'Apache-2.0; Apache License, Version 2.0; BSD; BSD-2-Clause; BSD-3-Clause; ISC; MIT; Unlicense; WTFPL; CC-BY-3.0; CC0-1.0' --production --summary",
     "type-check:watch": "npm run type-check -- --watch",
     "lint:ts": "eslint . --ext .js,.ts",
@@ -47,7 +46,7 @@
     "url": "https://github.com/bufferoverflow/verdaccio-gitlab/issues"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "dependencies": {
     "gitlab": "3.5.1",
@@ -57,41 +56,60 @@
     "verdaccio": "^4.3.4"
   },
   "devDependencies": {
-    "@commitlint/cli": "8.2.0",
-    "@commitlint/config-conventional": "8.2.0",
-    "@commitlint/travis-cli": "8.2.0",
-    "@types/http-errors": "1.6.2",
-    "@types/jest": "24.0.22",
-    "@types/lodash": "^4.14.146",
-    "@types/node": "^12.12.7",
-    "@typescript-eslint/eslint-plugin": "2.6.1",
-    "@verdaccio/babel-preset": "^8.2.0",
-    "@verdaccio/commons-api": "^8.2.0",
-    "@verdaccio/eslint-config": "^8.2.0",
-    "@verdaccio/types": "^8.3.0",
-    "body-parser": "^1.18.3",
-    "chalk": "^2.4.1",
-    "cross-env": "^5.2.0",
-    "eslint": "^6.3.0",
-    "express": "^4.16.3",
-    "generate-changelog": "1.7.1",
-    "http-status": "^1.2.0",
-    "husky": "0.14.3",
-    "in-publish": "2.0.0",
-    "jest": "24.9.0",
+    "@commitlint/cli": "^8.3.3",
+    "@commitlint/config-conventional": "^8.3.3",
+    "@commitlint/travis-cli": "^8.3.3",
+    "@types/http-errors": "^1.6.3",
+    "@types/jest": "^24.0.24",
+    "@types/lodash": "^4.14.149",
+    "@types/node": "^13.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
+    "@verdaccio/babel-preset": "^8.5.0",
+    "@verdaccio/commons-api": "^8.5.0",
+    "@verdaccio/eslint-config": "^8.5.0",
+    "@verdaccio/types": "^8.5.0",
+    "body-parser": "^1.19.0",
+    "chalk": "^2.4.2",
+    "cross-env": "^6.0.3",
+    "eslint": "^6.8.0",
+    "express": "^4.17.1",
+    "generate-changelog": "^1.8.0",
+    "http-status": "^1.4.2",
+    "husky": "^3.1.0",
+    "in-publish": "^2.0.0",
+    "jest": "^24.9.0",
     "jest-environment-node": "^24.9.0",
-    "license-checker": "20.1.0",
+    "license-checker": "^25.0.1",
     "lodash": "^4.17.15",
-    "markdownlint-cli": "0.19.0",
+    "markdownlint-cli": "^0.20.0",
     "prettier": "^1.19.1",
-    "repolinter": "0.7.0",
     "request": "^2.88.0",
-    "rimraf": "^2.6.2",
-    "typescript": "3.7.2"
+    "rimraf": "^3.0.0",
+    "typescript": "^3.7.4"
   },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "@verdaccio"
+    ],
+    "rules": {
+      "@typescript-eslint/no-var-requires": 0,
+      "@typescript-eslint/ban-ts-ignore": 0,
+      "@typescript-eslint/no-use-before-define": 0,
+      "@typescript-eslint/no-explicit-any": 0,
+      "@typescript-eslint/explicit-function-return-type": 0,
+      "@typescript-eslint/explicit-member-accessibility": 0
+    },
+    "ignorePatterns": ["build/", "node_modules/"]
   }
 }

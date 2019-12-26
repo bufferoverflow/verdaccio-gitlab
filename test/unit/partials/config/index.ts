@@ -1,8 +1,7 @@
-
 import { PluginOptions, RemoteUser } from '@verdaccio/types';
+
 import { VerdaccioGitlabConfig } from '../../../../src/gitlab';
 import { UserDataGroups } from '../../../../src/authcache';
-
 import logger from '../logger';
 import { UserData } from '../../../../src/authcache';
 
@@ -12,14 +11,14 @@ const verdaccioGitlabConfig: VerdaccioGitlabConfig = {
 };
 
 const options: PluginOptions<VerdaccioGitlabConfig> = {
-  //@ts-ignore
+  // @ts-ignore
   config:  {},
-  //@ts-ignore
+  // @ts-ignore
   logger: logger
 };
 
-const user: string = 'myUser';
-const pass: string = 'myPass';
+const user = 'myUser';
+const pass = 'myPass';
 const remoteUser: RemoteUser = {
   real_groups: ['myGroup', 'anotherGroup/myProject', user],
   groups: ['myGroup', 'anotherGroup/myProject', user],
