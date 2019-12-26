@@ -1,6 +1,0 @@
-node_modules/
-build/
-flow-typed/
-coverage/
-tests-report/
-test/unit/partials/
