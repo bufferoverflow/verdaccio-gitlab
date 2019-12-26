@@ -222,22 +222,6 @@ finally run
 yarn publish
 ```
 
-## Flow Support
-
-In order to support flow, flow-typed support files are installed in the
-repo. These are generated based on the dependencies of the project and
-committed to the repository.
-
-Anytime the project dependencies change, run the following command to
-update the flow-typed support files:
-
-```bash
-# Just once in your environment
-yarn global add flow-typed
-
-flow-typed install
-```
-
 ## Functional Tests
 
 In order to run functional tests with debug output, set the
