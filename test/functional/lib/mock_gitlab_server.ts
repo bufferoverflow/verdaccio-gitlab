@@ -6,16 +6,16 @@ import { GITLAB_DATA, CREDENTIALS } from '../config.functional';
 import { GITLAB, HTTP_STATUS } from '../../lib/constants';
 
 export default class GitlabServer {
-  app: any;
-  server: any;
-  expectedToken: string;
+  private app: any;
+  private server: any;
+  private expectedToken: string;
 
-  constructor() {
+  public constructor() {
     this.app = express();
     this.expectedToken = CREDENTIALS.password;
   }
 
-  start(port: number): Promise<any> {
+  public start(port: number): Promise<any> {
     return new Promise(resolve => {
       this.app.use(bodyParser.json());
       this.app.use(
@@ -50,7 +50,7 @@ export default class GitlabServer {
     });
   }
 
-  _checkAuthentication(req: any, res: any, cb: any) {
+  private _checkAuthentication(req: any, res: any, cb: any) {
     if (req.get('private-token') === this.expectedToken) {
       cb();
     } else {

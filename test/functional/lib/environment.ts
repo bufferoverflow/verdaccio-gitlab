@@ -12,19 +12,19 @@ import { PORT_GITLAB_EXPRESS_MOCK, DOMAIN_SERVERS, PORT_SERVER_1 } from '../conf
 import GitlabServer from './mock_gitlab_server';
 
 class FunctionalEnvironment extends NodeEnvironment {
-  config: any;
+  private config: any;
 
-  constructor(config: any) {
+  public constructor(config: any) {
     super(config);
   }
 
-  async startWeb() {
+  public async startWeb() {
     const gitlab: any = new GitlabServer();
 
     return await gitlab.start(PORT_GITLAB_EXPRESS_MOCK);
   }
 
-  async setup() {
+  public async setup() {
     const SILENCE_LOG = !process.env.VERDACCIO_DEBUG;
     // @ts-ignore
     const DEBUG_INJECT: boolean = process.env.VERDACCIO_DEBUG_INJECT ? process.env.VERDACCIO_DEBUG_INJECT : false;
@@ -64,7 +64,7 @@ class FunctionalEnvironment extends NodeEnvironment {
     this.global.__SERVERS__ = serverList;
   }
 
-  async teardown() {
+  public async teardown() {
     await super.teardown();
     console.log(chalk.yellow('Teardown Test Environment.'));
     // shutdown verdaccio
@@ -75,7 +75,7 @@ class FunctionalEnvironment extends NodeEnvironment {
     this.global.__GITLAB_SERVER__.server.close();
   }
 
-  runScript(script: string) {
+  private runScript(script: string) {
     return super.runScript(script);
   }
 }
