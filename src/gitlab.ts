@@ -39,14 +39,13 @@ const BUILTIN_ACCESS_LEVEL_ANONYMOUS = ['$anonymous', '$all'];
 const DEFAULT_ALLOW_ACCESS_LEVEL = ['$all'];
 
 export interface VerdaccioGitLabPlugin extends IPluginAuth<VerdaccioGitlabConfig> {
-  authCache: AuthCache;
+  authCache?: AuthCache;
 }
 
 export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
   options: PluginOptions<VerdaccioGitlabConfig>;
   config: VerdaccioGitlabConfig;
-  // @ts-ignore
-  authCache: AuthCache;
+  authCache?: AuthCache;
   logger: Logger;
   publishLevel: VerdaccioGitlabAccessLevel;
 
