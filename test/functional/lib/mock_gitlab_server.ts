@@ -17,9 +17,7 @@ export default class GitlabServer {
 
   start(port: number): Promise<any> {
     return new Promise(resolve => {
-      // @ts-ignore
       this.app.use(bodyParser.json());
-      // @ts-ignore
       this.app.use(
         bodyParser.urlencoded({
           extended: true,

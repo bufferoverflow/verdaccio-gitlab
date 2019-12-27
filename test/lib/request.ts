@@ -7,6 +7,11 @@ import { IRequestPromise } from '../types';
 
 const requestData = Symbol('smart_request_data');
 
+function injectResponse(smartObject: any, promise: Promise<any>): Promise<any> {
+  promise[requestData] = smartObject[requestData];
+  return promise;
+}
+
 export class PromiseAssert extends Promise<any> implements IRequestPromise {
   public constructor(options: any) {
     super(options);
@@ -53,7 +58,6 @@ export class PromiseAssert extends Promise<any> implements IRequestPromise {
   }
 
   public body_error(expected: any) {
-    // $FlowFixMe
     const selfData = this[requestData];
 
     return injectResponse(
@@ -96,12 +100,6 @@ export class PromiseAssert extends Promise<any> implements IRequestPromise {
     this[requestData].request.end(data);
     return this;
   }
-}
-
-function injectResponse(smartObject: any, promise: Promise<any>): Promise<any> {
-  // $FlowFixMe
-  promise[requestData] = smartObject[requestData];
-  return promise;
 }
 
 function smartRequest(options: any): Promise<any> {
