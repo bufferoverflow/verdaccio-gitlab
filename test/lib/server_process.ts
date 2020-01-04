@@ -54,7 +54,6 @@ export default class VerdaccioProcess implements IServerProcess {
     };
 
     if (this.isDebug) {
-      // @ts-ignore
       const debugPort = parseInt(this.config.port, 10) + 5;
 
       childOptions = Object.assign({}, childOptions, {

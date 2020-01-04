@@ -11,9 +11,7 @@ const verdaccioGitlabConfig: VerdaccioGitlabConfig = {
 };
 
 const options: PluginOptions<VerdaccioGitlabConfig> = {
-  // @ts-ignore
   config:  {},
-  // @ts-ignore
   logger: logger
 };
 

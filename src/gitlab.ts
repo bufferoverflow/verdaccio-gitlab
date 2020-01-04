@@ -38,19 +38,14 @@ const BUILTIN_ACCESS_LEVEL_ANONYMOUS = ['$anonymous', '$all'];
 // Level to apply on 'allow_access' calls when a package definition does not define one
 const DEFAULT_ALLOW_ACCESS_LEVEL = ['$all'];
 
-export interface VerdaccioGitLabPlugin extends IPluginAuth<VerdaccioGitlabConfig> {
-  authCache: AuthCache;
-}
+export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfig> {
+  private options: PluginOptions<VerdaccioGitlabConfig>;
+  private config: VerdaccioGitlabConfig;
+  private authCache?: AuthCache;
+  private logger: Logger;
+  private publishLevel: VerdaccioGitlabAccessLevel;
 
-export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
-  options: PluginOptions<VerdaccioGitlabConfig>;
-  config: VerdaccioGitlabConfig;
-  // @ts-ignore
-  authCache: AuthCache;
-  logger: Logger;
-  publishLevel: VerdaccioGitlabAccessLevel;
-
-  constructor(config: VerdaccioGitlabConfig, options: PluginOptions<VerdaccioGitlabConfig>) {
+  public constructor(config: VerdaccioGitlabConfig, options: PluginOptions<VerdaccioGitlabConfig>) {
     this.logger = options.logger;
     this.config = config;
     this.options = options;
@@ -76,14 +71,13 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
     this.logger.info(`[gitlab] publish control level: ${this.publishLevel}`);
   }
 
-  authenticate(user: string, password: string, cb: Callback) {
+  public authenticate(user: string, password: string, cb: Callback) {
     this.logger.trace(`[gitlab] authenticate called for user: ${user}`);
 
     // Try to find the user groups in the cache
     const cachedUserGroups = this._getCachedUserGroups(user, password);
     if (cachedUserGroups) {
-      // @ts-ignore
-      this.logger.debug(`[gitlab] user: ${user} found in cache, authenticated with groups:`, cachedUserGroups);
+      this.logger.debug(`[gitlab] user: ${user} found in cache, authenticated with groups:`, cachedUserGroups.toString());
       return cb(null, cachedUserGroups.publish);
     }
 
@@ -108,8 +102,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
         // - for publish, the logged in user id and all the groups they can reach as configured with access level `$auth.gitlab.publish`
         const gitlabPublishQueryParams = { min_access_level: publishLevelId };
 
-        // @ts-ignore
-        this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams);
+        this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams.toString());
 
         const groupsPromise = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
           return groups.filter(group => group.path === group.full_path).map(group => group.path);
@@ -125,8 +118,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
             this._setCachedUserGroups(user, password, { publish: realGroups });
 
             this.logger.info(`[gitlab] user: ${user} successfully authenticated`);
-            // @ts-ignore
-            this.logger.debug(`[gitlab] user: ${user}, with groups:`, realGroups);
+            this.logger.debug(`[gitlab] user: ${user}, with groups:`, realGroups.toString());
 
             return cb(null, realGroups);
           })
@@ -141,17 +133,17 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
       });
   }
 
-  adduser(user: string, password: string, cb: Callback) {
+  public adduser(user: string, password: string, cb: Callback) {
     this.logger.trace(`[gitlab] adduser called for user: ${user}`);
     return cb(null, true);
   }
 
-  changePassword(user: string, password: string, newPassword: string, cb: Callback) {
+  public changePassword(user: string, password: string, newPassword: string, cb: Callback) {
     this.logger.trace(`[gitlab] changePassword called for user: ${user}`);
     return cb(getInternalError('You are using verdaccio-gitlab integration. Please change your password in gitlab'));
   }
 
-  allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
+  public allow_access(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
     if (!_package.gitlab) return cb(null, false);
 
     const packageAccess = _package.access && _package.access.length > 0 ? _package.access : DEFAULT_ALLOW_ACCESS_LEVEL;
@@ -172,7 +164,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
     }
   }
 
-  allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
+  public allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
     if (!_package.gitlab) return cb(null, false);
 
     const packageScopePermit = false;
@@ -206,7 +198,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
     }
   }
 
-  _matchGroupWithPackage(real_group: string, package_name: string): boolean {
+  private _matchGroupWithPackage(real_group: string, package_name: string): boolean {
     if (real_group === package_name) {
       return true;
     }
@@ -231,7 +223,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
     return false;
   }
 
-  _getCachedUserGroups(username: string, password: string): UserDataGroups | null {
+  private _getCachedUserGroups(username: string, password: string): UserDataGroups | null {
     if (!this.authCache) {
       return null;
     }
@@ -239,7 +231,7 @@ export default class VerdaccioGitLab implements VerdaccioGitLabPlugin {
     return (userData || {}).groups || null;
   }
 
-  _setCachedUserGroups(username: string, password: string, groups: UserDataGroups): boolean {
+  private _setCachedUserGroups(username: string, password: string, groups: UserDataGroups): boolean {
     if (!this.authCache) {
       return false;
     }

@@ -1,3 +1,3 @@
-const globalTunnel = require('global-tunnel-ng');
+import globalTunnel from 'global-tunnel-ng';
 globalTunnel.initialize();
 require('verdaccio/build/lib/cli');
