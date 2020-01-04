@@ -108,5 +108,8 @@
       "@typescript-eslint/explicit-function-return-type": 0
     },
     "ignorePatterns": ["build/", "node_modules/"]
+  },
+  "babel": {
+    "presets": [["@verdaccio"]]
   }
 }
