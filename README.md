@@ -206,7 +206,19 @@ on docker startup with the `--volume` option, or equivalent mechanism
 (e.g. ConfigMaps on Kubernetes / OpenShift with the
 [helm chart](https://github.com/helm/charts/tree/master/stable/verdaccio)).
 
-## Create a Release
+## Development
+
+### Contributing
+
+Please adhere to the [verdaccio community guidelines](https://github.com/verdaccio/verdaccio/blob/master/CONTRIBUTING.md)
+and run all the tests before creating a PR. The commit message shall follow the
+conventional changelog as it is enforced via local commit hook using husky and
+the [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint)
+rule set.
+
+> PR's that do not pass CI will not be reviewed.
+
+### Create a Release
 
 Run one of the following command to create a release:
 
@@ -222,7 +234,7 @@ finally run
 yarn publish
 ```
 
-## Functional Tests
+### Functional Tests
 
 In order to run functional tests with debug output, set the
 `VERDACCIO_DEBUG=true` environment variable,
@@ -231,12 +243,6 @@ In order to run functional tests with debug output, set the
 ```bash
 VERDACCIO_DEBUG=true yarn test:functional
 ```
-
-## Inspired by
-
-- [verdaccio-ldap](https://github.com/Alexandre-io/verdaccio-ldap)
-- [node-bacstack](https://github.com/fh1ch/node-bacstack)
-- [verdaccio-bitbucket](https://github.com/idangozlan/verdaccio-bitbucket)
 
 ## License
 
