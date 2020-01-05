@@ -102,7 +102,7 @@ directives:
 - unauthenticated users will be able to access packages marked with either
   `$all` or `$anonymous` access levels at the package group definition
 
-Please note that no group or package name mapping is applied on access, any
+> *Please note* that no group or package name mapping is applied on access, any
 user successfully authenticated can access all packages.
 
 ### Publish
@@ -181,7 +181,7 @@ internal timer that will check expired values regularly, so data of
 users not actively interacting with the system will also be eventually
 invalidated.
 
-*Please note* that this implementation is in-memory and not
+> *Please note* that this implementation is in-memory and not
 multi-process; if the cluster module is used for starting several
 verdaccio processes, each process will store its own copy of the cache,
 so each user will actually be logged in multiple times.
