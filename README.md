@@ -52,13 +52,13 @@ packages:
   '@*/*':
     # scoped packages
     access: $all
-    publish: $authenticated
+    publish: $maintainer
     proxy: npmjs
     gitlab: true
 
   '**':
     access: $all
-    publish: $authenticated
+    publish: $maintainer
     proxy: npmjs
     gitlab: true
 
