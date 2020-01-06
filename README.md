@@ -52,13 +52,13 @@ packages:
   '@*/*':
     # scoped packages
     access: $all
-    publish: $authenticated
+    publish: $maintainer
     proxy: npmjs
     gitlab: true
 
   '**':
     access: $all
-    publish: $authenticated
+    publish: $maintainer
     proxy: npmjs
     gitlab: true
 
@@ -102,7 +102,7 @@ directives:
 - unauthenticated users will be able to access packages marked with either
   `$all` or `$anonymous` access levels at the package group definition
 
-Please note that no group or package name mapping is applied on access, any
+> *Please note* that no group or package name mapping is applied on access, any
 user successfully authenticated can access all packages.
 
 ### Publish
@@ -181,7 +181,7 @@ internal timer that will check expired values regularly, so data of
 users not actively interacting with the system will also be eventually
 invalidated.
 
-*Please note* that this implementation is in-memory and not
+> *Please note* that this implementation is in-memory and not
 multi-process; if the cluster module is used for starting several
 verdaccio processes, each process will store its own copy of the cache,
 so each user will actually be logged in multiple times.
@@ -206,7 +206,19 @@ on docker startup with the `--volume` option, or equivalent mechanism
 (e.g. ConfigMaps on Kubernetes / OpenShift with the
 [helm chart](https://github.com/helm/charts/tree/master/stable/verdaccio)).
 
-## Create a Release
+## Development
+
+### Contributing
+
+Please adhere to the [verdaccio community guidelines](https://github.com/verdaccio/verdaccio/blob/master/CONTRIBUTING.md)
+and run all the tests before creating a PR. The commit message shall follow the
+conventional changelog as it is enforced via local commit hook using husky and
+the [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint)
+rule set.
+
+> PR's that do not pass CI will not be reviewed.
+
+### Create a Release
 
 Run one of the following command to create a release:
 
@@ -222,7 +234,7 @@ finally run
 yarn publish
 ```
 
-## Functional Tests
+### Functional Tests
 
 In order to run functional tests with debug output, set the
 `VERDACCIO_DEBUG=true` environment variable,
@@ -231,12 +243,6 @@ In order to run functional tests with debug output, set the
 ```bash
 VERDACCIO_DEBUG=true yarn test:functional
 ```
-
-## Inspired by
-
-- [verdaccio-ldap](https://github.com/Alexandre-io/verdaccio-ldap)
-- [node-bacstack](https://github.com/fh1ch/node-bacstack)
-- [verdaccio-bitbucket](https://github.com/idangozlan/verdaccio-bitbucket)
 
 ## License
 
