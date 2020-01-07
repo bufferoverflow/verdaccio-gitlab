@@ -1,5 +1,5 @@
-const chalk = require('chalk');
+import { blue } from 'kleur';
 
 module.exports = async () => {
-  console.log(chalk.blue('teardown: all servers closed'));
+  console.log(blue('teardown: all servers closed'));
 };

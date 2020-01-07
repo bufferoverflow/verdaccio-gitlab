@@ -1,3 +1,3 @@
-module.exports = async () => {
-  // here we should create dinamically config files
+module.exports = async function() {
+  // here we should create dynamically config files
 };
