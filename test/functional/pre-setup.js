@@ -1,10 +1,10 @@
 require('@babel/register')({
-  extensions: ['.ts', '.js'],
+  extensions: ['.ts', '.js']
 });
-const chalk = require('chalk');
+
+import { blue } from 'kleur';
 
 module.exports = async () => {
-  console.log(chalk.blue('setup: starting servers'));
-
+  console.log(blue('setup: starting servers'));
   require('./lib/setup');
-};
+}
