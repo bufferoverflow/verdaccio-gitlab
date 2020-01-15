@@ -1,3 +1,43 @@
+#### 3.0.1 (2020-01-15)
+
+##### Chores
+
+*  move babel config to package.json ([7777984e](https://github.com/bufferoverflow/verdaccio-gitlab/commit/7777984eac1bc819268f234d60187c64b9f3696d))
+*  require node 10 ([c2c96b60](https://github.com/bufferoverflow/verdaccio-gitlab/commit/c2c96b607026d6243e1ff5664dfb4e7ec43c353c))
+*  remove unused eslint rules ([4c400380](https://github.com/bufferoverflow/verdaccio-gitlab/commit/4c400380b67978bbce327748998cb25cb7135050))
+*  move eslint config to package.json ([9f7fdda5](https://github.com/bufferoverflow/verdaccio-gitlab/commit/9f7fdda5a40a9fda7a88b3f6dcf215fb6aad5cab))
+*  upgrade devDependencies ([bca14302](https://github.com/bufferoverflow/verdaccio-gitlab/commit/bca143026cba6bd57adbf4562be9da54094fb85a))
+*  remove repolinter ([708d58ba](https://github.com/bufferoverflow/verdaccio-gitlab/commit/708d58ba3236dd9ee454252d6676068c99c591b1))
+*  upgrade husky ([23718d8c](https://github.com/bufferoverflow/verdaccio-gitlab/commit/23718d8c270b2c1302d0f5f736d44fa096cc9667))
+*  update commitlint configuration with husky ([dd8aac59](https://github.com/bufferoverflow/verdaccio-gitlab/commit/dd8aac59d7649d8ff05b4943c77a1169ccc269eb))
+*  use verdaccio 4 instead of 4.0 within Dockerfile ([abd814e2](https://github.com/bufferoverflow/verdaccio-gitlab/commit/abd814e213ddd6db4dc84b1e3a6886849e3d9be0))
+*  make license-checker less verbose ([9ced2cbf](https://github.com/bufferoverflow/verdaccio-gitlab/commit/9ced2cbf70602e2e703317b4a7ca95c1345b0739))
+* **ci:**  build docker image ([1bb23656](https://github.com/bufferoverflow/verdaccio-gitlab/commit/1bb23656fbf102b14d55220f90cf3c5fa4622140))
+
+##### Documentation Changes
+
+*  add Contributing section, cleanup ([a66fb59b](https://github.com/bufferoverflow/verdaccio-gitlab/commit/a66fb59bc461ee27f62be9773d3460f7ee0c221c))
+*  align please note style and use quote ([ef1163e5](https://github.com/bufferoverflow/verdaccio-gitlab/commit/ef1163e54657f0e22643ca84d23f530361a4eeb4))
+*  set publish to  within sample ([f03b3b4c](https://github.com/bufferoverflow/verdaccio-gitlab/commit/f03b3b4cdce4e41a930b3011dd5bef219a1edab0))
+*  remove flow support as we have typescript now ([3d439af6](https://github.com/bufferoverflow/verdaccio-gitlab/commit/3d439af6d6cf2150068638fa6db03189d7404029))
+*  clarify publish options ([2dfde28a](https://github.com/bufferoverflow/verdaccio-gitlab/commit/2dfde28a8e5b767f373ef490ce232dc6aeb72176))
+
+##### Refactors
+
+*  set authCache as optional member ([a9e12460](https://github.com/bufferoverflow/verdaccio-gitlab/commit/a9e124604b2673a4b3155551e0e133a48110e0a9))
+
+##### Code Style Changes
+
+*  use typescript style import ([97685933](https://github.com/bufferoverflow/verdaccio-gitlab/commit/97685933765a25d280b32eda3238891e65d537ac))
+*  set member accessibility explicit ([21afb3d7](https://github.com/bufferoverflow/verdaccio-gitlab/commit/21afb3d74b5fe8b20eccc60440f9fbfb231d5fc0))
+*  remove useless ts-ignore, fix no-use-before-define ([23fcd472](https://github.com/bufferoverflow/verdaccio-gitlab/commit/23fcd472216aa96234325960c8027b4444d0a218))
+*  adopt code style to rules ([f30d3821](https://github.com/bufferoverflow/verdaccio-gitlab/commit/f30d3821928d3ba91af3d26a56c197bdfb675884))
+
+##### Tests
+
+*  align functional test suite to verdaccio ([fd2b97b4](https://github.com/bufferoverflow/verdaccio-gitlab/commit/fd2b97b4d02e066da20c2329801a78daa505a7f6))
+*  convert package fixture to typescript ([d3374af8](https://github.com/bufferoverflow/verdaccio-gitlab/commit/d3374af870e81fd1bc1bf2152be1cd7542247480))
+
 ## 3.0.0 (2019-12-19)
 
 ##### Chores
