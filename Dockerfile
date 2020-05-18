@@ -1,4 +1,4 @@
-FROM node:10-alpine as builder
+FROM node:12.16.3-alpine3.11 as builder
 
 WORKDIR /opt/verdaccio-gitlab-build
 COPY . .
