@@ -198,6 +198,42 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
     }
   }
 
+  public allow_unpublish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
+    if (!_package.gitlab) return cb(null, false);
+
+    const packageScopePermit = false;
+    let packagePermit = false;
+    // Only allow to unpublish packages when:
+    //  - the package has exactly the same name as one of the user groups, or
+    //  - the package scope is the same as one of the user groups
+    for (const real_group of user.real_groups) {
+      // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+      this.logger.trace(
+        `[gitlab] unpublish: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`
+      );
+
+      if (this._matchGroupWithPackage(real_group, _package.name as string)) {
+        packagePermit = true;
+        break;
+      }
+    }
+
+    if (packagePermit || packageScopePermit) {
+      const perm = packagePermit ? 'package-name' : 'package-scope';
+
+      this.logger.debug(
+        `[gitlab] user: ${user.name || ''} allowed to unpublish package: ${_package.name} based on ${perm}`
+      );
+      return cb(null, true);
+    } else {
+      this.logger.debug(`[gitlab] user: ${user.name || ''} denied from unpublishing package: ${_package.name}`);
+      // @ts-ignore
+      const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
+
+      return cb(getForbidden(`must have required permissions: ${this.publishLevel || ''} at ${missingPerm}`));
+    }
+  }
+
   private _matchGroupWithPackage(real_group: string, package_name: string): boolean {
     if (real_group === package_name) {
       return true;
