@@ -49,10 +49,10 @@
     "node": ">=10"
   },
   "dependencies": {
-    "gitlab": "3.5.1",
-    "global-tunnel-ng": "2.5.3",
+    "gitlab": "^3.11.4",
+    "global-tunnel-ng": "~2.5.4",
     "http-errors": "1.7.3",
-    "node-cache": "4.2.0",
+    "node-cache": "~4.2.1",
     "verdaccio": "^4.3.4"
   },
   "devDependencies": {
@@ -82,7 +82,7 @@
     "kleur": "3.0.3",
     "license-checker": "^25.0.1",
     "lodash": "^4.17.15",
-    "markdownlint-cli": "^0.20.0",
+    "markdownlint-cli": "^0.26.0",
     "prettier": "^1.19.1",
     "request": "^2.88.0",
     "rimraf": "^3.0.0",
