@@ -165,23 +165,19 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
   }
 
   public allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
-    if (!_package.gitlab) return cb(null, false);
-
-    const packageName = _package.name as string;
-
-    if (this._isActionAllowed('publish', user, packageName)) {
-      return cb(null, true);
-    } else {
-      return cb(this._getActionPermissionError(packageName));
-    }
+    return this._callAction('publish', user, _package, cb);
   }
 
   public allow_unpublish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
+    return this._callAction('unpublish', user, _package, cb);
+  }
+
+  private _callAction(name: string, user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
     if (!_package.gitlab) return cb(null, false);
 
     const packageName = _package.name as string;
 
-    if (this._isActionAllowed('unpublish', user, packageName)) {
+    if (this._isActionAllowed(name, user, packageName)) {
       return cb(null, true);
     } else {
       return cb(this._getActionPermissionError(packageName));
