@@ -167,71 +167,60 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
   public allow_publish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
     if (!_package.gitlab) return cb(null, false);
 
-    const packageScopePermit = false;
-    let packagePermit = false;
-    // Only allow to publish packages when:
-    //  - the package has exactly the same name as one of the user groups, or
-    //  - the package scope is the same as one of the user groups
-    for (const real_group of user.real_groups) {
-      // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
-      this.logger.trace(
-        `[gitlab] publish: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`
-      );
+    const packageName = _package.name as string;
 
-      if (this._matchGroupWithPackage(real_group, _package.name as string)) {
-        packagePermit = true;
-        break;
-      }
-    }
-
-    if (packagePermit || packageScopePermit) {
-      const perm = packagePermit ? 'package-name' : 'package-scope';
-      this.logger.debug(
-        `[gitlab] user: ${user.name || ''} allowed to publish package: ${_package.name} based on ${perm}`
-      );
+    if (this._isActionAllowed('publish', user, packageName)) {
       return cb(null, true);
     } else {
-      this.logger.debug(`[gitlab] user: ${user.name || ''} denied from publishing package: ${_package.name}`);
-      // @ts-ignore
-      const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
-      return cb(getForbidden(`must have required permissions: ${this.publishLevel || ''} at ${missingPerm}`));
+      return cb(this._getActionPermissionError(packageName));
     }
   }
 
   public allow_unpublish(user: RemoteUser, _package: VerdaccioGitlabPackageAccess & PackageAccess, cb: Callback) {
     if (!_package.gitlab) return cb(null, false);
 
-    const packageScopePermit = false;
+    const packageName = _package.name as string;
+
+    if (this._isActionAllowed('unpublish', user, packageName)) {
+      return cb(null, true);
+    } else {
+      return cb(this._getActionPermissionError(packageName));
+    }
+  }
+
+  private _isActionAllowed(actionName: string, user: RemoteUser, packageName: string): boolean {
     let packagePermit = false;
-    // Only allow to unpublish packages when:
+
+    // Only allow to (un)publish packages when:
     //  - the package has exactly the same name as one of the user groups, or
     //  - the package scope is the same as one of the user groups
     for (const real_group of user.real_groups) {
       // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
       this.logger.trace(
-        `[gitlab] unpublish: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`
+        `[gitlab] ${actionName}: checking group: ${real_group} for user: ${user.name || ''} and package: ${packageName}`
       );
 
-      if (this._matchGroupWithPackage(real_group, _package.name as string)) {
+      if (this._matchGroupWithPackage(real_group, packageName)) {
         packagePermit = true;
         break;
       }
     }
 
-    if (packagePermit || packageScopePermit) {
-      const perm = packagePermit ? 'package-name' : 'package-scope';
+    this.logger.debug(
+      `[gitlab] user: ${user.name || ''} ` + (
+        packagePermit
+          ? `allowed to ${actionName} package: ${packageName} based on package-name`
+          : `denied from ${actionName}ing package: ${packageName}`
+        )
+    );
 
-      this.logger.debug(
-        `[gitlab] user: ${user.name || ''} allowed to unpublish package: ${_package.name} based on ${perm}`
-      );
-      return cb(null, true);
-    } else {
-      this.logger.debug(`[gitlab] user: ${user.name || ''} denied from unpublishing package: ${_package.name}`);
-      // @ts-ignore
-      const missingPerm = _package.name.indexOf('@') === 0 ? 'package-scope' : 'package-name';
+    return packagePermit;
+  }
 
-      return cb(getForbidden(`must have required permissions: ${this.publishLevel || ''} at ${missingPerm}`));
-    }
+  private _getActionPermissionError(packageName: string) {
+    // @ts-ignore
+    const missingPerm = packageName.startsWith('@') ? 'package-scope' : 'package-name';
+    return getForbidden(`must have required permissions: ${this.publishLevel || ''} at ${missingPerm}`);
   }
 
   private _matchGroupWithPackage(real_group: string, package_name: string): boolean {
