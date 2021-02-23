@@ -177,6 +177,25 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     verdaccioGitlab.allow_publish(config.remoteUser, _package, cb);
   });
 
+  test('should allow unpublish of package based on user group', done => {
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@myGroup/myPackage',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeFalsy();
+      expect(data).toBe(true);
+      done();
+    };
+
+    verdaccioGitlab.allow_unpublish(config.remoteUser, _package, cb);
+  });
+
   test('should allow publish of package based on user project', done => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
@@ -196,6 +215,25 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     verdaccioGitlab.allow_publish(config.remoteUser, _package, cb);
   });
 
+  test('should allow unpublish of package based on user project', done => {
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@anotherGroup/myProject',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeFalsy();
+      expect(data).toBe(true);
+      done();
+    };
+
+    verdaccioGitlab.allow_unpublish(config.remoteUser, _package, cb);
+  });
+
   test('should allow publish of package based on user name', done => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
@@ -213,6 +251,25 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     };
 
     verdaccioGitlab.allow_publish(config.remoteUser, _package, cb);
+  });
+
+  test('should allow unpublish of package based on user name', done => {
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: config.user,
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeFalsy();
+      expect(data).toBe(true);
+      done();
+    };
+
+    verdaccioGitlab.allow_unpublish(config.remoteUser, _package, cb);
   });
 
   test('should deny publish of package based on unauthenticated', done => {
@@ -239,6 +296,30 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     verdaccioGitlab.allow_publish(unauthenticatedUser, _package, cb);
   });
 
+  test('should deny unpublish of package based on unauthenticated', done => {
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const unauthenticatedUser: RemoteUser = {
+      real_groups: [],
+      groups: [],
+      name: undefined,
+    };
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: config.user,
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeTruthy();
+      expect(data).toBeFalsy();
+      done();
+    };
+
+    verdaccioGitlab.allow_unpublish(unauthenticatedUser, _package, cb);
+  });
+
   test('should deny publish of package based on group', done => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
@@ -258,6 +339,25 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     verdaccioGitlab.allow_publish(config.remoteUser, _package, cb);
   });
 
+  test('should deny unpublish of package based on group', done => {
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@anotherGroup/myPackage',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeTruthy();
+      expect(data).toBeFalsy();
+      done();
+    };
+
+    verdaccioGitlab.allow_unpublish(config.remoteUser, _package, cb);
+  });
+
   test('should deny publish of package based on user', done => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const _package: VerdaccioGitlabPackageAccess = {
@@ -275,5 +375,24 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     };
 
     verdaccioGitlab.allow_publish(config.remoteUser, _package, cb);
+  });
+
+  test('should deny unpublish of package based on user', done => {
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: 'anotherUser',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeTruthy();
+      expect(data).toBeFalsy();
+      done();
+    };
+
+    verdaccioGitlab.allow_unpublish(config.remoteUser, _package, cb);
   });
 });
