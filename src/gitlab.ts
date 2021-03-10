@@ -7,6 +7,7 @@ import Gitlab from 'gitlab';
 
 import { UserDataGroups } from './authcache';
 import { AuthCache, UserData } from './authcache';
+import { GitlabCache } from "./gitlabcache";
 
 export type VerdaccioGitlabAccessLevel = '$guest' | '$reporter' | '$developer' | '$maintainer' | '$owner';
 
@@ -42,6 +43,7 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
   private options: PluginOptions<VerdaccioGitlabConfig>;
   private config: VerdaccioGitlabConfig;
   private authCache?: AuthCache;
+  private gitlabCache: GitlabCache;
   private logger: Logger;
   private publishLevel: VerdaccioGitlabAccessLevel;
 
@@ -49,6 +51,8 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
     this.logger = options.logger;
     this.config = config;
     this.options = options;
+    this.gitlabCache = new GitlabCache(this.logger, this.config.authCache?.ttl);
+
     this.logger.info(`[gitlab] url: ${this.config.url}`);
 
     if ((this.config.authCache || {}).enabled === false) {
@@ -89,7 +93,19 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
       token: password,
     });
 
-    GitlabAPI.Users.current()
+    // Check if we already have a stored promise
+    let promise = this.gitlabCache.getPromise(user, password, 'user');
+    if (!promise) {
+      this.logger.trace(`[gitlab] querying gitlab user: ${user}`);
+
+      promise = GitlabAPI.Users.current() as Promise<any>;
+
+      this.gitlabCache.storePromise(user, password, 'user', promise);
+    } else {
+      this.logger.trace(`[gitlab] using cached promise for user: ${user}`);
+    }
+
+    promise
       .then(response => {
         if (user.toLowerCase() !== response.username.toLowerCase()) {
           return cb(getUnauthorized('wrong gitlab username'));
@@ -102,15 +118,31 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
         // - for publish, the logged in user id and all the groups they can reach as configured with access level `$auth.gitlab.publish`
         const gitlabPublishQueryParams = { min_access_level: publishLevelId };
 
-        this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams.toString());
+        let groupsPromise = this.gitlabCache.getPromise(user, password, 'groups');
+        if (!groupsPromise) {
+          this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams.toString());
 
-        const groupsPromise = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
-          return groups.filter(group => group.path === group.full_path).map(group => group.path);
-        });
+          groupsPromise = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
+            return groups.filter(group => group.path === group.full_path).map(group => group.path);
+          });
 
-        const projectsPromise = GitlabAPI.Projects.all(gitlabPublishQueryParams).then(projects => {
-          return projects.map(project => project.path_with_namespace);
-        });
+          this.gitlabCache.storePromise(user, password, 'groups', groupsPromise);
+        } else {
+          this.logger.trace('[gitlab] using cached promise for user groups with params:', gitlabPublishQueryParams.toString());
+        }
+
+        let projectsPromise = this.gitlabCache.getPromise(user, password, 'projects');
+        if (!projectsPromise) {
+          this.logger.trace('[gitlab] querying gitlab user projects with params:', gitlabPublishQueryParams.toString());
+
+          projectsPromise = GitlabAPI.Projects.all(gitlabPublishQueryParams).then(projects => {
+            return projects.map(project => project.path_with_namespace);
+          });
+
+          this.gitlabCache.storePromise(user, password, 'projects', projectsPromise);
+        } else {
+          this.logger.trace('[gitlab] using cached promise for user projects with params:', gitlabPublishQueryParams.toString());
+        }
 
         Promise.all([groupsPromise, projectsPromise])
           .then(([groups, projectGroups]) => {
