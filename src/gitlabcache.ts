@@ -11,13 +11,11 @@ export class GitlabCache {
   private ttl: number;
   private storage: NodeCache;
 
-  public static get DEFAULT_TTL() {
-    return 300;
-  }
+  public static readonly DEFAULT_TTL = 300;
 
   private static _generateKeyHash(username: string, password: string) {
     const sha = Crypto.createHash('sha256');
-    sha.update(JSON.stringify({ username: username, password: password }));
+    sha.update(JSON.stringify({ username, password }));
     return sha.digest('hex');
   }
 
