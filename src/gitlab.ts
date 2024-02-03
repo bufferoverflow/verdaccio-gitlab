@@ -30,8 +30,8 @@ export type VerdaccioGitlabConfig = {
     ttl?: number;
   };
   publish?: VerdaccioGitlabAccessLevel;
-  groupsStrategy?: VerdaccioGitLabStrategy;
-  projectsStrategy?: VerdaccioGitLabStrategy;
+  groupsStrategy?: VerdaccioGitLabStrategy; // only available on groupSearchStrategy 'nameMapping'
+  projectsStrategy?: VerdaccioGitLabStrategy; // only available on groupSearchStrategy 'nameMapping'
   groupSearchStrategy?: 'default' | 'nameMapping';
 };
 
