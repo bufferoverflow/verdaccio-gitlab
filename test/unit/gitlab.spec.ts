@@ -5,11 +5,19 @@ import Gitlab from 'gitlab';
 import { VerdaccioGitlabPackageAccess } from '../../src/gitlab';
 import VerdaccioGitlab from '../../src/gitlab';
 
-import config from './partials/config';
+import defaultConfig from './partials/config';
 
 // Do not remove, this mocks the gitlab library
 
 describe('Gitlab Auth Plugin Unit Tests', () => {
+  let config;
+
+  beforeEach(() => {
+    config = {
+      ...defaultConfig
+    }
+  })
+
   test('should create a plugin instance', () => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
 
@@ -215,6 +223,138 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     verdaccioGitlab.allow_publish(config.remoteUser, _package, cb);
   });
 
+  test('should allow publish of package based on user group with group name mapping and "nameMapping" strategy', done => {
+    config.verdaccioGitlabConfig = {
+      ...config.verdaccioGitlabConfig,
+      groupSearchStrategy: 'nameMapping',
+      groupsStrategy: {
+        caseSensitive: true,
+        searchPath: 'path',
+        mappings: [
+          { gitlabName: 'SubGroup1', packageJsonName: 'subGroup' }
+        ]
+      }
+    };
+    const userWithDifferentGroups: RemoteUser = {
+      real_groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      name: config.remoteUser.name,
+    };
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@subGroup/libName',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeFalsy();
+      expect(data).toBe(true);
+      done();
+    };
+
+    verdaccioGitlab.allow_publish(userWithDifferentGroups, _package, cb);
+  });
+
+  test('should allow publish of package based on user group without group name mapping and "nameMapping" strategy', done => {
+    config.verdaccioGitlabConfig = {
+      ...config.verdaccioGitlabConfig,
+      groupSearchStrategy: 'nameMapping',
+      groupsStrategy: {
+        caseSensitive: true,
+        searchPath: 'path'
+      }
+    };
+    const userWithDifferentGroups: RemoteUser = {
+      real_groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      name: config.remoteUser.name,
+    };
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@subGroup1/libName',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeFalsy();
+      expect(data).toBe(true);
+      done();
+    };
+
+    verdaccioGitlab.allow_publish(userWithDifferentGroups, _package, cb);
+  });
+
+  test('should allow publish of package based on user group with package name mapping and "nameMapping" strategy', done => {
+    config.verdaccioGitlabConfig = {
+      ...config.verdaccioGitlabConfig,
+      groupSearchStrategy: 'nameMapping',
+      projectsStrategy: {
+        caseSensitive: true,
+        mappings: [
+          { gitlabName: 'Lib.Name', packageJsonName: 'libName' }
+        ]
+      }
+    };
+    const userWithDifferentGroups: RemoteUser = {
+      real_groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      name: config.remoteUser.name,
+    };
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@subGroup/libName',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeFalsy();
+      expect(data).toBe(true);
+      done();
+    };
+
+    verdaccioGitlab.allow_publish(userWithDifferentGroups, _package, cb);
+  });
+
+  test('should allow publish of package based on user group without package name mapping and "nameMapping" strategy', done => {
+    config.verdaccioGitlabConfig = {
+      ...config.verdaccioGitlabConfig,
+      groupSearchStrategy: 'nameMapping',
+      projectsStrategy: {
+        caseSensitive: true
+      }
+    };
+    const userWithDifferentGroups: RemoteUser = {
+      real_groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      name: config.remoteUser.name,
+    };
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@subGroup/lib.name',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeFalsy();
+      expect(data).toBe(true);
+      done();
+    };
+
+    verdaccioGitlab.allow_publish(userWithDifferentGroups, _package, cb);
+  });
+
   test('should deny publish of package based on unauthenticated', done => {
     const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
     const unauthenticatedUser: RemoteUser = {
@@ -256,6 +396,138 @@ describe('Gitlab Auth Plugin Unit Tests', () => {
     };
 
     verdaccioGitlab.allow_publish(config.remoteUser, _package, cb);
+  });
+
+  test('should deny publish of package based on user group with package name mapping and "nameMapping" strategy', done => {
+    config.verdaccioGitlabConfig = {
+      ...config.verdaccioGitlabConfig,
+      groupSearchStrategy: 'nameMapping',
+      projectsStrategy: {
+        caseSensitive: true,
+        mappings: [
+          { gitlabName: 'Lib.Name', packageJsonName: 'libName' }
+        ]
+      }
+    };
+    const userWithDifferentGroups: RemoteUser = {
+      real_groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      name: config.remoteUser.name,
+    };
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@subGroup2/libName2',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeTruthy();
+      expect(data).toBeFalsy();
+      done();
+    };
+
+    verdaccioGitlab.allow_publish(userWithDifferentGroups, _package, cb);
+  });
+
+  test('should deny publish of package based on user group without package name mapping and "nameMapping" strategy', done => {
+    config.verdaccioGitlabConfig = {
+      ...config.verdaccioGitlabConfig,
+      groupSearchStrategy: 'nameMapping',
+      projectsStrategy: {
+        caseSensitive: true
+      }
+    };
+    const userWithDifferentGroups: RemoteUser = {
+      real_groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      name: config.remoteUser.name,
+    };
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@subGroup2/lib.name2',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeTruthy();
+      expect(data).toBeFalsy();
+      done();
+    };
+
+    verdaccioGitlab.allow_publish(userWithDifferentGroups, _package, cb);
+  });
+
+  test('should deny publish of package based on user group with group name mapping and "nameMapping" strategy', done => {
+    config.verdaccioGitlabConfig = {
+      ...config.verdaccioGitlabConfig,
+      groupSearchStrategy: 'nameMapping',
+      groupsStrategy: {
+        caseSensitive: true,
+        searchPath: 'path',
+        mappings: [
+          { gitlabName: 'SubGroup1', packageJsonName: 'subGroup' }
+        ]
+      }
+    };
+    const userWithDifferentGroups: RemoteUser = {
+      real_groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name',],
+      name: config.remoteUser.name,
+    };
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@subGroup2/libName2',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeTruthy();
+      expect(data).toBeFalsy();
+      done();
+    };
+
+    verdaccioGitlab.allow_publish(userWithDifferentGroups, _package, cb);
+  });
+
+  test('should deny publish of package based on user group without group name mapping and "nameMapping" strategy', done => {
+    config.verdaccioGitlabConfig = {
+      ...config.verdaccioGitlabConfig,
+      groupSearchStrategy: 'nameMapping',
+      groupsStrategy: {
+        caseSensitive: true,
+        searchPath: 'path'
+      }
+    };
+    const userWithDifferentGroups: RemoteUser = {
+      real_groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name2',],
+      groups: ['Group1/SubGroup1', 'Group1/SubGroup1/Lib.Name2',],
+      name: config.remoteUser.name,
+    };
+    const verdaccioGitlab: VerdaccioGitlab = new VerdaccioGitlab(config.verdaccioGitlabConfig, config.options);
+    const _package: VerdaccioGitlabPackageAccess = {
+      name: '@subGroup2/libName',
+      access: ['$all'],
+      gitlab: true,
+      publish: ['$authenticated'],
+      proxy: ['npmjs'],
+    };
+
+    const cb: Callback = (err, data) => {
+      expect(err).toBeTruthy();
+      expect(data).toBeFalsy();
+      done();
+    };
+
+    verdaccioGitlab.allow_publish(userWithDifferentGroups, _package, cb);
   });
 
   test('should deny publish of package based on user', done => {

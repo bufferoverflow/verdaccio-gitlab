@@ -31,6 +31,5 @@ packages:
     proxy: npmjs
     gitlab: true
 
-logs:
-  - { type: stdout, format: pretty, level: info }
-  #- {type: file, path: verdaccio.log, level: info}
+log: { type: stdout, format: pretty, level: info }
+  # {type: file, path: verdaccio.log, level: info}
