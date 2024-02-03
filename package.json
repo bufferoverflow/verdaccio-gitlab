@@ -4,6 +4,12 @@
     "name": "Roger Meier",
     "email": "roger@bufferoverflow.ch"
   },
+  "contributors": [
+    {
+      "name": "Josué Freitas",
+      "email": "josueribeirodefreitas@outlook.com"
+    }
+  ],
   "scripts": {
     "type-check": "tsc --noEmit",
     "license": "license-checker --onlyAllow 'Apache-2.0; Apache License, Version 2.0; BSD; BSD-2-Clause; BSD-3-Clause; ISC; MIT; Unlicense; WTFPL; CC-BY-3.0; CC0-1.0' --production --summary",
@@ -25,7 +31,7 @@
     "test:all": "yarn test && yarn test:functional"
   },
   "main": "build/index.js",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "private npm registry (Verdaccio) using gitlab-ce as authentication and authorization provider",
   "keywords": [
     "sinopia",
@@ -46,14 +52,14 @@
     "url": "https://github.com/bufferoverflow/verdaccio-gitlab/issues"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=12.18"
   },
   "dependencies": {
-    "gitlab": "3.5.1",
-    "global-tunnel-ng": "2.5.3",
+    "gitlab": "14.2.2",
+    "global-tunnel-ng": "2.7.1",
     "http-errors": "1.7.3",
     "node-cache": "4.2.0",
-    "verdaccio": "^4.3.4"
+    "verdaccio": "^5.29.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.3",

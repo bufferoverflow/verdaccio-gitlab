@@ -1,14 +1,27 @@
 // Copyright 2018 Roger Meier <roger@bufferoverflow.ch>
+// Version
 // SPDX-License-Identifier: MIT
 
 import { Callback, IPluginAuth, Logger, PluginOptions, RemoteUser, PackageAccess } from '@verdaccio/types';
 import { getInternalError, getUnauthorized, getForbidden } from '@verdaccio/commons-api';
-import Gitlab from 'gitlab';
+import { Gitlab } from 'gitlab';
 
+import groupSearchStrategies from './groupSearchStrategies';
 import { UserDataGroups } from './authcache';
 import { AuthCache, UserData } from './authcache';
 
 export type VerdaccioGitlabAccessLevel = '$guest' | '$reporter' | '$developer' | '$maintainer' | '$owner';
+
+export type VerdaccioGitlabNameMapping = {
+  gitlabName: string,
+  packageJsonName: string
+};
+
+export type VerdaccioGitLabStrategy = {
+  caseSensitive?: boolean,
+  searchPath?: string,
+  mappings?: VerdaccioGitlabNameMapping[]
+};
 
 export type VerdaccioGitlabConfig = {
   url: string;
@@ -17,6 +30,9 @@ export type VerdaccioGitlabConfig = {
     ttl?: number;
   };
   publish?: VerdaccioGitlabAccessLevel;
+  groupsStrategy?: VerdaccioGitLabStrategy; // only available on groupSearchStrategy 'nameMapping'
+  projectsStrategy?: VerdaccioGitLabStrategy; // only available on groupSearchStrategy 'nameMapping'
+  groupSearchStrategy?: 'default' | 'nameMapping';
 };
 
 export interface VerdaccioGitlabPackageAccess extends PackageAccess {
@@ -59,7 +75,6 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
       this.logger.info(`[gitlab] initialized auth cache with ttl: ${ttl} seconds`);
     }
 
-
     this.publishLevel = '$maintainer';
     if (this.config.publish) {
       this.publishLevel = this.config.publish;
@@ -85,13 +100,13 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
     this.logger.trace(`[gitlab] user: ${user} not found in cache`);
 
     const GitlabAPI = new Gitlab({
-      url: this.config.url,
+      host: this.config.url,
       token: password,
     });
 
     GitlabAPI.Users.current()
       .then(response => {
-        if (user.toLowerCase() !== response.username.toLowerCase()) {
+        if (user.toLowerCase() !== response['username']?.toLowerCase()) {
           return cb(getUnauthorized('wrong gitlab username'));
         }
 
@@ -104,12 +119,23 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
 
         this.logger.trace('[gitlab] querying gitlab user groups with params:', gitlabPublishQueryParams.toString());
 
+        const groupSearchPath = this.config.groupsStrategy?.searchPath ?? 'path';
+        const projectSearchPath = this.config.projectsStrategy?.searchPath ?? 'path_with_namespace';
+
         const groupsPromise = GitlabAPI.Groups.all(gitlabPublishQueryParams).then(groups => {
-          return groups.filter(group => group.path === group.full_path).map(group => group.path);
+          return groups.filter(group => group.path === group.full_path || this.config.groupsStrategy).map(group =>
+            this.config.groupsStrategy?.caseSensitive
+              ? group[groupSearchPath]?.toLowerCase() ?? ''
+              : group[groupSearchPath] ?? ''
+          );
         });
 
         const projectsPromise = GitlabAPI.Projects.all(gitlabPublishQueryParams).then(projects => {
-          return projects.map(project => project.path_with_namespace);
+          return projects.map(project =>
+            this.config.projectsStrategy?.caseSensitive
+              ? project[projectSearchPath].toLowerCase() ?? ''
+              : project[projectSearchPath] ?? ''
+            );
         });
 
         Promise.all([groupsPromise, projectsPromise])
@@ -174,7 +200,7 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
     //  - the package scope is the same as one of the user groups
     for (const real_group of user.real_groups) {
       // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
-      this.logger.trace(
+      this.logger.info(
         `[gitlab] publish: checking group: ${real_group} for user: ${user.name || ''} and package: ${_package.name}`
       );
 
@@ -207,17 +233,7 @@ export default class VerdaccioGitLab implements IPluginAuth<VerdaccioGitlabConfi
       const split_real_group = real_group.split('/');
       const split_package_name = package_name.slice(1).split('/');
 
-      if (split_real_group.length > split_package_name.length) {
-        return false;
-      }
-
-      for (let i = 0; i < split_real_group.length; i += 1) {
-        if (split_real_group[i] !== split_package_name[i]) {
-          return false;
-        }
-      }
-
-      return true;
+      return groupSearchStrategies[this.config.groupSearchStrategy ?? 'default'](split_real_group, split_package_name, this.config);
     }
 
     return false;

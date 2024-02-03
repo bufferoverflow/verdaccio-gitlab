@@ -19,7 +19,7 @@ the following:
 
 ## Use it
 
-You need at least node version 8.x.x, codename **carbon**.
+You need at least node version 12.18.x, codename **carbon**.
 
 ```sh
 git clone https://github.com/bufferoverflow/verdaccio-gitlab.git
@@ -107,7 +107,9 @@ user successfully authenticated can access all packages.
 
 ### Publish
 
-*publish* is allowed if:
+We have two matching strategies between the package name and the names of GitLab groups and projects, the 'default' and 'nameMapping' strategies.
+
+<b>*publish* with "default" strategy is allowed if</b>:
 
 1. the package name matches the GitLab username, or
 2. if the package name or scope of the package matches one of the
@@ -143,6 +145,14 @@ Then this user would be able to:
 
 There would be an error if the user tried to publish any package under `@group2/**`.
 
+<b>*publish* with "nameMapping" strategy</b>:
+
+The same rules apply, but with some differences:
+* In cases where the scope or project name in the package is different from the group or project in GitLab, it is possible to define the mapping for these names.
+* Use case-insensitive matching.
+* Define the search path for group names through the searchPath variable, following the GroupSchema from the GitLab API.
+* Define the search path for project names through the searchPath variable, following the ProjectSchema from the GitLab API.
+
 ## Configuration Options
 
 The full set of configuration options is:
@@ -155,6 +165,19 @@ auth:
       enabled: <boolean>
       ttl: <integer>
     publish: <string>
+    groupSearchStrategy: 'default|nameMapping'
+    groupsStrategy: # only available on groupSearchStrategy 'nameMapping'
+      caseSensitive: <boolean>
+      searchPath: <string>
+      mappings:
+        - gitlabName: <string>
+          packageJsonName: <string>
+    projectsStrategy: # only available on groupSearchStrategy 'nameMapping'
+      caseSensitive: <boolean>
+      searchPath: <string>
+      mappings:
+        - gitlabName: <string>
+          packageJsonName: <string>
 ```
 
 <!-- markdownlint-disable MD013 -->
@@ -164,6 +187,9 @@ auth:
 | `authCache: enabled` | `true` | boolean | activate in-memory authentication cache |
 | `authCache: ttl` | `300` (`0`=unlimited) | integer | time-to-live of entries in the authentication cache, in seconds |
 | `publish` | `$maintainer` | [`$guest`, `$reporter`, `$developer`, `$maintainer`, `$owner`] | group minimum access level of the logged in user required for npm publish operations |
+| `groupSearchStrategy` | `'default'` | ['default', 'nameMapping'] | strategy for searching GitLab groups |
+| `groupsStrategy` | | Like yaml structure above | configuration for group search strategy (only available on `groupSearchStrategy 'nameMapping'`) |
+| `projectsStrategy` | | Like yaml structure above | configuration for project search strategy (only available on `groupSearchStrategy 'nameMapping'`) |
 <!-- markdownlint-enable MD013 -->
 
 ## Authentication Cache

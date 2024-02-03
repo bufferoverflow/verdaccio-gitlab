@@ -1,4 +1,4 @@
-FROM node:12.16.3-alpine3.11 as builder
+FROM node:14 as builder
 
 WORKDIR /opt/verdaccio-gitlab-build
 COPY . .
@@ -14,7 +14,7 @@ RUN yarn config set registry $VERDACCIO_BUILD_REGISTRY && \
 
 
 
-FROM verdaccio/verdaccio:4
+FROM verdaccio/verdaccio:5
 LABEL maintainer="https://github.com/bufferoverflow/verdaccio-gitlab"
 
 # Go back to root to be able to install the plugin
